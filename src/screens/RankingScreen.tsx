@@ -9,6 +9,7 @@ import Top1Avatar from '../components/common/RankingScreen/Top1Avatar';
 import TopInfo from '../components/common/RankingScreen/TopInfo';
 import LeaderBoardInfo from '../components/common/RankingScreen/LeaderBoardInfo';
 import LeaderBoard from '../components/common/RankingScreen/LeaderBoard';
+import ScreenHeader from '../components/common/ScreenHeader';
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const listLeaderBoard = [
   {name:"Alex White",elo:3900},
@@ -22,8 +23,10 @@ const listLeaderBoard = [
 const playerPosition=5;
 const RankingScreen = ({ navigation }: Props) => {
   return (
+    <>
+    <ScreenHeader screenName={"Ranking"}></ScreenHeader>
     <ScrollView>
-      <Text style={style.heading}>Ranking</Text>
+      
       <UserView></UserView> 
       <PlayButton></PlayButton>
       <View style={style.topContainer}>
@@ -38,7 +41,8 @@ const RankingScreen = ({ navigation }: Props) => {
         </View>
       </View> 
       <LeaderBoard listLeaderBoard={listLeaderBoard} playerPosition={playerPosition}></LeaderBoard>
-    </ScrollView>
+    </ScrollView> 
+    </>
   );
 };
 const style= StyleSheet.create( {

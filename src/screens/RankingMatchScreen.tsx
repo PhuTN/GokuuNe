@@ -2,16 +2,20 @@ import React from 'react';
 import { View, Text, Button } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import Player from '../components/common/MatchRankScreen/Player';
+import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen = ({ navigation }: Props) => {
+const RankingMatchScreen = ({ navigation }: Props) => {
   return (
     <View>
-      <Text>Home Screen</Text>
-      <Button title="Go to Chat" onPress={() => navigation.navigate('Chat')}/>
+    <Player></Player>
+    <ChessBoard></ChessBoard>
+    <Player></Player>
     </View>
+    
   );
 };
 
-export default HomeScreen;
+export default RankingMatchScreen;
