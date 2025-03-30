@@ -11,16 +11,21 @@ export default function ScreenHeader({screenName}) {
 const styles =StyleSheet.create({
     container: {
        
-        height:195,
-        width:500,
-        alignSelf:'center',
-        backgroundColor:"#BC2CFF80",
-        borderBottomRightRadius:650,
-        borderBottomLeftRadius:650,
+       
+        height:80,
+        
+        
+        
         marginBottom:20,
-        position:'absoulte',
+        borderBottomLeftRadius:30,
+        borderBottomRightRadius:30,
         display:'flex',
-        top:-100,
+        flexDirection:'column',
+        justifyContent:'center',
+        alignItems:'center',
+        
+        backgroundColor:'#BC2CFF80'
+        
         
         
     },
@@ -28,17 +33,21 @@ const styles =StyleSheet.create({
         fontSize:36,
         alignSelf:'center',
         fontWeight:700,
-        marginLeft:55,
+        marginLeft:85,
         color:'#FFCF26'
     },
     header_backButton:{
-        position:'absolute',
-        bottom:30,
+        
         alignSelf:'center',
         display:'flex',
         flexDirection:'row',
+        alignItems:'center',
+        paddingTop:10,
+        width:'100%',
+
+        paddingHorizontal:20,
         
-        width:300
+        
     },
     backIcon:{
         alignSelf:'flex-start'
