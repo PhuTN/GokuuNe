@@ -12,25 +12,25 @@ const users = [
   {
     id: 1,
     name: 'Isabelle',
-    avatar: require('../../assets/images/avt1.png'),
+    avatar: require('../../../assets/images/ChatScreen/avt1.png'),
     bgColor: '#F7DF56',
   },
   {
     id: 2,
     name: 'Ethan',
-    avatar: require('../../assets/images/avt2.png'),
+    avatar: require('../../../assets/images/ChatScreen/avt2.png'),
     bgColor: '#00A3FF',
   },
   {
     id: 3,
     name: 'Harper',
-    avatar: require('../../assets/images/avt3.png'),
+    avatar: require('../../../assets/images/ChatScreen/avt3.png'),
     bgColor: '#00D5C5',
   },
   {
     id: 4,
     name: 'Alexander',
-    avatar: require('../../assets/images/avt4.png'),
+    avatar: require('../../../assets/images/ChatScreen/avt4.png'),
     bgColor: '#00A3FF',
   },
 ];
@@ -38,12 +38,6 @@ const users = [
 export default function ActiveUserSection() {
   return (
     <View style={styles.wrapper}>
-      {/* Label with dot */}
-      <View style={styles.labelContainer}>
-        <Text style={styles.label}>Currently Active</Text>
-        <View style={styles.dot} />
-      </View>
-
       {/* ScrollView avatar */}
       <ScrollView
         horizontal
@@ -70,30 +64,8 @@ export default function ActiveUserSection() {
 const styles = StyleSheet.create({
   wrapper: {
     marginTop: 8,
-    marginBottom: 12,
+    marginBottom: -1,
     paddingHorizontal: 16,
-  },
-  labelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#8B2CFF',
-    alignSelf: 'flex-start',
-    borderRadius: 20,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    marginBottom: 12,
-  },
-  label: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#FFD700',
-    marginLeft: 8,
   },
   scroll: {
     gap: 16,

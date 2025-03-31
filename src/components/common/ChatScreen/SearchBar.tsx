@@ -12,7 +12,7 @@ export default function SearchBar() {
         style={styles.input}
       />
       <Image
-        source={require('../../assets/images/SearchIcon.png')}
+        source={require('../../../assets/images/ChatScreen/SearchIcon.png')}
         style={styles.icon}
         resizeMode="contain"
       />
@@ -33,6 +33,7 @@ const styles = StyleSheet.create({
     borderColor: '#00000033',
     alignSelf: 'center',
     marginVertical: 16,
+    marginBlock: 20,
   },
   input: {
     flex: 1,

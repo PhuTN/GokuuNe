@@ -6,13 +6,13 @@ export default function ChatHeader() {
     <View style={styles.container}>
       <View style={styles.row}>
         <Image
-          source={require('../../assets/images/backIcon.png')}
+          source={require('../../../assets/images/ChatScreen/backIcon.png')}
           style={styles.icon}
           resizeMode="contain"
         />
         <Text style={styles.title}>CHAT</Text>
         <Image
-          source={require('../../assets/images/settingIcon.png')}
+          source={require('../../../assets/images/ChatScreen/settingIcon.png')}
           style={styles.icon}
           resizeMode="contain"
         />
@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'flex-end',
     paddingBottom: 30,
+    marginBottom: 30,
   },
   row: {
     flexDirection: 'row',
