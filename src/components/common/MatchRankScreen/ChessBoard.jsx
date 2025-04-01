@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text,View,Image, StyleSheet, TouchableOpacity } from "react-native"; 
+import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native"; 
 
 let isWhite=true;
 const blackPiece= require("../../../assets/images/pieceBlack.png");
@@ -8,7 +8,8 @@ let pieceArray=[];
     for(let i=0;i<13*13;i++) {
         pieceArray.push(null);
     }
-export default function ChessBoard() { 
+
+export default function ChessBoard({handleEvent}) { 
     
     const [pArr, setPArr] = useState(pieceArray);
     function renderCellInRow(index) {
@@ -40,6 +41,8 @@ export default function ChessBoard() {
                 }
                 setPArr(tempParray);
                 isWhite=!isWhite;
+                
+                handleEvent();
 
                
                 
@@ -100,7 +103,8 @@ export default function ChessBoard() {
         </View>
     )
 
-} 
+}
+export {isWhite}; 
 const style=StyleSheet.create({
     chessBoardBackGround: {
         width:388,

@@ -1,24 +1,27 @@
 import {Text,View,Image, StyleSheet} from 'react-native';
-export default  function Player() { 
+import { isWhite } from './ChessBoard';
+export default  function Player({user,isWhite,time}) { 
     const avatar = require('../../../assets/images/Top1.png');
     const piectBlack=require('../../../assets/images/pieceBlack.png');
+    const pieceWhite = require("../../../assets/images/pieceWhite.png");
     const flag=require('../../../assets/images/Vietnam.png');
     return (
         
         <View style={styles.container}>
             <View style={styles.playerInfo}>
-            <Image style={styles.avatar} source={avatar}></Image> 
+            <Image style={styles.avatar} source={{uri:user.userAvatarURL}}></Image> 
             <View  >
-                <Text style={styles.textStyle}>Phao(1010)</Text> 
+                <Text style={styles.textStyle}>{user.userName} ({user.elo})</Text> 
                 <View style={styles.pieceContainer}>
-                    <Image source={piectBlack}></Image>
+                    <Image source={isWhite?pieceWhite:piectBlack}></Image>
                     <Text style={styles.textStyle}>+1</Text> 
                 </View>
             </View> 
-            <Image source={flag}></Image>
+            <Image source={{uri:user.userCountryImageURL}}></Image>
             </View>
             <View style={styles.timeContainer}>
-                <Text style={styles.timeText}>9:37</Text>
+                <Text style={styles.timeText}>{
+                time}</Text>
             </View>
         </View>
     );
