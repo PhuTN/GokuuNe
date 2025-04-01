@@ -2,12 +2,14 @@ import { Text,View ,Image, StyleSheet} from "react-native";
 
 import UserNameCountry from "./Username_Country";
 
-export default function UserInfo() { 
-    const userAvatar = require('../../../assets/images/avatar.png');
+export default function UserInfo({user}) { 
+    
     return (
     <View style={styles.container}>
-        <Image source={userAvatar}></Image> 
-        <UserNameCountry></UserNameCountry>
+        <Image source={{
+            uri:user.userAvatarURL
+        }} style={styles.image}></Image> 
+        <UserNameCountry user={user}></UserNameCountry>
     </View> 
     );
 }
@@ -17,5 +19,9 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         gap:'20'
+    },
+    image:{
+        width:60,
+        height:60
     }
 })

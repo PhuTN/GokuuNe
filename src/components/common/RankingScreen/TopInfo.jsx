@@ -14,7 +14,7 @@ export default function TopInfo({topInfo}) {
     return (
         <View style={style.container}>
             <Top1Avatar topInfo={topInfo}></Top1Avatar>
-            <Text style={style.nameText}>{generateStringFromName(topInfo.name)}</Text>
+            <Text style={style.nameText}>{generateStringFromName(topInfo.userName)}</Text>
             <View style={style.eloView}>
             <Text>{topInfo.elo}</Text> 
             <Image style={style.eloImage} source={elo}></Image>

@@ -1,12 +1,14 @@
 import { Text,View,Image, StyleSheet } from "react-native";
 
 
-export default function Country(){
-    const flagImage = require("../../../assets/images/Vietnam.png");
+export default function Country({user}){
+   
     return (
         <View style={styles.container}>
-            <Image source={flagImage}></Image>
-            <Text style={styles.text}>Vietnam</Text>
+            <Image source={
+                {uri:user.userCountryImageURL}
+            } style = {styles.image}></Image>
+            <Text style={styles.text}>{user.country}</Text>
         </View>
     )
 }
@@ -20,5 +22,9 @@ const styles = StyleSheet.create( {
     text:{
         fontWeight:'800',
         fontSize:20
+    },
+    image: {
+        width:35,
+        height:25.28
     }
 })

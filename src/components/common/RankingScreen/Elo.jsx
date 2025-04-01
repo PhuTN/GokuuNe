@@ -1,11 +1,11 @@
 import { Text,View,Image, StyleSheet } from "react-native"; 
-export default function Matches() {
-    const matches=require('../../../assets/images/Matches.png');
+export default function Elo({user}) {
+    const matches=require('../../../assets/images/Elo.png');
     return (<View style={styles.container}>
         <Image source ={matches}></Image> 
         <View>
-        <Text style={styles.matchText}>MATCHES</Text> 
-        <Text style={styles.numberText}>25</Text>
+        <Text style={styles.matchText}>ELO</Text> 
+        <Text style={styles.numberText}>{user.elo}</Text>
         </View>
     </View>
         
@@ -25,6 +25,7 @@ const styles = StyleSheet.create( {
         width:130,
         height:60,
         backgroundColor:'white'
+    
         
     },
     matchText: {

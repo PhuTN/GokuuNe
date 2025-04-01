@@ -1,10 +1,10 @@
 import { StyleSheet, Text,View } from "react-native";
 import Country from "./Country";
-export default function UserNameCountry() {
+export default function UserNameCountry({user}) {
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Ngoc Kem</Text> 
-            <Country></Country>
+            <Text style={styles.text}>{user.userName}</Text> 
+            <Country user={user}></Country>
         </View>
     )
 }

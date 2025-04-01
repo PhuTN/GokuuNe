@@ -2,13 +2,13 @@ import { StyleSheet, Text,View } from "react-native";
 import UserInfo from "./UserInfo";
 import Matches from "./Matches";
 import Elo from "./Elo";
-export default function UserView() {
+export default function UserView({user}) {
     return (
         <View style={styles.container}>
-            <UserInfo></UserInfo>
+            <UserInfo user={user}></UserInfo>
             <View style={styles.match_elo}>
-                <Matches></Matches> 
-                <Elo></Elo>
+                <Matches user={user}></Matches> 
+                <Elo user={user}></Elo>
             </View>
         </View>
     )

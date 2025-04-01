@@ -10,7 +10,9 @@ export default function Top1Avatar({topInfo}) {
           <View style={styles.circle}>
             {/* Profile image */}
             <Image
-              source={avatar} // Replace with your image URL
+              source={{
+                uri:topInfo.userAvatarURL
+              }} // Replace with your image URL
               style={styles.image}
             />
             {

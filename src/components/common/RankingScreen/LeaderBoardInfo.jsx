@@ -1,6 +1,6 @@
 import { Text,View,Image, StyleSheet } from "react-native"; 
 export default function LeaderBoardInfo({info, index,isPlayer}) { 
-    const avatar = require("../../../assets/images/Top1.png");
+    
    let viewStyle=style;
    if(isPlayer) {
     viewStyle=StyleSheet.create({
@@ -19,8 +19,8 @@ export default function LeaderBoardInfo({info, index,isPlayer}) {
         <View style={viewStyle.container}>
             <View style={style.subContainer}>
             <Text style={style.boldText}>{index}</Text> 
-            <Image style={style.image} source={avatar}></Image> 
-            <Text style={style.boldText}>{info.name}</Text>
+            <Image style={style.image} source={{uri:info.userAvatarURL}}></Image> 
+            <Text style={style.boldText}>{info.userName}</Text>
             </View>
             <Text>{info.elo}</Text>
         </View>
