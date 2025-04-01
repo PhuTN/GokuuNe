@@ -103,3 +103,74 @@ export const recentChats = [
     unreadCount: 1,
   },
 ];
+
+export const fakeMessages = [
+  {
+    id: '1',
+    message: 'Hey, what’s up?',
+    sender: 'other',
+    time: 'Today',
+    avatar: require('../../assets/images/ChatDetailScreen/avatar.png'), // Avatar của người gửi
+  },
+  {
+    id: '2',
+    message: 'Not much, just hanging out at home. How about you?',
+    sender: 'me',
+    time: 'Today',
+  },
+  {
+    id: '3',
+    message:
+      'Same here. I’ve been trying to stay busy by working on some art projects.',
+    sender: 'other',
+    time: 'Today',
+    avatar: require('../../assets/images/ChatDetailScreen/avatar.png'), // Avatar của người gửi
+  },
+  {
+    id: '4',
+    message: 'That sounds cool. What kind of art are you into?',
+    sender: 'me',
+    time: 'Today',
+  },
+  {
+    id: '5',
+    message:
+      'I like to do a lot of different things, but right now I’m really into painting. I’ve been working on a series of abstract landscapes.',
+    sender: 'other',
+    time: 'Today',
+    avatar: require('../../assets/images/ChatDetailScreen/avatar.png'), // Avatar của người gửi
+  },
+  {
+    id: '6',
+    message: 'I’ve been trying to work on some new digital art lately.',
+    sender: 'me',
+    time: 'Today',
+  },
+  {
+    id: '7',
+    message: 'Cool! What’s the theme of your digital art?',
+    sender: 'other',
+    time: 'Today',
+    avatar: require('../../assets/images/ChatDetailScreen/avatar.png'), // Avatar của người gửi
+  },
+  {
+    id: '8',
+    message:
+      'I’m mostly focusing on abstract art with futuristic elements. I find it really interesting to blend the past and future together.',
+    sender: 'me',
+    time: 'Today',
+  },
+  {
+    id: '9',
+    message: 'That sounds amazing! I’d love to see your work.',
+    sender: 'other',
+    time: 'Today',
+    avatar: require('../../assets/images/ChatDetailScreen/avatar.png'), // Avatar của người gửi
+  },
+  {
+    id: '10',
+    message: 'Maybe I’ll share some of it when it’s finished!',
+    sender: 'me',
+    time: 'Today',
+  },
+];
