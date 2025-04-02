@@ -9,7 +9,7 @@ export default function LeaderBoard({listLeaderBoard,user}) {
                 {
                     isPlayer=true;
                 }
-                return <LeaderBoardInfo info={item} index={index+4} isPlayer={isPlayer}></LeaderBoardInfo>
+                return <LeaderBoardInfo info={item} index={index+4} isPlayer={isPlayer} key={"LeaderBoard"+index}></LeaderBoardInfo>
             })
         }
     </View>

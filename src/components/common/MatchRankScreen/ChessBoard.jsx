@@ -33,6 +33,9 @@ export default function ChessBoard({handleEvent}) {
             res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index} onPress={(e)=>{
                 e.preventDefault();
                 const tempParray = [...pArr];
+                if(tempParray[index*13+i]!=null) {
+                    return;
+                }
                 if(isWhite) {
                     tempParray[index*13+i]=whitePiece;
                 } 

@@ -8,7 +8,7 @@ import ScreenHeader from '../components/common/ScreenHeader';
 import { Matches } from '../fake_data/Binh/fake_data';
 
 
-let flag=true;
+
 function decreaseTime(timeString) {
    const minuteAndSecond = timeString.split(':');
    let minute = parseInt(minuteAndSecond[0]);
@@ -35,6 +35,7 @@ const RankingMatchScreen = ({ navigation }) => {
   const [timeBlack, setTimeBlack] = useState("10:00");
   const [timeWhite, setTimeWhite] = useState("10:00");
   const [currentIntervalId,setCurrentIntervalId]= useState();
+  const [flag,setFlag] = useState(true);
   useEffect(()=>{
     setCurrentIntervalId(setInterval(()=>{
       setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
@@ -54,7 +55,7 @@ const RankingMatchScreen = ({ navigation }) => {
           setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
         },1000));
       }
-      flag=!flag;
+      setFlag(prevF=>!prevF);
       
       
       

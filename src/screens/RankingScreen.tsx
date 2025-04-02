@@ -31,7 +31,7 @@ const RankingScreen = ({ navigation }: Props) => {
     <ScrollView>
       
       <UserView user={User}></UserView> 
-      <PlayButton></PlayButton>
+      <PlayButton navigation={navigation}></PlayButton>
       <View style={style.topContainer}>
         <View>
         <TopInfo topInfo={Top10[1]}></TopInfo> 

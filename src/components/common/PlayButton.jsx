@@ -1,7 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
-export default function PlayButton() {
+export default function PlayButton({navigation}) {
     return (
-        <TouchableOpacity style={style.playButton}>
+        <TouchableOpacity style={style.playButton} onPress={(e)=>{
+            e.preventDefault();
+            navigation.navigate("RankingMatch");
+        }}>
             <Text style={style.playButtonText}>Play</Text>
         </TouchableOpacity>
     )
