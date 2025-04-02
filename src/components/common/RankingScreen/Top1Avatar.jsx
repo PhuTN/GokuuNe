@@ -62,14 +62,14 @@ const styles = StyleSheet.create({
     crownContainer: {
       position: 'absolute',
       top: -20, // Adjust the crown position
-      backgroundColor: 'yellow',
+      
       padding: 5,
       borderRadius: 10,
     },
     crown: {
       width:30,
       height:20,
-      fontWeight: 'bold',
+      
     },
     numberContainer: {
       position: 'absolute',
