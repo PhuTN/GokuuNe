@@ -3,6 +3,7 @@ import { Text,View,StyleSheet,Image } from "react-native";
 export default function Top1Avatar({topInfo}) {
     console.log(topInfo.avatarURL);
     const avatar = require('../../../assets/images/Top1.png');
+    const crown = require('../../../assets/images/Crown.png');
     return (
 
         <View style={styles.container}>
@@ -16,7 +17,7 @@ export default function Top1Avatar({topInfo}) {
               style={styles.image}
             />
             {
-              generateCrown(topInfo.rank)
+              generateCrown(topInfo.rank,crown)
             }
             
           </View>
@@ -27,10 +28,10 @@ export default function Top1Avatar({topInfo}) {
         </View>
       );
 }
-function generateCrown(rank) {
+function generateCrown(rank,crown) {
   if(rank==1) {
     return <View style={styles.crownContainer}>
-    <Text style={styles.crown}>👑</Text> {/* You can replace this with an actual icon */}
+    <Image style={styles.crown} source={crown}></Image>
   </View>
   }
   return <></>
@@ -66,7 +67,8 @@ const styles = StyleSheet.create({
       borderRadius: 10,
     },
     crown: {
-      fontSize: 10, // You can style the crown text or use an icon library
+      width:30,
+      height:20,
       fontWeight: 'bold',
     },
     numberContainer: {
