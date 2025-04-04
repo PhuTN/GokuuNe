@@ -6,6 +6,7 @@ import Player from '../components/common/MatchRankScreen/Player';
 import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
 import { Matches } from '../fake_data/Binh/fake_data';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -69,10 +70,20 @@ const RankingMatchScreen = ({ navigation }) => {
     <Player user={Matches.playerWhite} isWhite={true} time={timeWhite} ></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>
+      <LinearGradient colors={['#6B50F6', '#CC8FED']} // Colors for gradient
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 0 }}  
+    style={styles.linearGradient}>
         <Image source={messageIcon}></Image>
+        </LinearGradient>
       </TouchableOpacity>
       <TouchableOpacity style={styles.touchable}>
+        <LinearGradient colors={['#6B50F6', '#CC8FED']} // Colors for gradient
+    start={{ x: 0, y: 0 }}
+    end={{ x: 1, y: 0 }}  
+    style={styles.linearGradient}>
         <Image source={noteIcon}></Image>
+        </LinearGradient>
       </TouchableOpacity>
     </View>
     </View>
@@ -87,13 +98,18 @@ const styles = StyleSheet.create({
      gap:50,
      padding:50
    },
-   touchable: {
-    width:53,
-    height:53,
-    backgroundColor:'#6B50F6',
+   linearGradient: {
+    width:'100%',
+    height:'100%',
     alignItems:'center',
     justifyContent:'center',
     borderRadius:20
+   },
+   touchable: {
+    width:53,
+    height:53,
+    
+    
    }
 });
 export default RankingMatchScreen;

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native"; 
+import Dot from "./Dot";
 
 let isWhite=true;
 const blackPiece= require("../../../assets/images/pieceBlack.png");
@@ -50,6 +51,9 @@ export default function ChessBoard({handleEvent}) {
                
                 
             }}>
+                
+                    
+            <Dot index={index*13+i}></Dot>
                <Image style={style.pieceImageEnable} source = {pArr[index*13+i]}></Image>
 
             </TouchableOpacity>)

@@ -17,7 +17,7 @@ export default  function Player({user,isWhite,time}) {
                     <Text style={styles.textStyle}>+1</Text> 
                 </View>
             </View> 
-            <Image source={{uri:user.userCountryImageURL}}></Image>
+            <Image source={{uri:user.userCountryImageURL}} style={styles.flagImage} ></Image>
             </View>
             <View style={styles.timeContainer}>
                 <Text style={styles.timeText}>{
@@ -36,7 +36,9 @@ const styles = StyleSheet.create({
     },
     avatar:{
         width:50,
-        height:50
+        height:50,borderRadius: 50, // Half of width/height for a perfect circle
+        borderWidth: 3, // Thickness of the border
+        borderColor: '#6B50F6'
     },
     playerInfo:{
         display:'flex',
@@ -65,5 +67,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         borderRadius:20
+    },
+    flagImage: {
+        width:35,
+        height:25.28
     }
 })

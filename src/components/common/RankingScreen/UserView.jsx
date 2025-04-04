@@ -2,14 +2,23 @@ import { StyleSheet, Text,View } from "react-native";
 import UserInfo from "./UserInfo";
 import Matches from "./Matches";
 import Elo from "./Elo";
+import LinearGradient from "react-native-linear-gradient";
 export default function UserView({user}) {
     return (
-        <View style={styles.container}>
+        <View
+         style={styles.container}>
+            <LinearGradient  
+                colors={['#6B50F6', '#C150F6']} // Colors for gradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }} 
+                style={styles.lineargradient}
+            >
             <UserInfo user={user}></UserInfo>
             <View style={styles.match_elo}>
                 <Matches user={user}></Matches> 
                 <Elo user={user}></Elo>
             </View>
+            </LinearGradient>
         </View>
     )
 }
@@ -17,7 +26,13 @@ const styles = StyleSheet.create( {
     container:{
         width:315,
         height:232,
-        backgroundColor:'#ebdcfd',
+        alignSelf:'center'
+        
+        
+    },
+    lineargradient:{
+        width:'100%',
+        height:'100%',
         borderRadius:20,
         alignSelf:'center',
         display:'flex',

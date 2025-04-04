@@ -22,7 +22,7 @@ export default function LeaderBoardInfo({info, index,isPlayer}) {
             <Image style={style.image} source={{uri:info.userAvatarURL}}></Image> 
             <Text style={style.boldText}>{info.userName}</Text>
             </View>
-            <Text>{info.elo}</Text>
+            <Text style={style.eloText}>{info.elo}</Text>
         </View>
     )
 }
@@ -44,9 +44,14 @@ const style=StyleSheet.create({
     },
     image: {
         width:32,
-        height:32
+        height:32,
+        borderRadius:50,
+        
     }, 
     boldText:{
         fontWeight:700
+    }, 
+    eloText: {
+        marginRight:20
     }
 })
