@@ -1,6 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
+import { useLanguage } from "../../asycnc_store/LanguageContext";
+import { translations } from "../../untils/i18n";
 export default function PlayButton({navigation}) {
+    const {language,toggleLanguage} = useLanguage();
+    const t = translations[language];
     return (
         <TouchableOpacity style={style.playButton} onPress={(e)=>{
             e.preventDefault();
@@ -12,7 +16,7 @@ export default function PlayButton({navigation}) {
             end={{ x: 1, y: 0 }}   
             style={style.linearGradient} 
             >
-            <Text style={style.playButtonText}>Play</Text>
+            <Text style={style.playButtonText}>{t.play_button_text}</Text>
             </LinearGradient>
         </TouchableOpacity>
     )

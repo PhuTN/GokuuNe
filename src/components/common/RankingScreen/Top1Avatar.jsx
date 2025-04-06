@@ -80,8 +80,9 @@ const styles = StyleSheet.create({
       paddingVertical: 5,
     },
     number: {
-      color: 'white',
+      color: '#FFCF26',
       fontSize: 18,
       fontWeight: 'bold',
+
     },
   });

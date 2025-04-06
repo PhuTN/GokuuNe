@@ -1,6 +1,9 @@
+import { useTheme } from "@react-navigation/native";
 import { Text,View,Image, StyleSheet } from "react-native"; 
 export default function LeaderBoardInfo({info, index,isPlayer}) { 
-    
+   const {theme, toggleTheme} = useTheme();
+   const isDark = theme==='dark';
+   const style = isDark?whiteStyle:darkStyle;
    let viewStyle=style;
    if(isPlayer) {
     viewStyle=StyleSheet.create({
@@ -9,7 +12,7 @@ export default function LeaderBoardInfo({info, index,isPlayer}) {
             flexDirection:'row',
             alignItems:'center',
             justifyContent:'space-between',
-            backgroundColor:'#CC8FED',
+            backgroundColor:isDark?'#CC8FED':'#CC7EF6',
             padding:10,
             borderRadius:10
         }
@@ -26,7 +29,7 @@ export default function LeaderBoardInfo({info, index,isPlayer}) {
         </View>
     )
 }
-const style=StyleSheet.create({
+const whiteStyle=StyleSheet.create({
     container: {
         display:'flex',
         flexDirection:'row',
@@ -49,9 +52,42 @@ const style=StyleSheet.create({
         
     }, 
     boldText:{
-        fontWeight:700
+        fontWeight:700,
+        color:'black'
     }, 
     eloText: {
-        marginRight:20
+        marginRight:20,
+        color:'black'
     }
-})
+});
+const darkStyle =StyleSheet.create({
+    container: {
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between',
+        backgroundColor:'#808080',
+        padding:10,
+        borderRadius:10
+    },
+    subContainer:{
+        display:'flex',
+        flexDirection:'row',
+        gap:20,
+        alignItems:'center'
+    },
+    image: {
+        width:32,
+        height:32,
+        borderRadius:50,
+        
+    }, 
+    boldText:{
+        fontWeight:700,
+        color:'white'
+    }, 
+    eloText: {
+        marginRight:20,
+        color:'white'
+    }
+});

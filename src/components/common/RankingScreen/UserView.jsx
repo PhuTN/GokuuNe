@@ -3,7 +3,11 @@ import UserInfo from "./UserInfo";
 import Matches from "./Matches";
 import Elo from "./Elo";
 import LinearGradient from "react-native-linear-gradient";
+import { useTheme } from "@react-navigation/native";
 export default function UserView({user}) {
+    const {theme,toggleTheme} = useTheme();
+    const isDark=theme==='dark';
+    const gradient = isDark?['#6B50F699','white']:['#6B50F6', '#C150F6'];
     return (
         <View
          style={styles.container}>
@@ -46,4 +50,4 @@ const styles = StyleSheet.create( {
         flexDirection:'row',
         gap:20
     }
-})
+});

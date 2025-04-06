@@ -11,6 +11,7 @@ import LeaderBoardInfo from '../components/common/RankingScreen/LeaderBoardInfo'
 import LeaderBoard from '../components/common/RankingScreen/LeaderBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
 import { User,Top10 } from '../fake_data/Binh/fake_data';
+import { useTheme } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const listLeaderBoard = [
@@ -25,8 +26,11 @@ const listLeaderBoard = [
 const playerPosition=5;
 
 const RankingScreen = ({ navigation }: Props) => {
+  const {theme,toggleTheme} = useTheme();
+  const isDark=theme==='dark';
+  const style = isDark?whiteStyle:darkStyle;
   return (
-    <>
+    <View style={style.container}>
     <ScreenHeader screenName={"Ranking"}></ScreenHeader>
     <ScrollView>
       
@@ -45,10 +49,13 @@ const RankingScreen = ({ navigation }: Props) => {
       </View> 
       <LeaderBoard listLeaderBoard={Top10.slice(3,10)} user={User}></LeaderBoard>
     </ScrollView> 
-    </>
+    </View>
   );
 };
-const style= StyleSheet.create( {
+const whiteStyle= StyleSheet.create( {
+  container:{
+
+  },
   heading:{
     textAlign:'center'
   },
@@ -64,5 +71,25 @@ const style= StyleSheet.create( {
   top1View: {
     alignSelf:'flex-end'
   }
-})
+});
+const darkStyle =StyleSheet.create( {
+  container:{
+    backgroundColor:'black'
+  },
+  heading:{
+    textAlign:'center'
+  },
+  topContainer: {
+    height:100,
+    paddingHorizontal:40,
+    marginTop:100,
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    alignItems:'center'
+  },
+  top1View: {
+    alignSelf:'flex-end'
+  }
+});
 export default RankingScreen;

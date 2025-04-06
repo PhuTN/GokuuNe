@@ -7,6 +7,7 @@ import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
 import { Matches } from '../fake_data/Binh/fake_data';
 import LinearGradient from 'react-native-linear-gradient';
+import { useTheme } from '@react-navigation/native';
 
 
 
@@ -30,6 +31,9 @@ function decreaseTime(timeString) {
    return res;
 }
 const RankingMatchScreen = ({ navigation }) => {
+  const {theme,toggleTheme} = useTheme();
+  const isDark=theme==='dark';
+  const styles = isDark?whiteStyles:darkStyles;
   
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
@@ -62,7 +66,7 @@ const RankingMatchScreen = ({ navigation }) => {
       
   }
   return (
-    <View>
+    <View style={styles.container}>
       <ScreenHeader screenName={"Gokuu"}></ScreenHeader>
       
     <Player user = {Matches.playerBlack} isWhite={false} time={timeBlack}></Player>
@@ -90,7 +94,33 @@ const RankingMatchScreen = ({ navigation }) => {
     
   );
 };
-const styles = StyleSheet.create({
+const whiteStyles = StyleSheet.create({
+  container:{},
+   buttonContainer: {
+     display:'flex',
+     flexDirection:'row',
+     alignSelf:'center',
+     gap:50,
+     padding:50
+   },
+   linearGradient: {
+    width:'100%',
+    height:'100%',
+    alignItems:'center',
+    justifyContent:'center',
+    borderRadius:20
+   },
+   touchable: {
+    width:53,
+    height:53,
+    
+    
+   }
+});
+const darkStyles = StyleSheet.create({
+  container:{
+    backgroundColor:'black'
+  },
    buttonContainer: {
      display:'flex',
      flexDirection:'row',

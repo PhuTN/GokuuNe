@@ -1,6 +1,10 @@
 import {StyleSheet, Text,View} from 'react-native';
 import LeaderBoardInfo from './LeaderBoardInfo';
+import { useTheme } from '@react-navigation/native';
+
 export default function LeaderBoard({listLeaderBoard,user}) {
+    const {theme, toggleTheme} = useTheme();
+    const style = (theme!=='dark')?whiteStyle:darkStyle; 
     return (<View style={style.container}>
         {
             listLeaderBoard.map((item,index)=>{
@@ -15,7 +19,7 @@ export default function LeaderBoard({listLeaderBoard,user}) {
     </View>
     )
 }
-const style= StyleSheet.create( {
+const whiteStyle= StyleSheet.create( {
     container:{
         marginTop:70,
         marginHorizontal:5,
@@ -26,4 +30,16 @@ const style= StyleSheet.create( {
         backgroundColor:'#6B50F699',
         borderRadius:20
     }
-})
+});
+const darkStyle = StyleSheet.create( {
+    container:{
+        marginTop:70,
+        marginHorizontal:5,
+        padding:20,
+        display:'flex',
+        flexDirection:'column',
+        gap:20,
+        backgroundColor:'rgba(107, 80, 246, 0.6)',
+        borderRadius:20
+    }
+});
