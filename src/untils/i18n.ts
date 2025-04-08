@@ -1,13 +1,101 @@
 export const translations = {
-    en: {
-      greeting: "Hello",
-      toggle_theme: "Toggle Theme",
-      toggle_language: "Toggle Language"
-    },
-    vi: {
-      greeting: "Xin chào",
-      toggle_theme: "Chuyển giao diện",
-      toggle_language: "Chuyển ngôn ngữ"
-    }
-  };
+  en: {
+    greeting: "Hello",
+    toggle_theme: "Toggle Theme",
+    toggle_language: "Toggle Language",
+
+    //dien
+    home_guest: "Guest",
+    home_ranking: "RANKING",
+    home_AI: "AI",
+    home_friends: "FRIENDS",
+    home_host: "HOST", 
+
+    login: "LOGIN",
+    login_title: "Login",
+    login_username: "Username",
+    login_username_placeholder: "Enter username",
+    login_password: "Password",
+    login_password_placeholder: "Enter password",
+    login_button: "Confirm and Continue",
+    login_success: "Success",
+    login_success_message: "Login successful!",
+    login_success_ok: "Ok",
+    login_error: "Error",
+    login_error_message: "Invalid username or password!",
+
+    setting: "SETTING",
+    setting_guest: "Guest",
+    setting_account: "Acount",
+    setting_profile: "Profile",
+    setting_profile_noti: "Notification",
+    setting_profile_message: "Please login first!",
+    setting_achievement: "Achievement",
+    setting_match_history: "Match History",
+    setting_app: "App",
+    setting_language: "Language",
+    setting_theme: "Theme",
+    setting_popup: "Pop-up Notification",
+    setting_other: "Other",
+    setting_contact: "Contact Us",
+    setting_privacy: "Privacy Policy",
+
+    profile: "PROFILE",
+    profile_name: "Name",
+    profile_email: "Email",
+    profile_password: "Password",
+    profile_birth: "Date of birth",
+    profile_country: "Country/Region",
+    profile_button: "Save changes"
+  },
+  vi: {
+    greeting: "Xin chào",
+    toggle_theme: "Chuyển giao diện",
+    toggle_language: "Chuyển ngôn ngữ",
+  
+    //dien
+    home_guest: "Khách",
+    home_ranking: "ĐẤU XẾP HẠNG",
+    home_AI: "ĐẤU MÁY",
+    home_friends: "BẠN BÈ",
+    home_host: "TẠO PHÒNG",
+  
+    login: "ĐĂNG NHẬP",
+    login_title: "Đăng nhập",
+    login_username: "Tên đăng nhập",
+    login_username_placeholder: "Nhập tên đăng nhập",
+    login_password: "Mật khẩu",
+    login_password_placeholder: "Nhập mật khẩu",
+    login_button: "Xác nhận và tiếp tục",
+    login_success: "Thành công",
+    login_success_message: "Đăng nhập thành công!",
+    login_success_ok: "OK",
+    login_error: "Lỗi",
+    login_error_message: "Tên đăng nhập hoặc mật khẩu không hợp lệ!",
+  
+    setting: "CÀI ĐẶT",
+    setting_guest: "Khách",
+    setting_account: "Tài khoản",
+    setting_profile: "Hồ sơ",
+    setting_profile_noti: "Thông báo",
+    setting_profile_message: "Vui lòng đăng nhập!",
+    setting_achievement: "Thành tích",
+    setting_match_history: "Lịch sử đấu",
+    setting_app: "Ứng dụng",
+    setting_language: "Ngôn ngữ",
+    setting_theme: "Giao diện",
+    setting_popup: "Thông báo đẩy",
+    setting_other: "Khác",
+    setting_contact: "Liên hệ chúng tôi",
+    setting_privacy: "Chính sách bảo mật",
+  
+    profile: "HỒ SƠ",
+    profile_name: "Tên",
+    profile_email: "Email",
+    profile_password: "Mật khẩu",
+    profile_birth: "Ngày sinh",
+    profile_country: "Quốc gia/Khu vực",
+    profile_button: "Lưu các thay đổi"
+  }    
+};
   

@@ -1,13 +1,13 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, TextInputProps, ScrollView } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { accounts } from '../fake_data/Dien/fake_data';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import BackIcon from '../assets/icons/back_icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
-
+import Header from '../components/common/Header';
+import { useLanguage } from "../asycnc_store/LanguageContext";
+import { useTheme } from "../asycnc_store/ThemeContext";
+import { translations } from "../untils/i18n";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -15,20 +15,27 @@ const LoginScreen = ({ navigation }: Props) => {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
 
+    const { language, toggleLanguage } = useLanguage();
+    const t = translations[language];
+
+    const { theme, toggleTheme } = useTheme();
+    const isDark = theme === 'dark';
+    const styles = isDark ? darkStyles : lightStyles;
+
     const passwordInputRef = useRef<TextInput>(null);
 
     const handleLogin = () => {
         const accountExist = accounts.find(account => account.username === username && account.password === password);
 
         if (accountExist) {
-            Alert.alert('Success', 'Login successful!', [
+            Alert.alert(t.login_success, t.login_success_message, [
                 {
-                    text: 'OK',
+                    text: t.login_success_ok,
                     onPress: () => navigation.navigate('Home', { accountLogin: accountExist })
                 }
             ]);
         } else {
-            Alert.alert('Error', 'Invalid username or password!');
+            Alert.alert(t.login_error, t.login_error_message);
         }
     };
 
@@ -37,32 +44,29 @@ const LoginScreen = ({ navigation }: Props) => {
             style={styles.scrollView}
             contentContainerStyle={{ flexGrow: 1 }}
         >
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                    <BackIcon width={45} height={45} />
-                </TouchableOpacity>
-                <Text style={styles.headerText}>LOGIN</Text>
-            </View>
-    
+            {/* Header */}
+            <Header title={t.login} />
+
+            {/* Body */}
             <View style={styles.body}>
-                <Text style={styles.title}>Login</Text>
-    
-                <Text style={styles.label}>Username</Text>
+                <Text style={styles.title}>{t.login_title}</Text>
+
+                <Text style={styles.label}>{t.login_username}</Text>
                 <TextInput
                     style={styles.input}
-                    placeholder="Enter username"
+                    placeholder={t.login_username_placeholder}
                     placeholderTextColor="#888"
                     value={username}
                     onChangeText={setUsername}
                     returnKeyType="next"
                     onSubmitEditing={() => passwordInputRef.current?.focus()}
                 />
-    
-                <Text style={styles.label}>Password</Text>
+
+                <Text style={styles.label}>{t.login_password}</Text>
                 <TextInput
                     ref={passwordInputRef}
                     style={styles.input}
-                    placeholder="Enter password"
+                    placeholder={t.login_password_placeholder}
                     placeholderTextColor="#888"
                     secureTextEntry
                     value={password}
@@ -70,50 +74,33 @@ const LoginScreen = ({ navigation }: Props) => {
                     returnKeyType="done"
                     onSubmitEditing={handleLogin}
                 />
-    
+
                 <TouchableOpacity style={styles.button} onPress={handleLogin}>
                     <LinearGradient
-                            colors={["#6B50F6", "#CC8FED"]}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                            style={styles.button}
-                          >
-                            <Text style={styles.buttonText}>Confirm and Continue</Text>
-                          </LinearGradient>
+                        colors={["#6B50F6", "#CC8FED"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.button}
+                    >
+                        <Text style={styles.buttonText}>{t.login_button}</Text>
+                    </LinearGradient>
                 </TouchableOpacity>
             </View>
         </ScrollView>
-    );    
+    );
 }
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
     scrollView: {
         flex: 1,
     },
-    header: {
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        paddingVertical: 10,
-        position: "relative",
-    },
-    backButton: {
-        position: "absolute",
-        left: 16,
-    },
-    headerText: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#FFC107",
-        textAlign: "center",
-    },
     body: {
-        flex: 1,                
+        flex: 1,
         justifyContent: "center",
-        alignItems: "center",     
-        width: "90%",           
-        alignSelf: "center"
+        alignItems: "center",
+        width: "90%",
+        alignSelf: "center",
+        marginBottom: 40
     },
     title: {
         fontSize: 30,
@@ -135,6 +122,58 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 16,
         marginBottom: 20,
+    },
+    button: {
+        width: '100%',
+        height: 50,
+        backgroundColor: 'black',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+});
+
+const darkStyles = StyleSheet.create({
+    scrollView: {
+        flex: 1,
+        backgroundColor: "#535353"
+    },
+    body: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "90%",
+        alignSelf: "center",
+        marginBottom: 40
+    },
+    title: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: "#FFFFFF",
+    },
+    label: {
+        alignSelf: 'flex-start',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        color: "#FFFFFF",
+    },
+    input: {
+        width: '100%',
+        height: 50,
+        borderWidth: 1,
+        borderColor: "#FFFFFF",
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        fontSize: 16,
+        marginBottom: 20,
+        color: "#FFFFFF",
     },
     button: {
         width: '100%',

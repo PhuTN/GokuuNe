@@ -1,4 +1,4 @@
-import React = require("react");
+import React from "react";
 import { TouchableOpacity, Text, View, StyleSheet } from "react-native";
 import LinearGradient from "react-native-linear-gradient";
 
@@ -27,7 +27,7 @@ const Button_Home: React.FC<ButtonProps> = ({ title, Icon, onPress, isIconOnly =
           )}
           {/* Icon nằm giữa nếu isIconOnly = true, nằm phải nếu có text */}
           <View style={[styles.iconContainer, isIconOnly && styles.iconCenter]}>
-            <Icon width={40} height={40} />
+            <Icon width={30} height={30} />
           </View>
         </View>
       </LinearGradient>
@@ -43,18 +43,18 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   iconButton: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
   },
   gradientButton: {
     width: "100%",
     padding: 15,
     alignItems: "center",
-    borderRadius: 10,
+    borderRadius: 10
   },
   iconGradient: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   iconContainer: {
-    width: 50,
+    width: 40,
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     right: "auto",
   },
   buttonText: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: "bold",
     color: "white",
   },

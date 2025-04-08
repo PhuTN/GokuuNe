@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, Button, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput } from 'react-native';
-// import DatePicker from 'react-native-date-picker';
-import { format } from 'date-fns';
+import { View, Text, Button, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Alert } from 'react-native';
+import DatePicker from 'react-native-date-picker';
+import { format, parse } from 'date-fns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import BackIcon from '../assets/icons/back_icon.svg';
 import CameraIcon from '../assets/icons/camera_icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
-import { launchImageLibrary } from 'react-native-image-picker';
+import Header from '../components/common/Header';
+import { launchImageLibrary, ImageLibraryOptions, Asset } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Picker } from '@react-native-picker/picker';
+import countries from 'world-countries';
+import { useLanguage } from "../asycnc_store/LanguageContext";
+import { useTheme } from "../asycnc_store/ThemeContext";
+import { translations } from "../untils/i18n";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
@@ -17,34 +23,56 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [avatar, setAvatar] = useState(accountLogin?.avatar ?? null);
   const [email, setEmail] = useState(accountLogin?.email ?? '');
   const [password, setPassword] = useState(accountLogin?.password ?? '');
-  const [birth, setBirth] = useState(accountLogin?.birth ? new Date(accountLogin.birth) : new Date());
-  const [country, setCountry] = useState(accountLogin?.country ?? 'US');
+  const [birth, setBirth] = useState(() => {
+    const birthStr = accountLogin?.birth;
+    if (!birthStr) return new Date(); // Không có ngày sinh => default
 
-  // const [openDatePicker, setOpenDatePicker] = useState(false);
-  // const [openCountryPicker, setOpenCountryPicker] = useState(false);
+    // Parse chuỗi dd/MM/yyyy thành đối tượng Date
+    const parsed = parse(birthStr, 'dd/MM/yyyy', new Date());
+
+    // Nếu parse lỗi, trả về ngày hiện tại
+    return isNaN(parsed.getTime()) ? new Date() : parsed;
+  });
+  const [country, setCountry] = useState(accountLogin?.country ?? 'Vietnam');
+
+  const [openDatePicker, setOpenDatePicker] = useState(false);
+  const countryList = countries.map((c) => ({
+    label: c.name.common,
+    value: c.name.common,
+  }));
+
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+  const styles = isDark ? darkStyles : lightStyles;
 
   const handleSave = () => {
-    console.log({ name, email, password, birth: format(birth, 'dd/MM/yyyy'), country });
-
-    setAccountLogin((prevAccount) => ({
-      ...prevAccount,
+    const updatedAccount = {
+      ...accountLogin,
       name,
       email,
-      password
-    }));
+      password,
+      birth: format(birth, 'dd/MM/yyyy'),
+      country,
+      avatar,
+    };
+    setAccountLogin(updatedAccount);
+    Alert.alert('Profile updated successfully!');
   };
 
   const handleAvatar = async () => {
-    const options = {
+    const options: ImageLibraryOptions = {
       mediaType: 'photo',
       quality: 1,
     };
 
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        Alert.alert('User cancelled image picker');
       } else if (response.errorMessage) {
-        console.log('Image picker error: ', response.errorMessage);
+        Alert.alert('Image picker error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
         setAvatar({ uri: response.assets[0].uri });
       }
@@ -54,16 +82,11 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-          <BackIcon width={45} height={45} />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>PROFILE</Text>
-      </View>
+      <Header title={t.profile} />
 
       {/* Profile Avatar */}
       <View style={styles.avatarContainer}>
-        <Image source={avatar||require('../assets/images/user.png')} style={styles.avatar} />
+        <Image source={avatar || require('../images/user.png')} style={styles.avatar} />
         <TouchableOpacity style={styles.cameraIcon} onPress={handleAvatar}>
           <CameraIcon width={40} height={40} />
         </TouchableOpacity>
@@ -71,19 +94,19 @@ const ProfileScreen = ({ route, navigation }: Props) => {
 
       {/* Form */}
       <View style={styles.form}>
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>{t.profile_name}</Text>
         <TextInput style={styles.input} value={name} onChangeText={setName} />
 
-        <Text style={styles.label}>Email</Text>
+        <Text style={styles.label}>{t.profile_email}</Text>
         <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
 
-        <Text style={styles.label}>Password</Text>
+        <Text style={styles.label}>{t.profile_password}</Text>
         <TextInput style={styles.input} value={password} onChangeText={setPassword} secureTextEntry />
 
         {/* Date Picker */}
-        {/* <Text style={styles.label}>Date of Birth</Text>
+        <Text style={styles.label}>{t.profile_birth}</Text>
         <TouchableOpacity style={styles.input} onPress={() => setOpenDatePicker(true)}>
-          <Text>{format(birth, 'dd/MM/yyyy')}</Text>
+          <Text style={styles.birthPicker}>{format(birth, 'dd/MM/yyyy')}</Text>
         </TouchableOpacity>
         <DatePicker
           modal
@@ -95,32 +118,36 @@ const ProfileScreen = ({ route, navigation }: Props) => {
             setOpenDatePicker(false);
           }}
           onCancel={() => setOpenDatePicker(false)}
-        /> */}
+        />
 
         {/* Country Picker */}
-        {/* <Text style={styles.label}>Country/Region</Text>
-        <RNPickerSelect
-          onValueChange={(value) => setCountry(value)}
-          items={[
-            { label: "United States", value: "US" },
-            { label: "Vietnam", value: "VN" },
-            { label: "United Kingdom", value: "UK" },
-            { label: "Canada", value: "CA" },
-            { label: "France", value: "FR" },
-            { label: "Germany", value: "DE" },
-            { label: "Japan", value: "JP" },
-            { label: "China", value: "CN" },
-            { label: "India", value: "IN" },
-            { label: "Brazil", value: "BR" },
-            { label: "Nigeria", value: "NG" },
-            { label: "Australia", value: "AU" },
-            { label: "South Korea", value: "KR" },
-            { label: "Mexico", value: "MX" },
-            { label: "Russia", value: "RU" },
-          ]}
-          value={country}
-          style={pickerSelectStyles}
-        /> */}
+        <Text style={styles.label}>{t.profile_country}</Text>
+        <View style={styles.input}>
+          {!isDark ? (
+            <Picker
+              selectedValue={country}
+              onValueChange={(value) => setCountry(value)}
+              style={styles.countryPicker}
+              dropdownIconColor= "#000"
+            >
+              {countryList.map((c) => (
+                <Picker.Item key={c.value} label={c.label} value={c.value} />
+              ))}
+            </Picker>
+          ) : (
+            <Picker
+              selectedValue={country}
+              onValueChange={(value) => setCountry(value)}
+              style={styles.countryPicker}
+              dropdownIconColor= "#FFFFFF"
+            >
+              {countryList.map((c) => (
+                <Picker.Item key={c.value} label={c.label} value={c.value} />
+              ))}
+            </Picker>
+          )}
+        </View>
+
 
         {/* Save Button */}
         <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
@@ -130,7 +157,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
             end={{ x: 1, y: 1 }}
             style={styles.saveButton}
           >
-            <Text style={styles.saveButtonText}>Save changes</Text>
+            <Text style={styles.saveButtonText}>{t.profile_button}</Text>
           </LinearGradient>
         </TouchableOpacity>
       </View>
@@ -138,27 +165,9 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const lightStyles = StyleSheet.create({
   scrollView: {
     flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "100%",
-    paddingVertical: 10,
-    position: "relative",
-  },
-  backButton: {
-    position: "absolute",
-    left: 16,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#FFC107",
-    textAlign: "center",
   },
   avatarContainer: {
     alignItems: "center",
@@ -168,8 +177,8 @@ const styles = StyleSheet.create({
     width: 180,
     height: 180,
     borderRadius: 180,
-    borderWidth: 3,
-    borderColor: "#fff",
+    borderColor: "#6B50F6",
+    borderWidth: 3
   },
   cameraIcon: {
     position: "absolute",
@@ -184,22 +193,30 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   label: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
   },
   input: {
-    height: 50,
+    height: 60,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
     paddingHorizontal: 10,
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 15,
     justifyContent: "center",
   },
+  birthPicker: {
+    fontSize: 18
+  },
+  countryPicker: {
+    flex: 1,
+    fontSize: 18,
+    color: "#000",
+  },
   saveButton: {
-    marginVertical: 20,
+    marginBottom: 20,
     padding: 15,
     borderRadius: 10,
     alignItems: "center",
@@ -211,27 +228,71 @@ const styles = StyleSheet.create({
   },
 });
 
-const pickerSelectStyles = {
-  inputIOS: {
-    height: 50,
+const darkStyles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#535353"
+  },
+  avatarContainer: {
+    alignItems: "center",
+    marginTop: 50,
+  },
+  avatar: {
+    width: 180,
+    height: 180,
+    borderRadius: 180,
+    borderColor: "#6B50F6",
+    borderWidth: 2
+  },
+  cameraIcon: {
+    position: "absolute",
+    bottom: -10,
+    right: 5,
+    borderRadius: 20,
+    padding: 5,
+  },
+  form: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+    width: "100%",
+  },
+  label: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#FFFFFF"
+  },
+  input: {
+    height: 60,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 10,
     paddingHorizontal: 10,
-    fontSize: 16,
+    fontSize: 18,
     marginBottom: 15,
-    backgroundColor: "#fff",
+    justifyContent: "center",
+    color: "#FFFFFF"
   },
-  inputAndroid: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ccc",
+  birthPicker: {
+    fontSize: 18,
+    color: "#FFFFFF"
+  },
+  countryPicker: {
+    flex: 1,
+    fontSize: 18,
+    color: "#FFFFFF"
+  },
+  saveButton: {
+    marginBottom: 20,
+    padding: 15,
     borderRadius: 10,
-    paddingHorizontal: 10,
-    fontSize: 16,
-    marginBottom: 15,
-    backgroundColor: "#fff",
+    alignItems: "center",
   },
-};
+  saveButtonText: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});
 
 export default ProfileScreen;
