@@ -9,6 +9,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 //import RankingScreen from '../screens/RankingScreen';
 //import RankingMatchScreen from '../screens/RankingMatchScreen';
 import SettingScreen from '../screens/SettingScreen';
+import ThemeLanguageTester from '../components/test_ui/ThemeLanguageTester';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -26,8 +27,13 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
+<<<<<<< HEAD
       <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Login" component={LoginScreen} />
+=======
+      <Stack.Navigator initialRouteName="TestThemeAndLanguage" screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="TestThemeAndLanguage" component={ThemeLanguageTester} />
+>>>>>>> main
         <Stack.Screen name="Home" component={HomeScreen} />
         {/* <Stack.Screen name="Chat" component={ChatScreen} /> */}
         {/* <Stack.Screen name="ChatDetail" component={ChatDetailScreen} /> */}
