@@ -7,10 +7,14 @@ import ActiveUserItem from '../components/common/ChatScreen/ActiveUserItem';
 import ChatCardItem from '../components/common/ChatScreen/ChatCardItem';
 import {activeUsers, recentChats} from '../fake_data/Phuc/fake_data';
 import {useTheme} from '../asycnc_store/ThemeContext';
+import {useLanguage} from '../asycnc_store/LanguageContext';
+import {translations} from '../untils/i18n';
 
 export default function ChatScreen() {
   const {theme} = useTheme();
   const isDark = theme === 'light';
+  const {language} = useLanguage();
+  const t = translations[language];
 
   const renderContent = () => (
     <>
@@ -20,7 +24,7 @@ export default function ChatScreen() {
       {/* Currently Active section */}
       <View style={styles.sectionWrapper}>
         <View style={styles.labelContainer}>
-          <Text style={styles.label}>Currently Active</Text>
+          <Text style={styles.label}>{t.currently_active}</Text>
           <View style={styles.dot} />
         </View>
         <FlatList
@@ -35,7 +39,7 @@ export default function ChatScreen() {
 
       {/* Recents section */}
       <View style={styles.scrollArea}>
-        <SectionLabel label="Recents" iconType="clock" />
+        <SectionLabel label={t.recents} iconType="clock" />
         <FlatList
           data={recentChats}
           keyExtractor={item => item.id}

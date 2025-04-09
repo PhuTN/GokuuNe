@@ -1,19 +1,40 @@
 import React from 'react';
 import {View, TextInput, StyleSheet, Image, Dimensions} from 'react-native';
+import {useTheme} from '../../../asycnc_store/ThemeContext';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
 
 const {width} = Dimensions.get('window');
 
 export default function SearchBar() {
+  const {theme} = useTheme();
+  const isDark = theme === 'light';
+
+  const {language} = useLanguage();
+  const t = translations[language];
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        isDark && {
+          backgroundColor: '#1E1E1E',
+          borderColor: '#444',
+        },
+      ]}>
       <TextInput
-        placeholder="Search..."
-        placeholderTextColor="#FFD700"
-        style={styles.input}
+        placeholder={t.search || 'Search...'}
+        placeholderTextColor={isDark ? '#999' : '#FFD700'}
+        style={[
+          styles.input,
+          isDark && {
+            backgroundColor: 'transparent',
+            color: '#fff',
+          },
+        ]}
       />
       <Image
         source={require('../../../assets/images/ChatScreen/SearchIcon.png')}
-        style={styles.icon}
+        style={[styles.icon, isDark && {tintColor: '#999'}]}
         resizeMode="contain"
       />
     </View>

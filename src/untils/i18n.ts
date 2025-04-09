@@ -7,6 +7,9 @@ export const translations = {
     active_status: 'Active',
     today_label: 'Today',
     type_message: 'Type your message',
+    search: 'Search...',
+    currently_active: 'Currently Active',
+    recents: 'Recents',
   },
   vi: {
     greeting: 'Xin chào',
@@ -16,5 +19,8 @@ export const translations = {
     active_status: 'Đang hoạt động',
     today_label: 'Hôm nay',
     type_message: 'Nhập tin nhắn của bạn',
+    search: 'Tìm kiếm...',
+    currently_active: 'Đang hoạt động',
+    recents: 'Gần đây',
   },
 };

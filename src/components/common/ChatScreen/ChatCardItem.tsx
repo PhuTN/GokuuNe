@@ -1,9 +1,13 @@
 import React from 'react';
 import {View, Text, Image, StyleSheet} from 'react-native';
+import {useTheme} from '../../../asycnc_store/ThemeContext';
 
 export default function ChatCardItem({chat}) {
+  const {theme} = useTheme();
+  const isDark = theme === 'light';
+
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isDark && {backgroundColor: '#1E1E1E'}]}>
       <Image source={chat.avatar} style={styles.avatar} />
       <View style={{flex: 1}}>
         <Text style={styles.name}>{chat.user}</Text>
@@ -20,7 +24,6 @@ export default function ChatCardItem({chat}) {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
