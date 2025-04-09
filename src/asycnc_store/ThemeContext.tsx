@@ -1,5 +1,11 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
-import { Appearance } from 'react-native';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from 'react';
+import {Appearance} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ThemeType = 'light' | 'dark';
@@ -11,7 +17,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
+export const ThemeProvider = ({children}: {children: ReactNode}) => {
   const [theme, setTheme] = useState<ThemeType>('light');
 
   useEffect(() => {
@@ -33,7 +39,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{theme, toggleTheme}}>
       {children}
     </ThemeContext.Provider>
   );

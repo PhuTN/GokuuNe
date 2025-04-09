@@ -1,20 +1,17 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
-import { translations } from '../../untils/i18n';
-import { useLanguage } from '../../asycnc_store/LanguageContext';
-import { useTheme } from '../../asycnc_store/ThemeContext';
+import {View, Text, Switch, StyleSheet} from 'react-native';
+import {translations} from '../../untils/i18n';
+import {useLanguage} from '../../asycnc_store/LanguageContext';
+import {useTheme} from '../../asycnc_store/ThemeContext';
 
 export default function ThemeLanguageTester() {
- 
-  const { language, toggleLanguage } = useLanguage();
+  const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
 
-
-  const { theme, toggleTheme } = useTheme();
+  const {theme, toggleTheme} = useTheme();
   const isDark = theme === 'dark';
   // Lựa chọn style theo theme hiện tại
   const styles = isDark ? darkStyles : whiteStyles;
-
   return (
     <View style={styles.container}>
       <Text style={styles.text}>{t.greeting}</Text>

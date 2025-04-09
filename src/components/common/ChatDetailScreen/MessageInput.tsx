@@ -6,9 +6,16 @@ import {
   Image,
   StyleSheet,
 } from 'react-native';
+import {useTheme} from '../../../asycnc_store/ThemeContext';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
 
 export default function MessageInput({onSend}) {
   const [message, setMessage] = useState(''); // State to store the message
+  const {theme} = useTheme();
+  const isDark = theme === 'light';
+  const {language} = useLanguage();
+  const t = translations[language];
 
   // Handle sending the message
   const handleSend = () => {
@@ -19,8 +26,11 @@ export default function MessageInput({onSend}) {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Attach Icon */}
+    <View
+      style={[
+        styles.container,
+        isDark && {backgroundColor: '#1E1E1E', borderTopColor: '#333'},
+      ]}>
       <TouchableOpacity style={styles.iconButton}>
         <Image
           source={require('../../../assets/images/ChatDetailScreen/attach.png')}
@@ -28,14 +38,23 @@ export default function MessageInput({onSend}) {
         />
       </TouchableOpacity>
 
-      {/* Text Input with React Icon inside */}
-      <View style={styles.inputContainer}>
+      <View
+        style={[
+          styles.inputContainer,
+          isDark && {
+            backgroundColor: '#2A2A2A',
+            borderColor: '#444',
+          },
+        ]}>
         <TextInput
-          style={styles.textInput}
-          placeholder="Type your message"
-          placeholderTextColor="#9B8F8F"
-          value={message} // Bind the input to the state
-          onChangeText={setMessage} // Update the message state as user types
+          style={[
+            styles.textInput,
+            isDark && {color: '#fff', placeholderTextColor: '#999'},
+          ]}
+          placeholder={t.type_message}
+          placeholderTextColor={isDark ? '#999' : '#9B8F8F'}
+          value={message}
+          onChangeText={setMessage}
         />
         <TouchableOpacity style={styles.reactIconButton}>
           <Image
@@ -45,7 +64,6 @@ export default function MessageInput({onSend}) {
         </TouchableOpacity>
       </View>
 
-      {/* Send Icon */}
       <TouchableOpacity style={styles.iconButton} onPress={handleSend}>
         <Image
           source={require('../../../assets/images/ChatDetailScreen/sendIcon.png')}

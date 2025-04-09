@@ -26,10 +26,16 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="TestThemeAndLanguage" screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="TestThemeAndLanguage" component={ThemeLanguageTester} />
+      <Stack.Navigator
+        initialRouteName="Chat"
+        screenOptions={{headerShown: false}}>
+        <Stack.Screen
+          name="TestThemeAndLanguage"
+          component={ThemeLanguageTester}
+        />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
         <Stack.Screen name="Ranking" component={RankingScreen} />
         <Stack.Screen name="RankingMatch" component={RankingMatchScreen} />

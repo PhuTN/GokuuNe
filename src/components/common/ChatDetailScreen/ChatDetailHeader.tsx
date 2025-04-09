@@ -1,7 +1,12 @@
 import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
 
 export default function ChatDetailHeader() {
+  const {language} = useLanguage();
+  const t = translations[language];
+
   return (
     <View style={styles.wrapper}>
       {/* Back button */}
@@ -23,7 +28,7 @@ export default function ChatDetailHeader() {
           <View style={styles.statusContainer}>
             {/* Chấm vàng */}
             <View style={styles.statusDot} />
-            <Text style={styles.status}>Active</Text>
+            <Text style={styles.status}>{t.active_status}</Text>
           </View>
         </View>
       </View>

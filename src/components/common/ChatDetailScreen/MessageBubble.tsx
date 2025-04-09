@@ -1,23 +1,29 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import {useTheme} from '../../../asycnc_store/ThemeContext';
 
 const MessageBubble = ({message, sender, avatar}) => {
+  const {theme} = useTheme();
+  const isDark = theme === 'light';
   return (
     <View
       style={[
         styles.bubble,
-        sender === 'me' ? styles.meBubble : styles.otherBubble,
+        sender === 'me'
+          ? styles.meBubble
+          : [styles.otherBubble, isDark && styles.darkOtherBubble],
       ]}>
       {sender === 'other' && avatar && (
         <View style={styles.avatarContainer}>
-          <Image source={avatar} style={styles.avatar} />{' '}
-          {/* Hiển thị avatar người gửi */}
+          <Image source={avatar} style={styles.avatar} />
         </View>
       )}
       <Text
         style={[
           styles.message,
-          sender === 'me' ? styles.meMessage : styles.otherMessage,
+          sender === 'me'
+            ? styles.meMessage
+            : [styles.otherMessage, isDark && styles.darkOtherMessage],
         ]}>
         {message}
       </Text>
@@ -67,6 +73,14 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15, // Giữ avatar hình tròn
+  },
+  darkOtherBubble: {
+    backgroundColor: '#000',
+    borderColor: 'transparent', // bỏ viền
+  },
+
+  darkOtherMessage: {
+    color: '#fff',
   },
 });
 

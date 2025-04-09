@@ -1,4 +1,10 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useContext,
+  ReactNode,
+} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type LanguageType = 'vi' | 'en';
@@ -8,9 +14,11 @@ interface LanguageContextType {
   toggleLanguage: () => Promise<void>;
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined,
+);
 
-export const LanguageProvider = ({ children }: { children: ReactNode }) => {
+export const LanguageProvider = ({children}: {children: ReactNode}) => {
   const [language, setLanguage] = useState<LanguageType>('vi');
 
   useEffect(() => {
@@ -30,7 +38,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, toggleLanguage }}>
+    <LanguageContext.Provider value={{language, toggleLanguage}}>
       {children}
     </LanguageContext.Provider>
   );
