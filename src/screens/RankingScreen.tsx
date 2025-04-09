@@ -31,7 +31,7 @@ const RankingScreen = ({ navigation }: Props) => {
   const style = isDark?whiteStyle:darkStyle;
   return (
     <View style={style.container}>
-    <ScreenHeader screenName={"Ranking"}></ScreenHeader>
+    <ScreenHeader screenName={"Ranking"} navigation={navigation}></ScreenHeader>
     <ScrollView>
       
       <UserView user={User}></UserView> 

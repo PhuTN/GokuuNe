@@ -67,7 +67,7 @@ const RankingMatchScreen = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-      <ScreenHeader screenName={"Gokuu"}></ScreenHeader>
+      <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       
     <Player user = {Matches.playerBlack} isWhite={false} time={timeBlack}></Player>
     <ChessBoard handleEvent={handleEvent} ></ChessBoard>

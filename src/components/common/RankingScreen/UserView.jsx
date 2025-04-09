@@ -30,8 +30,8 @@ const styles = StyleSheet.create( {
     container:{
         width:315,
         height:232,
-        alignSelf:'center'
-        
+        alignSelf:'center',
+        marginTop:30
         
     },
     lineargradient:{
