@@ -1,21 +1,24 @@
 import React from 'react';
-import {View, FlatList, StyleSheet, Text} from 'react-native';
+import {View, FlatList, StyleSheet, Text, ImageBackground} from 'react-native';
 import ChatHeader from '../components/common/ChatScreen/ChatHeader';
 import SearchBar from '../components/common/ChatScreen/SearchBar';
 import SectionLabel from '../components/common/ChatScreen/SectionLabel';
 import ActiveUserItem from '../components/common/ChatScreen/ActiveUserItem';
 import ChatCardItem from '../components/common/ChatScreen/ChatCardItem';
 import {activeUsers, recentChats} from '../fake_data/Phuc/fake_data';
+import {useTheme} from '../asycnc_store/ThemeContext';
 
 export default function ChatScreen() {
-  return (
-    <View style={styles.container}>
+  const {theme} = useTheme();
+  const isDark = theme === 'light';
+
+  const renderContent = () => (
+    <>
       <ChatHeader />
       <SearchBar />
 
       {/* Currently Active section */}
       <View style={styles.sectionWrapper}>
-        {/* Label with dot */}
         <View style={styles.labelContainer}>
           <Text style={styles.label}>Currently Active</Text>
           <View style={styles.dot} />
@@ -41,14 +44,24 @@ export default function ChatScreen() {
           showsVerticalScrollIndicator={false}
         />
       </View>
-    </View>
+    </>
+  );
+
+  return isDark ? (
+    <ImageBackground
+      source={require('../assets/images/BackGround.png')}
+      style={styles.container}
+      resizeMode="cover">
+      {renderContent()}
+    </ImageBackground>
+  ) : (
+    <View style={styles.container}>{renderContent()}</View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
   },
   sectionWrapper: {
     paddingHorizontal: 20,
