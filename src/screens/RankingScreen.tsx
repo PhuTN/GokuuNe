@@ -11,7 +11,7 @@ import LeaderBoardInfo from '../components/common/RankingScreen/LeaderBoardInfo'
 import LeaderBoard from '../components/common/RankingScreen/LeaderBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
 import { User,Top10 } from '../fake_data/Binh/fake_data';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from '../asycnc_store/ThemeContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 const listLeaderBoard = [
@@ -28,7 +28,7 @@ const playerPosition=5;
 const RankingScreen = ({ navigation }: Props) => {
   const {theme,toggleTheme} = useTheme();
   const isDark=theme==='dark';
-  const style = isDark?whiteStyle:darkStyle;
+  const style = isDark?darkStyle:whiteStyle;
   return (
     <View style={style.container}>
     <ScreenHeader screenName={"Ranking"} navigation={navigation}></ScreenHeader>

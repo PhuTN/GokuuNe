@@ -1,7 +1,7 @@
 import { StyleSheet, Text,View,Image } from "react-native"; 
 
 import Top1Avatar from "./Top1Avatar";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../asycnc_store/ThemeContext";
 function generateStringFromName(name) {
     if(name.length<=13) {
         return name;
@@ -13,7 +13,7 @@ function generateStringFromName(name) {
 export default function TopInfo({topInfo}) {
     const {theme, toggleTheme} = useTheme();
     const isDark=theme==='dark';
-    const style = isDark?whiteStyle:darkStyle;
+    const style = isDark?darkStyle:whiteStyle;
     const elo=require('../../../assets/images/Elo.png');
     return (
         <View style={style.container}>

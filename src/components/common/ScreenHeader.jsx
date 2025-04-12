@@ -47,7 +47,7 @@ const styles =StyleSheet.create({
         position: "absolute",
         left: 16,
        
-        zIndex:2
+        zIndex:3
       },
       title: {
         fontSize: 35,

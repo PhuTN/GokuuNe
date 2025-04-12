@@ -1,9 +1,9 @@
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../asycnc_store/ThemeContext";
 import { Text,View,Image, StyleSheet } from "react-native"; 
 export default function LeaderBoardInfo({info, index,isPlayer}) { 
    const {theme, toggleTheme} = useTheme();
    const isDark = theme==='dark';
-   const style = isDark?whiteStyle:darkStyle;
+   const style = isDark?darkStyle:whiteStyle;
    let viewStyle=style;
    if(isPlayer) {
     viewStyle=StyleSheet.create({

@@ -7,16 +7,18 @@ import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
 import { Matches } from '../fake_data/Binh/fake_data';
 import LinearGradient from 'react-native-linear-gradient';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from '../asycnc_store/ThemeContext';
+import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
 
 
+const default_avatar = require("../assets/images/default_avatar.jpg");
 
 function decreaseTime(timeString) {
    const minuteAndSecond = timeString.split(':');
    let minute = parseInt(minuteAndSecond[0]);
    let second = parseInt(minuteAndSecond[1]);
    second--;
-   if(minute==0&&second==0) {
+   if(minute<=0&&second<=0) {
       return "0:00";
    }
    if(second<0) {
@@ -30,32 +32,59 @@ function decreaseTime(timeString) {
    res+=second;
    return res;
 }
+function RenderSearchPopup(userName) {
+  if(userName=='Searching') {
+    return <SearchMatchPopup></SearchMatchPopup>
+  } 
+  return <></>
+}
 const RankingMatchScreen = ({ navigation }) => {
   const {theme,toggleTheme} = useTheme();
   const isDark=theme==='dark';
-  const styles = isDark?whiteStyles:darkStyles;
+  const styles = isDark?darkStyles:whiteStyles;
   
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
   const [timeBlack, setTimeBlack] = useState("10:00");
   const [timeWhite, setTimeWhite] = useState("10:00");
   const [currentIntervalId,setCurrentIntervalId]= useState();
+  const [playerBlack, setPlayerBlack] = useState({
+    userId:"user0010",
+    userName:"Searching",
+        country:"?????",
+        matches:1000,
+        elo:"????",
+        userCountryImageURL:"https://www.pngmart.com/files/13/American-Flag-Logo-PNG-Picture.png",
+        userAvatarURL:default_avatar,
+        rank:10
+  });
   const [flag,setFlag] = useState(true);
   useEffect(()=>{
-    setCurrentIntervalId(setInterval(()=>{
-      setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
-    },1000));
+    const setUp= new Promise(function(resolve,reject) {
+      setTimeout(()=>{
+        setPlayerBlack(Matches.playerBlack);
+        resolve();
+      },10000);
+      
+    });
+    setUp.then(()=>{
+      setCurrentIntervalId(setInterval(()=>{
+        setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
+      },1000));
+    })
+    
+    
   },[])
   const handleEvent = ()=>{
       clearInterval(currentIntervalId);
       if(flag) {
-         setTimeWhite("10:00");
+         
           setCurrentIntervalId(setInterval(()=>{
             setTimeBlack(prevTimeBlack=>decreaseTime(prevTimeBlack));
           },1000));
       }
       else {
-        setTimeBlack("10:00");
+        
         setCurrentIntervalId( setInterval(()=>{
           setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
         },1000));
@@ -67,9 +96,12 @@ const RankingMatchScreen = ({ navigation }) => {
   }
   return (
     <View style={styles.container}>
-      <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       
-    <Player user = {Matches.playerBlack} isWhite={false} time={timeBlack}></Player>
+      <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
+      {RenderSearchPopup(playerBlack.userName)}
+      <View style={styles.mainView}>
+      
+    <Player user = {playerBlack} isWhite={false} time={timeBlack}></Player>
     <ChessBoard handleEvent={handleEvent} ></ChessBoard>
     <Player user={Matches.playerWhite} isWhite={true} time={timeWhite} ></Player>
     <View style={styles.buttonContainer}>
@@ -89,6 +121,7 @@ const RankingMatchScreen = ({ navigation }) => {
         <Image source={noteIcon}></Image>
         </LinearGradient>
       </TouchableOpacity>
+    </View>
     </View>
     </View>
     
@@ -115,6 +148,9 @@ const whiteStyles = StyleSheet.create({
     height:53,
     
     
+   },
+   mainView: {
+    marginTop:20
    }
 });
 const darkStyles = StyleSheet.create({
@@ -140,6 +176,9 @@ const darkStyles = StyleSheet.create({
     height:53,
     
     
+   },
+   mainView: {
+    marginTop:20
    }
 });
 export default RankingMatchScreen;

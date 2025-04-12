@@ -117,8 +117,8 @@ export const Matches = {
         country:"VietNam",
         matches:25,
         elo:2200,
-        userCountryImageURL:"https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg",
-        userAvatarURL:"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png",
+        userCountryImageURL:{uri:"https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg"},
+        userAvatarURL:{uri:"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png"},
         rank:4
     },
     playerBlack: {
@@ -127,8 +127,10 @@ export const Matches = {
         country:"America",
         matches:1000,
         elo:4500,
-        userCountryImageURL:"https://www.pngmart.com/files/13/American-Flag-Logo-PNG-Picture.png",
-        userAvatarURL:"https://static.vecteezy.com/system/resources/previews/027/951/137/non_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png",
+        userCountryImageURL:{
+            uri:"https://www.pngmart.com/files/13/American-Flag-Logo-PNG-Picture.png",
+        },
+        userAvatarURL:{uri:"https://static.vecteezy.com/system/resources/previews/027/951/137/non_2x/stylish-spectacles-guy-3d-avatar-character-illustrations-png.png"},
         rank:10
     }
 }

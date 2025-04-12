@@ -1,13 +1,13 @@
 import { Text,View,Image, StyleSheet } from "react-native"; 
 import { useLanguage } from "../../../asycnc_store/LanguageContext";
 import { translations } from "../../../untils/i18n";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../asycnc_store/ThemeContext";
 export default function Matches({user}) {
     const matches=require('../../../assets/images/Matches.png');
     const {language, toggleLanguage} = useLanguage();
     const  t = translations[language];
     const {theme,toggleTheme} = useTheme();
-    const styles= (theme==='dark')?whiteStyles:darkStyles;
+    const styles= (theme==='dark')?darkStyles:whiteStyles;
     return (<View style={styles.container}>
         <Image source ={matches}></Image> 
         <View>

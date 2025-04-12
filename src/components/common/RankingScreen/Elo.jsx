@@ -1,10 +1,10 @@
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from '../../../asycnc_store/ThemeContext';
 import { Text,View,Image, StyleSheet } from "react-native"; 
 export default function Elo({user}) {
     const matches=require('../../../assets/images/Elo.png');
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
-    const styles = isDark?whiteStyles:darkStyles;
+    const styles = isDark?darkStyles:whiteStyles;
     return (<View style={styles.container}>
         <Image source ={matches}></Image> 
         <View>

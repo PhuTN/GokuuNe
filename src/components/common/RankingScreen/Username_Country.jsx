@@ -1,10 +1,10 @@
 import { StyleSheet, Text,View } from "react-native";
 import Country from "./Country";
-import { useTheme } from "@react-navigation/native";
+import { useTheme } from "../../../asycnc_store/ThemeContext";
 export default function UserNameCountry({user}) {
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
-    const styles=isDark?whiteStyles:darkStyles;
+    const styles=isDark?darkStyles:whiteStyles;
     return (
         <View style={styles.container}>
             <Text style={styles.text}>{user.userName}</Text> 

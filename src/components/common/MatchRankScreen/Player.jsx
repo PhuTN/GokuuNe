@@ -1,6 +1,6 @@
 import {Text,View,Image, StyleSheet} from 'react-native';
 import { isWhite } from './ChessBoard';
-import { useTheme } from '@react-navigation/native';
+import { useTheme } from '../../../asycnc_store/ThemeContext';
 export default  function Player({user,isWhite,time}) { 
     const avatar = require('../../../assets/images/Top1.png');
     const piectBlack=require('../../../assets/images/pieceBlack.png');
@@ -8,12 +8,12 @@ export default  function Player({user,isWhite,time}) {
     const flag=require('../../../assets/images/Vietnam.png');
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
-    const styles = isDark?whiteStyles:darkStyles;
+    const styles = isDark?darkStyles:whiteStyles;
     return (
         
         <View style={styles.container}>
             <View style={styles.playerInfo}>
-            <Image style={styles.avatar} source={{uri:user.userAvatarURL}}></Image> 
+            <Image style={styles.avatar} source={user.userAvatarURL}></Image> 
             <View  >
                 <Text style={styles.textStyle}>{user.userName} ({user.elo})</Text> 
                 <View style={styles.pieceContainer}>
@@ -21,7 +21,7 @@ export default  function Player({user,isWhite,time}) {
                     <Text style={styles.textStyle}>+1</Text> 
                 </View>
             </View> 
-            <Image source={{uri:user.userCountryImageURL}} style={styles.flagImage} ></Image>
+            <Image source={user.userCountryImageURL} style={styles.flagImage} ></Image>
             </View>
             <View style={styles.timeContainer}>
                 <Text style={styles.timeText}>{

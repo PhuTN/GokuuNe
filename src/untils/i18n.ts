@@ -6,7 +6,8 @@ export const translations = {
 
       //Binh
       play_button_text:'PLAY',
-      match_text:'Matches'
+      match_text:'Matches',
+      search_match_text:'Searching.....'
     },
     vi: {
       greeting: "Xin chào",
@@ -15,7 +16,8 @@ export const translations = {
       //Binh
 
       play_button_text:'CHƠI',
-      match_text:'SỐ TRẬN'
+      match_text:'SỐ TRẬN',
+      search_match_text:'Đang tìm trận.....'
     }
   };
   
