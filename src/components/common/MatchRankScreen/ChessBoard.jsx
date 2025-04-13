@@ -65,6 +65,7 @@ export default function ChessBoard({handleEvent}) {
         for(let i=0;i<13;i++) {
             res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index} onPress={(e)=>{
                 e.preventDefault();
+                
                 const tempParray = [...pArr];
                 if(tempParray[index*13+i]!=null) {
                     return;
@@ -80,7 +81,7 @@ export default function ChessBoard({handleEvent}) {
                         loadBoardFromGameState();
                         isWhite=!isWhite;
                         
-                        handleEvent();
+                        handleEvent(gameState);
                     }
                 } 
                 else {
@@ -93,7 +94,7 @@ export default function ChessBoard({handleEvent}) {
                         loadBoardFromGameState();
                         isWhite=!isWhite;
                         
-                        handleEvent();
+                        handleEvent(gameState);
                     }
                 }
                 

@@ -8,6 +8,12 @@ class Position {
     canBreath(isVisited,res) {
         isVisited[this.row][this.column]=true;
         res.push(this);
+        
+        for(let i=0;i<this.arounds.length;i++) {
+            const child = this.arounds[i];
+            console.log(isVisited[child.row][child.column]);
+        }
+        
         for(let i=0;i<this.arounds.length;i++) {
             const child = this.arounds[i];
             if(child.state=='0') {
@@ -15,14 +21,11 @@ class Position {
                 return true;
             }
             else {
-                if(!isVisited[child.row][child.column]&&child.state===this.state) {
-
+                if(!isVisited[child.row][child.column]&&child.state==this.state) {
+                    
                     if(child.canBreath(isVisited,res)) {
-                        
                         return true;
                     }
-                    
-                    
                 }
             }
         }
@@ -33,10 +36,13 @@ class Position {
         if(this.state!='0') {
             return false;
         }
-        const isVisited =new Array(13).fill(new Array(13).fill(false));
+        const isVisited = new Array(13);
+        for(let i=0;i<13;i++) {
+            isVisited[i]= new Array(13).fill(false);
+        }
         const res=[];
         this.state=state;
-        
+        console.log(this.state);
         if(!this.canBreath(isVisited,res)) {
             this.state='0';
 

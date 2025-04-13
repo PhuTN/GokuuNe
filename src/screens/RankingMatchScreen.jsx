@@ -79,7 +79,7 @@ const RankingMatchScreen = ({ navigation }) => {
     
     
   },[])
-  const handleEvent = ()=>{
+  const handleEvent = (gameState)=>{
       clearInterval(currentIntervalId);
       if(flag) {
          
@@ -94,10 +94,13 @@ const RankingMatchScreen = ({ navigation }) => {
         },1000));
       }
       setFlag(prevF=>!prevF);
-      
+      setWhiteScore(gameState.whiteScore);
+      setBlackScore(gameState.blackScore);
       
       
   }
+
+  
   return (
     <View style={styles.container}>
       

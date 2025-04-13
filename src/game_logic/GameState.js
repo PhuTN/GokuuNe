@@ -63,7 +63,7 @@ class GameState {
         
         this.posArray[row][column].state = state;
         
-        //this.checkAfterMove();
+        this.checkAfterMove();
     }
     checkAfterMove() {
         
@@ -72,7 +72,10 @@ class GameState {
                 if(this.posArray[i][j].state=='0') {
                     continue;
                 }
-                const isVisited= new Array(13).fill(new Array(13).fill(false));
+                const isVisited= new Array(13);
+                for(let i=0;i<13;i++) {
+                    isVisited[i]= new Array(13).fill(false);
+                }
                 const group=new Array();
                 if(!this.posArray[i][j].canBreath(isVisited,group)) {
                     for(let k=0;k<group.length;k++) {
@@ -86,6 +89,7 @@ class GameState {
                         const c=group[k].column;
                         this.posArray[r][c].state='0';
                     }
+                    
                     
                 }
             }
