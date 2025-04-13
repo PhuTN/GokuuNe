@@ -10,6 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
 import GameState from '../game_logic/GameState';
+import ResultPopup from '../components/common/MatchRankScreen/ResultPopup';
 
 
 const default_avatar = require("../assets/images/default_avatar.jpg");
@@ -39,6 +40,14 @@ function RenderSearchPopup(userName) {
   } 
   return <></>
 }
+function RenderResultPopup( timeWhite,timeBlack,navigation) {
+   if(timeWhite=='0:00') {
+      return <ResultPopup result={"YOU_LOSE"} navigation={navigation}></ResultPopup>
+   }
+   if(timeBlack=='0:00') {
+      return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+   }
+}
 const RankingMatchScreen = ({ navigation }) => {
   const {theme,toggleTheme} = useTheme();
   const isDark=theme==='dark';
@@ -46,8 +55,8 @@ const RankingMatchScreen = ({ navigation }) => {
   
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("10:00");
-  const [timeWhite, setTimeWhite] = useState("10:00");
+  const [timeBlack, setTimeBlack] = useState("0:10");
+  const [timeWhite, setTimeWhite] = useState("0:10");
   const [currentIntervalId,setCurrentIntervalId]= useState();
  
   const [whiteScore,setWhiteScore] = useState(0);
@@ -62,8 +71,10 @@ const RankingMatchScreen = ({ navigation }) => {
         userAvatarURL:default_avatar,
         rank:10
   });
+  const [result,setResult] = useState(0);//1:win,-1:lose
   const [flag,setFlag] = useState(true);
   useEffect(()=>{
+    
     const setUp= new Promise(function(resolve,reject) {
       setTimeout(()=>{
         setPlayerBlack(Matches.playerBlack);
@@ -73,6 +84,7 @@ const RankingMatchScreen = ({ navigation }) => {
     });
     setUp.then(()=>{
       setCurrentIntervalId(setInterval(()=>{
+        
         setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
       },1000));
     })
@@ -106,6 +118,7 @@ const RankingMatchScreen = ({ navigation }) => {
       
       <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       {RenderSearchPopup(playerBlack.userName)}
+      {RenderResultPopup(timeWhite,timeBlack,navigation)}
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>

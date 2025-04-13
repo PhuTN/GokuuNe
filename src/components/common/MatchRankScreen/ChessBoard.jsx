@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native"; 
 import Dot from "./Dot";
 import GameState from "../../../game_logic/GameState";
@@ -17,6 +17,10 @@ export default function ChessBoard({handleEvent}) {
     const [whiteScore, setWhiteScore] = useState(0);
     const [blackScore, setBlackScore] = useState(0);
     const [gameState, setGameState] = useState(new GameState());
+    useEffect(()=>{
+        setGameState(new GameState());
+        setPArr(pieceArray);
+    },[])
     function renderCellInRow(index) {
         let res=[];
         for( let i=0;i<14;i++) {
