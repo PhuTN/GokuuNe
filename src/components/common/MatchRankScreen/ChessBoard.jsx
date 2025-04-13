@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native"; 
 import Dot from "./Dot";
+import GameState from "../../../game_logic/GameState";
 
 let isWhite=true;
 const blackPiece= require("../../../assets/images/pieceBlack.png");
@@ -13,6 +14,9 @@ let pieceArray=[];
 export default function ChessBoard({handleEvent}) { 
     
     const [pArr, setPArr] = useState(pieceArray);
+    const [whiteScore, setWhiteScore] = useState(0);
+    const [blackScore, setBlackScore] = useState(0);
+    const [gameState, setGameState] = useState(new GameState());
     function renderCellInRow(index) {
         let res=[];
         for( let i=0;i<14;i++) {
@@ -30,6 +34,7 @@ export default function ChessBoard({handleEvent}) {
     
     function renderTouchableCell(index) {
         let res=[];
+        
         for(let i=0;i<13;i++) {
             res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index} onPress={(e)=>{
                 e.preventDefault();
@@ -37,16 +42,28 @@ export default function ChessBoard({handleEvent}) {
                 if(tempParray[index*13+i]!=null) {
                     return;
                 }
+
                 if(isWhite) {
-                    tempParray[index*13+i]=whitePiece;
+                    if(gameState.posArray[index][i].canMove('W')) {
+                        tempParray[index*13+i]=whitePiece;
+                        gameState.move(index,i,'W');
+                        setPArr(tempParray);
+                        isWhite=!isWhite;
+                        
+                        handleEvent();
+                    }
                 } 
                 else {
-                    tempParray[index*13+i]=blackPiece;
+                    if(gameState.posArray[index][i].canMove('B')) {
+                        tempParray[index*13+i]=blackPiece;
+                        gameState.move(index,i,'B');
+                        setPArr(tempParray);
+                        isWhite=!isWhite;
+                        
+                        handleEvent();
+                    }
                 }
-                setPArr(tempParray);
-                isWhite=!isWhite;
                 
-                handleEvent();
 
                
                 
@@ -54,7 +71,7 @@ export default function ChessBoard({handleEvent}) {
                 
                     
             <Dot index={index*13+i}></Dot>
-               <Image style={style.pieceImageEnable} source = {pArr[index*13+i]}></Image>
+            <Image style={style.pieceImageEnable} source = {pArr[index*13+i]}></Image>
 
             </TouchableOpacity>)
         }

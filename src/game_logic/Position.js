@@ -29,7 +29,7 @@ class Position {
         }
         const isVisited =new Array(13).fill(new Array(13).fill(false));
         this.state=state;
-        if(!this.canMove(isVisited)) {
+        if(!this.canBreath(isVisited)) {
             this.state='0';
             return false;
         } 
