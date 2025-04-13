@@ -31,7 +31,34 @@ export default function ChessBoard({handleEvent}) {
         }
         return res;
     }
-    
+    function loadBoardFromGameState() {
+        const boardData = gameState.convertToBoardData();
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                if(boardData[i][j]=='B') {
+                    setPArr(pArr=>{
+                        pArr[i*13+j]=blackPiece;
+                        return pArr;
+                    });
+                    continue;
+                }
+                if(boardData[i][j]=='W') {
+                    setPArr(pArr=>{
+                        pArr[i*13+j]=whitePiece;
+                        return pArr;
+                    });
+                    continue;
+                }
+                if(boardData[i][j]=='0') {
+                    setPArr(pArr=>{
+                        pArr[i*13+j]=null;
+                        return pArr;
+                    })
+                }
+                
+            }
+        }
+    }
     function renderTouchableCell(index) {
         let res=[];
         
@@ -45,9 +72,12 @@ export default function ChessBoard({handleEvent}) {
 
                 if(isWhite) {
                     if(gameState.posArray[index][i].canMove('W')) {
-                        tempParray[index*13+i]=whitePiece;
-                        gameState.move(index,i,'W');
-                        setPArr(tempParray);
+                        setGameState((gameState)=>{
+                            gameState.move(index,i,'W');
+                            return gameState;
+                        });
+                        
+                        loadBoardFromGameState();
                         isWhite=!isWhite;
                         
                         handleEvent();
@@ -55,9 +85,12 @@ export default function ChessBoard({handleEvent}) {
                 } 
                 else {
                     if(gameState.posArray[index][i].canMove('B')) {
-                        tempParray[index*13+i]=blackPiece;
-                        gameState.move(index,i,'B');
-                        setPArr(tempParray);
+                       
+                        setGameState((gameState)=>{
+                            gameState.move(index,i,'B');
+                            return gameState;
+                        });
+                        loadBoardFromGameState();
                         isWhite=!isWhite;
                         
                         handleEvent();

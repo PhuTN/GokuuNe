@@ -1,7 +1,7 @@
 import {Text,View,Image, StyleSheet} from 'react-native';
 import { isWhite } from './ChessBoard';
 import { useTheme } from '../../../asycnc_store/ThemeContext';
-export default  function Player({user,isWhite,time}) { 
+export default  function Player({user,isWhite,time,score}) { 
     const avatar = require('../../../assets/images/Top1.png');
     const piectBlack=require('../../../assets/images/pieceBlack.png');
     const pieceWhite = require("../../../assets/images/pieceWhite.png");
@@ -18,7 +18,7 @@ export default  function Player({user,isWhite,time}) {
                 <Text style={styles.textStyle}>{user.userName} ({user.elo})</Text> 
                 <View style={styles.pieceContainer}>
                     <Image source={isWhite?pieceWhite:piectBlack}></Image>
-                    <Text style={styles.textStyle}>+1</Text> 
+                    <Text style={styles.textStyle}>+{score}</Text> 
                 </View>
             </View> 
             <Image source={user.userCountryImageURL} style={styles.flagImage} ></Image>

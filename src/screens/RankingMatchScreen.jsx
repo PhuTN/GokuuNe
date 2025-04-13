@@ -9,6 +9,7 @@ import { Matches } from '../fake_data/Binh/fake_data';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
+import GameState from '../game_logic/GameState';
 
 
 const default_avatar = require("../assets/images/default_avatar.jpg");
@@ -48,6 +49,9 @@ const RankingMatchScreen = ({ navigation }) => {
   const [timeBlack, setTimeBlack] = useState("10:00");
   const [timeWhite, setTimeWhite] = useState("10:00");
   const [currentIntervalId,setCurrentIntervalId]= useState();
+ 
+  const [whiteScore,setWhiteScore] = useState(0);
+  const [blackScore,setBlackScore]= useState(0);
   const [playerBlack, setPlayerBlack] = useState({
     userId:"user0010",
     userName:"Searching",
@@ -101,9 +105,9 @@ const RankingMatchScreen = ({ navigation }) => {
       {RenderSearchPopup(playerBlack.userName)}
       <View style={styles.mainView}>
       
-    <Player user = {playerBlack} isWhite={false} time={timeBlack}></Player>
+    <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
     <ChessBoard handleEvent={handleEvent} ></ChessBoard>
-    <Player user={Matches.playerWhite} isWhite={true} time={timeWhite} ></Player>
+    <Player user={Matches.playerWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>
       <LinearGradient colors={['#6B50F6', '#CC8FED']} // Colors for gradient
