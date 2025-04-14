@@ -1,22 +1,31 @@
 import { View,Text,Image,StyleSheet, TouchableOpacity } from "react-native";
 import { useTheme } from "../../../asycnc_store/ThemeContext";
+import { useLanguage } from "../../../asycnc_store/LanguageContext";
+import { translations } from "../../../untils/i18n";
 
 export default function ResultPopup({result,navigation}) {
+     const isWin = result=="YOU WIN";
+     const {language,toggleLanguage} = useLanguage();
+     const t=translations[language];
      const {theme, toggleTheme} = useTheme();
      const isDark=theme==='dark';
      const style = isDark?darkStyle:whiteStyle;
      return (
             <View style={style.container}>
                 <View style={style.searchView}>
-                <Text style={style.resultText}>{result}</Text>
+                  
+                <Text style={style.resultText}>{isWin?t.win_text:t.lose_text}</Text>
                     <TouchableOpacity style={style.button} onPress={(e)=>{
                         e.preventDefault();
                         navigation.replace("RankingMatch");
                     }}>
-                    <Text style={style.buttonText}>Another match</Text>
+                    <Text style={style.buttonText}>{t.another_match_text}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={style.button}>
-                    <Text style={style.buttonText}>Back</Text>
+                    <TouchableOpacity style={style.button} onPress={(e)=>{
+                      e.preventDefault();
+                      navigation.goBack();
+                    }}>
+                    <Text style={style.buttonText}>{t.back_text}</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -51,7 +60,7 @@ const darkStyle = StyleSheet.create({
         flexDirection:'column'
     },
     resultText: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: "bold",
         color: "#333",
         marginBottom: 10,
@@ -99,7 +108,7 @@ const whiteStyle = StyleSheet.create({
         flexDirection:'column'
     }, 
     resultText: {
-        fontSize: 18,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#333",
         marginBottom: 10,
@@ -110,7 +119,7 @@ const whiteStyle = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 5,
-        marginTop: 10,
+        marginTop: 0,
         alignItems: "center",
       },
       buttonText: {

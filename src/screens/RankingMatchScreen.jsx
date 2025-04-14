@@ -64,8 +64,8 @@ const RankingMatchScreen = ({ navigation }) => {
   const isFocuse = useIsFocused();
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("1:10");
-  const [timeWhite, setTimeWhite] = useState("1:10");
+  const [timeBlack, setTimeBlack] = useState("0:10");
+  const [timeWhite, setTimeWhite] = useState("0:10");
   const [currentIntervalId,setCurrentIntervalId]= useState();
   const [isCurrentPlayerWhite,setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore,setWhiteScore] = useState(0);

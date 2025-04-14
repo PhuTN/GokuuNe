@@ -7,7 +7,11 @@ export const translations = {
       //Binh
       play_button_text:'PLAY',
       match_text:'Matches',
-      search_match_text:'Searching.....'
+      search_match_text:'Searching.....',
+      win_text:"Victory",
+      lose_text:"Defeated",
+      another_match_text:"Another match",
+      back_text:"Back"
     },
     vi: {
       greeting: "Xin chào",
@@ -17,7 +21,11 @@ export const translations = {
 
       play_button_text:'CHƠI',
       match_text:'SỐ TRẬN',
-      search_match_text:'Đang tìm trận.....'
+      search_match_text:'Đang tìm trận.....',
+      win_text:"Chiến thắng",
+      lose_text:"Thất bại",
+      another_match_text:"Tìm trận khác",
+      back_text:"Quay lại"
     }
   };
   
