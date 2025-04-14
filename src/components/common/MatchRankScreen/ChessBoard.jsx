@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } from "react-native"; 
 import Dot from "./Dot";
 import GameState from "../../../game_logic/GameState";
+import { useIsFocused } from "@react-navigation/native";
 
-let isWhite=true;
+
 const blackPiece= require("../../../assets/images/pieceBlack.png");
 const whitePiece = require('../../../assets/images/pieceWhite.png');
 let pieceArray=[];
@@ -11,8 +12,8 @@ let pieceArray=[];
         pieceArray.push(null);
     }
 
-export default function ChessBoard({handleEvent}) { 
-    
+export default function ChessBoard({handleEvent,flag}) { 
+    const isFocuse = useIsFocused();
     const [pArr, setPArr] = useState(pieceArray);
     const [whiteScore, setWhiteScore] = useState(0);
     const [blackScore, setBlackScore] = useState(0);
@@ -20,7 +21,8 @@ export default function ChessBoard({handleEvent}) {
     useEffect(()=>{
         setGameState(new GameState());
         setPArr(pieceArray);
-    },[])
+        loadBoardFromGameState();
+    },[isFocuse])
     function renderCellInRow(index) {
         let res=[];
         for( let i=0;i<14;i++) {
@@ -75,7 +77,7 @@ export default function ChessBoard({handleEvent}) {
                     return;
                 }
 
-                if(isWhite) {
+                if(flag) {
                     if(gameState.posArray[index][i].canMove('W')) {
                         setGameState((gameState)=>{
                             gameState.move(index,i,'W');
@@ -83,7 +85,7 @@ export default function ChessBoard({handleEvent}) {
                         });
                         
                         loadBoardFromGameState();
-                        isWhite=!isWhite;
+                        
                         
                         handleEvent(gameState);
                     }
@@ -96,7 +98,7 @@ export default function ChessBoard({handleEvent}) {
                             return gameState;
                         });
                         loadBoardFromGameState();
-                        isWhite=!isWhite;
+                       
                         
                         handleEvent(gameState);
                     }
@@ -122,7 +124,7 @@ export default function ChessBoard({handleEvent}) {
         } 
         return res;
     }
-    const chessBoard= require('../../../assets/images/chessboard.png');
+    
     
     const board = renderRow();
     const touchable= renderTouchableRow();
@@ -166,7 +168,7 @@ export default function ChessBoard({handleEvent}) {
     )
 
 }
-export {isWhite}; 
+
 const style=StyleSheet.create({
     chessBoardBackGround: {
         width:388,

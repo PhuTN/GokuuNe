@@ -11,6 +11,8 @@ import { useTheme } from '../asycnc_store/ThemeContext';
 import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
 import GameState from '../game_logic/GameState';
 import ResultPopup from '../components/common/MatchRankScreen/ResultPopup';
+import { useIsFocused } from '@react-navigation/native';
+import FindMatch from '../untils/FindMatch';
 
 
 const default_avatar = require("../assets/images/default_avatar.jpg");
@@ -40,25 +42,32 @@ function RenderSearchPopup(userName) {
   } 
   return <></>
 }
-function RenderResultPopup( timeWhite,timeBlack,navigation) {
+function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite) {
+  console.log(isCurrentPlayerWhite);
    if(timeWhite=='0:00') {
-      return <ResultPopup result={"YOU_LOSE"} navigation={navigation}></ResultPopup>
+    if(!isCurrentPlayerWhite) {
+      return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+    }
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
    }
    if(timeBlack=='0:00') {
-      return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
-   }
+      if(isCurrentPlayerWhite) {
+        return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+      }
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+    }
 }
 const RankingMatchScreen = ({ navigation }) => {
   const {theme,toggleTheme} = useTheme();
   const isDark=theme==='dark';
   const styles = isDark?darkStyles:whiteStyles;
-  
+  const isFocuse = useIsFocused();
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("0:10");
-  const [timeWhite, setTimeWhite] = useState("0:10");
+  const [timeBlack, setTimeBlack] = useState("1:10");
+  const [timeWhite, setTimeWhite] = useState("1:10");
   const [currentIntervalId,setCurrentIntervalId]= useState();
- 
+  const [isCurrentPlayerWhite,setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore,setWhiteScore] = useState(0);
   const [blackScore,setBlackScore]= useState(0);
   const [playerBlack, setPlayerBlack] = useState({
@@ -71,26 +80,44 @@ const RankingMatchScreen = ({ navigation }) => {
         userAvatarURL:default_avatar,
         rank:10
   });
+  const [playeWhite, setPlayerWhite] = useState({
+    userId:"user0010",
+    userName:"Searching",
+        country:"?????",
+        matches:1000,
+        elo:"????",
+        userCountryImageURL:"https://www.pngmart.com/files/13/American-Flag-Logo-PNG-Picture.png",
+        userAvatarURL:default_avatar,
+        rank:10
+  })
   const [result,setResult] = useState(0);//1:win,-1:lose
-  const [flag,setFlag] = useState(true);
+  const [flag,setFlag] = useState(false);
+  
   useEffect(()=>{
     
     const setUp= new Promise(function(resolve,reject) {
       setTimeout(()=>{
-        setPlayerBlack(Matches.playerBlack);
+        const matchResult = FindMatch();
+        setIsCurrentPlayerWhite(matchResult.isCurrentPlayerWhite);
+        setPlayerBlack(matchResult.matchResult[1]);
+        setPlayerWhite(matchResult.matchResult[0]);
         resolve();
       },10000);
       
     });
+    setFlag(false);
+    setWhiteScore(0);
+    setBlackScore(0);
     setUp.then(()=>{
       setCurrentIntervalId(setInterval(()=>{
         
-        setTimeWhite(prevTimeWhite=>decreaseTime(prevTimeWhite));
+        setTimeBlack(prevTimeBlack=>decreaseTime(prevTimeBlack));
       },1000));
-    })
+    });
     
     
-  },[])
+    
+  },[isFocuse])
   const handleEvent = (gameState)=>{
       clearInterval(currentIntervalId);
       if(flag) {
@@ -118,12 +145,12 @@ const RankingMatchScreen = ({ navigation }) => {
       
       <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       {RenderSearchPopup(playerBlack.userName)}
-      {RenderResultPopup(timeWhite,timeBlack,navigation)}
+      {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite)}
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
-    <ChessBoard handleEvent={handleEvent} ></ChessBoard>
-    <Player user={Matches.playerWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
+    <ChessBoard handleEvent={handleEvent} flag={flag} ></ChessBoard>
+    <Player user={playeWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>
       <LinearGradient colors={['#6B50F6', '#CC8FED']} // Colors for gradient

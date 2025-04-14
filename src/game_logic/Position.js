@@ -9,10 +9,7 @@ class Position {
         isVisited[this.row][this.column]=true;
         res.push(this);
         
-        for(let i=0;i<this.arounds.length;i++) {
-            const child = this.arounds[i];
-            console.log(isVisited[child.row][child.column]);
-        }
+        
         
         for(let i=0;i<this.arounds.length;i++) {
             const child = this.arounds[i];
@@ -42,7 +39,7 @@ class Position {
         }
         const res=[];
         this.state=state;
-        console.log(this.state);
+        
         if(!this.canBreath(isVisited,res)) {
             this.state='0';
 
