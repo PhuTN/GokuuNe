@@ -43,30 +43,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
         }
         return res;
     }
-    async function onSkip(isWhite) {
-        if(isWhite) {
-            setWhiteSkip(true);
-            console.log(blackSkip);
-            if(!blackSkip) {
-                handleEvent(gameState);
-                return;
-            }
-            
-        }
-        else {
-            setBlackSkip(true);
-            if(!whiteSkip) {
-                handleEvent(gameState);
-                return;
-            } 
-            
-        }
-        console.log("Calculate score");
-        gameState.calculateScore();
-        
-        handleIsEnd();
-        
-    }
+    
     async function onSurrender(isWhite) {
         gameState.calculateScore();
        handleSurrender(isWhite);
@@ -158,12 +135,50 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
         return res;
     }
     
-    
+    function onSkip(isWhite) {
+        if(isWhite&&flag) {
+            setWhiteSkip(true);
+            if(blackSkip) {
+                gameState.calculateScore();
+                handleIsEnd();
+            }
+            else {
+                handleEvent(gameState)
+            }
+            return;
+        }
+        if(!isWhite&&!flag) {
+            setBlackSkip(true);
+            if(whiteSkip) {
+                gameState.calculateScore();
+                handleIsEnd();
+            }
+            else {
+                handleEvent(gameState)
+            }
+        }
+        
+        
+    }
     const board = renderRow();
     const touchable= renderTouchableRow();
     return (
         <View>
-           
+            <View style={style.container}>
+            <TouchableOpacity style={style.button} onPress={(e)=>{
+                e.preventDefault();
+                onSkip(false);
+            }}>
+                <Text style={style.text}>{t.skip_text}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={style.button} onPress={(e)=>{
+                e.preventDefault();
+                onSurrender(false);
+            }}>
+                <Text style={style.text}>{t.surrender_text}</Text>
+            </TouchableOpacity>
+            </View>
         <View style={style.chessBoardBackGround} >
             <View style={style.chessBoard}>
                 {

@@ -159,8 +159,8 @@ const RankingMatchScreen = ({ navigation }) => {
       
       
   }
-  const handleEnd = () =>{
-      setIsEnd(true);
+  const handleIsEnd=()=>{
+    setIsEnd(true);
   }
   const handleSurrender = (isWhite)=> {
     if(isWhite) {
@@ -182,7 +182,7 @@ const RankingMatchScreen = ({ navigation }) => {
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
-    <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleEnd} handleSurrender={handleSurrender} ></ChessBoard>
+    <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender}  ></ChessBoard>
     <Player user={playeWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>
