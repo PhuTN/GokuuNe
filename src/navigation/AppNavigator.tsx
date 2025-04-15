@@ -28,7 +28,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="ChatTab"
+        initialRouteName="ChatDetail"
         screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="TestThemeAndLanguage"
