@@ -113,10 +113,6 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
                 setBlackSkip(false);
                 setWhiteSkip(false);   
                 handleEvent(gameState);
-                
-
-               
-                
             }}>
                 
                     

@@ -13,7 +13,9 @@ export const translations = {
       win_text:"Victory",
       lose_text:"Defeated",
       another_match_text:"Another match",
-      back_text:"Back"
+      back_text:"Back",
+      your_score_text:"Your Score",
+      opponent_score_text:"Opponent's Score"
     },
     vi: {
       greeting: "Xin chào",
@@ -28,7 +30,9 @@ export const translations = {
       win_text:"Chiến thắng",
       lose_text:"Thất bại",
       another_match_text:"Tìm trận khác",
-      back_text:"Quay lại"
+      back_text:"Quay lại",
+      your_score_text:"Điểm của bạn",
+      opponent_score_text:"Điểm của đối phương"
     }
   };
   

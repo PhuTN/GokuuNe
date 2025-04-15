@@ -3,32 +3,33 @@ import { useTheme } from "../../../asycnc_store/ThemeContext";
 import { useLanguage } from "../../../asycnc_store/LanguageContext";
 import { translations } from "../../../untils/i18n";
 
-export default function ResultPopup({result,navigation}) {
+export default function ResultPopup({result,navigation, yourScore, opponentScore}) {
      const isWin = result=="YOU WIN";
      const {language,toggleLanguage} = useLanguage();
      const t=translations[language];
      const {theme, toggleTheme} = useTheme();
      const isDark=theme==='dark';
-     const style = isDark?darkStyle:whiteStyle;
+     const styles = isDark?darkStyle:whiteStyle;
      return (
-            <View style={style.container}>
-                <View style={style.searchView}>
-                  
-                <Text style={style.resultText}>{isWin?t.win_text:t.lose_text}</Text>
-                    <TouchableOpacity style={style.button} onPress={(e)=>{
-                        e.preventDefault();
-                        navigation.replace("RankingMatch");
-                    }}>
-                    <Text style={style.buttonText}>{t.another_match_text}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={style.button} onPress={(e)=>{
-                      e.preventDefault();
-                      navigation.goBack();
-                    }}>
-                    <Text style={style.buttonText}>{t.back_text}</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+      <View style={styles.container}>
+      <View style={styles.popup}>
+        <Text style={{...styles.result,
+          color:isWin?"#FFF400":"red"
+        }}>{isWin?t.win_text:t.lose_text}</Text>
+        <Text style={styles.scoreText}>{t.your_score_text}: {yourScore}</Text>
+        <Text style={styles.scoreText}>{t.opponent_score_text}: {opponentScore}</Text>
+        <TouchableOpacity style={styles.button} onPress={(e)=>{
+          e.preventDefault();
+          navigation.replace("RankingMatch");
+          }}><Text style={styles.buttonText}>Another match</Text></TouchableOpacity> 
+        <TouchableOpacity style={styles.button}  
+        onPress={(e)=>{
+          e.preventDefault();
+          navigation.goBack();
+        }}
+        ><Text style={styles.buttonText}>Go back</Text></TouchableOpacity>
+      </View>
+    </View>
         )
 }
 const darkStyle = StyleSheet.create({
@@ -40,45 +41,36 @@ const darkStyle = StyleSheet.create({
         position:'absolute',
         top:0,
         left:0,
-        
-        
-        
     },
    
-    searchView:{
-        alignSelf:'center',
-        position:'absolute',
-        top:270,
-        borderRadius:20,
-        backgroundColor:'black',
-        width:200,
-        height:200,
-        justifyContent:'center',
-        alignItems:'center',
-        gap:20,
-        display:'flex',
-        flexDirection:'column'
+    popup: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      width: 300,
     },
-    resultText: {
-        fontSize: 20,
-        fontWeight: "bold",
-        color: "#333",
-        marginBottom: 10,
-        textAlign: "center",
-      },
-      button: {
-        backgroundColor: "#4CAF50",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 10,
-        alignItems: "center",
-      },
-      buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-      },
+    result: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      marginBottom: 10,
+    },
+    scoreText: {
+      fontSize:20,
+      fontWeight:1000
+    },
+    button: {
+      backgroundColor: '#6B50F6',
+      padding: 10,
+      marginTop: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      width: '80%',
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
 });
 const whiteStyle = StyleSheet.create({
     container:{
@@ -94,37 +86,33 @@ const whiteStyle = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center'
     },
-    searchView:{
-        position:'absolute',
-        top:270,
-        borderRadius:20,
-        backgroundColor:'white',
-        width:200,
-        height:200,
-        justifyContent:'center',
-        alignItems:'center',
-        gap:20,
-        display:'flex',
-        flexDirection:'column'
+    popup: {
+      backgroundColor: 'white',
+      padding: 20,
+      borderRadius: 10,
+      alignItems: 'center',
+      width: 300,
+    },
+    scoreText: {
+      fontSize:20,
+      fontWeight:1000
+    },
+    result: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      marginBottom: 10,
     }, 
-    resultText: {
-        fontSize: 30,
-        fontWeight: "bold",
-        color: "#333",
-        marginBottom: 10,
-        textAlign: "center",
-      },
-      button: {
-        backgroundColor: "#4CAF50",
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        borderRadius: 5,
-        marginTop: 0,
-        alignItems: "center",
-      },
-      buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-      },
+    button: {
+      backgroundColor: '#6B50F6',
+      padding: 10,
+      marginTop: 10,
+      borderRadius: 5,
+      alignItems: 'center',
+      width: '80%',
+    },
+    buttonText: {
+      color: 'white',
+      fontWeight:1000, 
+      fontSize:20
+    },
 })

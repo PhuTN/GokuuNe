@@ -43,33 +43,35 @@ function RenderSearchPopup(userName) {
   return <></>
 }
 function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender) {
-  
+   const yoursCore = isCurrentPlayerWhite?whiteScore:blackScore;
+   const opponentScore = isCurrentPlayerWhite?blackScore:whiteScore;
    if(timeWhite=='0:00') {
     if(!isCurrentPlayerWhite) {
-      return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+      return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
     }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
    }
    if(timeBlack=='0:00') {
       if(isCurrentPlayerWhite) {
-        return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
       }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
     }
   if(isEnd) {
       if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
-        return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+        
+        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
       }
       if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
-        return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+        return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
       }
       
   }
   if((surrender==1&&isCurrentPlayerWhite)||(surrender==2&&!isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+    return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
   }
   if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+    return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
   }   
    
 }
@@ -80,8 +82,8 @@ const RankingMatchScreen = ({ navigation }) => {
   const isFocuse = useIsFocused();
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("10:10");
-  const [timeWhite, setTimeWhite] = useState("10:10");
+  const [timeBlack, setTimeBlack] = useState("0:10");
+  const [timeWhite, setTimeWhite] = useState("0:10");
   const [currentIntervalId,setCurrentIntervalId]= useState();
   const [isCurrentPlayerWhite,setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore,setWhiteScore] = useState(2.5);
@@ -108,7 +110,7 @@ const RankingMatchScreen = ({ navigation }) => {
         userAvatarURL:default_avatar,
         rank:10
   })
-  const [result,setResult] = useState(0);//1:win,-1:lose
+  
   const [flag,setFlag] = useState(false);
   
   useEffect(()=>{
