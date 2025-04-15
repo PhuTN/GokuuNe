@@ -12,16 +12,19 @@ let pieceArray=[];
         pieceArray.push(null);
     }
 
-export default function ChessBoard({handleEvent,flag}) { 
+export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender}) { 
     const isFocuse = useIsFocused();
     const [pArr, setPArr] = useState(pieceArray);
-    const [whiteScore, setWhiteScore] = useState(0);
-    const [blackScore, setBlackScore] = useState(0);
+   
     const [gameState, setGameState] = useState(new GameState());
+    const [whiteSkip, setWhiteSkip] = useState(false);
+    const [blackSkip, setBlackSkip] = useState(false);
     useEffect(()=>{
         setGameState(new GameState());
         setPArr(pieceArray);
         loadBoardFromGameState();
+        setBlackSkip(false);
+        setWhiteSkip(false);
     },[isFocuse])
     function renderCellInRow(index) {
         let res=[];
@@ -36,6 +39,34 @@ export default function ChessBoard({handleEvent,flag}) {
             res.push(renderCellInRow(i));
         }
         return res;
+    }
+    async function onSkip(isWhite) {
+        if(isWhite) {
+            setWhiteSkip(true);
+            console.log(blackSkip);
+            if(!blackSkip) {
+                handleEvent(gameState);
+                return;
+            }
+            
+        }
+        else {
+            setBlackSkip(true);
+            if(!whiteSkip) {
+                handleEvent(gameState);
+                return;
+            } 
+            
+        }
+        console.log("Calculate score");
+        gameState.calculateScore();
+        
+        handleIsEnd();
+        
+    }
+    async function onSurrender(isWhite) {
+        gameState.calculateScore();
+       handleSurrender(isWhite);
     }
     function loadBoardFromGameState() {
         const boardData = gameState.convertToBoardData();
@@ -65,6 +96,7 @@ export default function ChessBoard({handleEvent,flag}) {
             }
         }
     }
+    
     function renderTouchableCell(index) {
         let res=[];
         
@@ -84,10 +116,6 @@ export default function ChessBoard({handleEvent,flag}) {
                             return gameState;
                         });
                         
-                        loadBoardFromGameState();
-                        
-                        
-                        handleEvent(gameState);
                     }
                 } 
                 else {
@@ -97,12 +125,14 @@ export default function ChessBoard({handleEvent,flag}) {
                             gameState.move(index,i,'B');
                             return gameState;
                         });
-                        loadBoardFromGameState();
-                       
                         
-                        handleEvent(gameState);
                     }
-                }
+                } 
+                
+                loadBoardFromGameState();
+                setBlackSkip(false);
+                setWhiteSkip(false);   
+                handleEvent(gameState);
                 
 
                
@@ -129,6 +159,20 @@ export default function ChessBoard({handleEvent,flag}) {
     const board = renderRow();
     const touchable= renderTouchableRow();
     return (
+        <View>
+            <TouchableOpacity onPress={(e)=>{
+                e.preventDefault();
+                onSkip(false);
+            }}>
+                <Text>Skip</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={(e)=>{
+                e.preventDefault();
+                onSurrender(false);
+            }}>
+                <Text>Surrender</Text>
+            </TouchableOpacity>
         <View style={style.chessBoardBackGround} >
             <View style={style.chessBoard}>
                 {
@@ -164,6 +208,22 @@ export default function ChessBoard({handleEvent,flag}) {
             
             
             
+        </View>
+        <TouchableOpacity onPress={(e)=>{
+                e.preventDefault();
+                onSkip(true);
+            }}   
+        >
+                <Text>Skip</Text>
+            </TouchableOpacity>
+            <TouchableOpacity  
+            onPress={(e)=>{
+                e.preventDefault();
+                onSurrender(true);
+            }}  
+             >
+                <Text>Surrender</Text>
+            </TouchableOpacity>
         </View>
     )
 

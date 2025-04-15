@@ -3,7 +3,7 @@ import Position from "./Position";
 class GameState {
     constructor() {
         this.posArray = new Array(13);
-        this.whiteScore=0;
+        this.whiteScore=2.5;
         this.blackScore=0;
         for(let i=0;i<13;i++) {
             const row = new Array(13);
@@ -94,6 +94,89 @@ class GameState {
                 }
             }
         }
+    }
+    isTechnicallyDead(r,c) {
+        const pos = this.posArray[r][c];
+        const group=[];
+        const isVisited = new Array(13);
+        for(let i=0;i<13;i++) {
+            isVisited[i]= new Array().fill(false);
+        } 
+        pos.findGroup(isVisited,group);
+        for(let p of group) {
+            for(let i=0;i<p.arounds.length;i++) {
+                const aroundPos = p.arounds[i];
+                if(aroundPos.state=='0'&&aroundPos.isFree()) {
+                    return false;
+                }
+            }
+        }
+    }
+
+    territoryAt(row, column, isVisited) {
+        if (this.posArray[row][column].state !== '0') {
+            isVisited[row][column]=true;
+            return ; 
+        }
+    
+        //const isVisited = Array.from({ length: 13 }, () => Array(13).fill(false));
+        const queue = [[row, column]];
+        const territory = [];
+        let hasBlack = false, hasWhite = false;
+        let score=0;
+        while (queue.length > 0) {
+            const [r, c] = queue.pop();
+            if (isVisited[r][c]) continue;
+            isVisited[r][c] = true;
+            territory.push(this.posArray[r][c]);
+    
+            for (const [nr, nc] of this.aroundPositions(r, c)) {
+                if (!isVisited[nr][nc]) {
+                    if (this.posArray[nr][nc].state === '0') {
+                        queue.push([nr, nc]);
+                        score++;
+                    } else if (this.posArray[nr][nc].state === 'B') {
+                        hasBlack = true;
+                    } else if (this.posArray[nr][nc].state === 'W') {
+                        hasWhite = true;
+                    }
+                }
+            }
+        }
+    
+        if (hasBlack && !hasWhite) {
+            this.blackScore+=score;
+            return;
+        } 
+        if (hasWhite && !hasBlack) {
+            this.whiteScore+=score;
+            return;
+        } 
+        return;
+    }
+    calculateScore() {
+        const isVisited = new Array(13);
+        for(let i=0;i<13;i++) {
+            isVisited[i]= new Array(13).fill(false);
+        } 
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                if(!isVisited[i][j]) {
+                    this.territoryAt(i,j,isVisited);
+                }
+            }
+        }
+    }
+
+    canContinuePlay(nextState) {
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                if(this.posArray[i][j].canMove(nextState)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

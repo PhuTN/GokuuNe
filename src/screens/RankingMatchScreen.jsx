@@ -42,8 +42,8 @@ function RenderSearchPopup(userName) {
   } 
   return <></>
 }
-function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite) {
-  console.log(isCurrentPlayerWhite);
+function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender) {
+  
    if(timeWhite=='0:00') {
     if(!isCurrentPlayerWhite) {
       return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
@@ -56,6 +56,22 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
       }
       return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
     }
+  if(isEnd) {
+      if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
+        return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+      }
+      if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
+        return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+      }
+      
+  }
+  if((surrender==1&&isCurrentPlayerWhite)||(surrender==2&&!isCurrentPlayerWhite)) {
+    return <ResultPopup result={"YOU LOSE"} navigation={navigation}></ResultPopup>
+  }
+  if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
+    return <ResultPopup result={"YOU WIN"} navigation={navigation}></ResultPopup>
+  }   
+   
 }
 const RankingMatchScreen = ({ navigation }) => {
   const {theme,toggleTheme} = useTheme();
@@ -64,12 +80,14 @@ const RankingMatchScreen = ({ navigation }) => {
   const isFocuse = useIsFocused();
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("0:10");
-  const [timeWhite, setTimeWhite] = useState("0:10");
+  const [timeBlack, setTimeBlack] = useState("10:10");
+  const [timeWhite, setTimeWhite] = useState("10:10");
   const [currentIntervalId,setCurrentIntervalId]= useState();
   const [isCurrentPlayerWhite,setIsCurrentPlayerWhite] = useState(true);
-  const [whiteScore,setWhiteScore] = useState(0);
+  const [whiteScore,setWhiteScore] = useState(2.5);
   const [blackScore,setBlackScore]= useState(0);
+  const [isEnd, setIsEnd] = useState(false);
+  const [surrender, setSurrender] = useState(0); //0 new ko ai dau hang, 1 neu trang dau hang, 2 neu den dau hang;
   const [playerBlack, setPlayerBlack] = useState({
     userId:"user0010",
     userName:"Searching",
@@ -106,8 +124,10 @@ const RankingMatchScreen = ({ navigation }) => {
       
     });
     setFlag(false);
-    setWhiteScore(0);
+    setWhiteScore(2.5);
     setBlackScore(0);
+    setIsEnd(false);
+    setSurrender(0);
     setUp.then(()=>{
       setCurrentIntervalId(setInterval(()=>{
         
@@ -120,6 +140,7 @@ const RankingMatchScreen = ({ navigation }) => {
   },[isFocuse])
   const handleEvent = (gameState)=>{
       clearInterval(currentIntervalId);
+      
       if(flag) {
          
           setCurrentIntervalId(setInterval(()=>{
@@ -138,6 +159,18 @@ const RankingMatchScreen = ({ navigation }) => {
       
       
   }
+  const handleEnd = () =>{
+      setIsEnd(true);
+  }
+  const handleSurrender = (isWhite)=> {
+    if(isWhite) {
+      setSurrender(1);
+
+    } 
+    else {
+      setSurrender(2);
+    }
+  }
 
   
   return (
@@ -145,11 +178,11 @@ const RankingMatchScreen = ({ navigation }) => {
       
       <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       {RenderSearchPopup(playerBlack.userName)}
-      {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite)}
+      {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite,isEnd,whiteScore,blackScore,surrender)}
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
-    <ChessBoard handleEvent={handleEvent} flag={flag} ></ChessBoard>
+    <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleEnd} handleSurrender={handleSurrender} ></ChessBoard>
     <Player user={playeWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>

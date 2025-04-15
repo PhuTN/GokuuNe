@@ -1,4 +1,4 @@
-import {Text,View,Image, StyleSheet} from 'react-native';
+import {Text,View,Image, StyleSheet, TouchableOpacity} from 'react-native';
 import { isWhite } from './ChessBoard';
 import { useTheme } from '../../../asycnc_store/ThemeContext';
 export default  function Player({user,isWhite,time,score}) { 
@@ -27,6 +27,7 @@ export default  function Player({user,isWhite,time,score}) {
                 <Text style={styles.timeText}>{
                 time}</Text>
             </View>
+            
         </View>
     );
 }
