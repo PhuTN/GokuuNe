@@ -124,6 +124,7 @@ class GameState {
         const territory = [];
         let hasBlack = false, hasWhite = false;
         let score=0;
+        const corners= [0,0,0,0];
         while (queue.length > 0) {
             const [r, c] = queue.pop();
             if (isVisited[r][c]) continue;
@@ -134,7 +135,20 @@ class GameState {
                 if (!isVisited[nr][nc]) {
                     if (this.posArray[nr][nc].state === '0') {
                         queue.push([nr, nc]);
+                        if(nr==0) {
+                            corners[0]=1;
+                        }
+                        if(nr==12) {
+                            corners[1]=2;
+                        } 
+                        if(nc==0) {
+                            corners[2]=1;
+                        } 
+                        if(nc==12) {
+                            corners[3]=1;
+                        }
                         score++;
+                        
                     } else if (this.posArray[nr][nc].state === 'B') {
                         hasBlack = true;
                     } else if (this.posArray[nr][nc].state === 'W') {
@@ -145,11 +159,19 @@ class GameState {
         }
     
         if (hasBlack && !hasWhite) {
-            this.blackScore+=score;
+            if(corners[0]+corners[1]+corners[2]+corners[3]>=3) {
+                this.blackScore+=(score+1);
+            }
+            
+            
             return;
         } 
-        if (hasWhite && !hasBlack) {
-            this.whiteScore+=score;
+        if (hasWhite && !hasBlack) { 
+            if(corners[0]+corners[1]+corners[2]+corners[3]>=3) {
+                this.whiteScore+=(score+1);
+            }
+
+
             return;
         } 
         return;

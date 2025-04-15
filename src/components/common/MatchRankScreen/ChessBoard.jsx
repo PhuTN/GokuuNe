@@ -136,7 +136,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             setWhiteSkip(true);
             if(blackSkip) {
                 gameState.calculateScore();
-                handleIsEnd();
+                handleIsEnd(gameState);
             }
             else {
                 handleEvent(gameState)
@@ -147,7 +147,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             setBlackSkip(true);
             if(whiteSkip) {
                 gameState.calculateScore();
-                handleIsEnd();
+                handleIsEnd(gameState);
             }
             else {
                 handleEvent(gameState)

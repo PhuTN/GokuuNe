@@ -45,6 +45,7 @@ function RenderSearchPopup(userName) {
 function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender) {
    const yoursCore = isCurrentPlayerWhite?whiteScore:blackScore;
    const opponentScore = isCurrentPlayerWhite?blackScore:whiteScore;
+   
    if(timeWhite=='0:00') {
     if(!isCurrentPlayerWhite) {
       return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
@@ -82,8 +83,8 @@ const RankingMatchScreen = ({ navigation }) => {
   const isFocuse = useIsFocused();
   const messageIcon = require("../assets/images/message.png");
   const noteIcon = require("../assets/images/note.png");
-  const [timeBlack, setTimeBlack] = useState("0:10");
-  const [timeWhite, setTimeWhite] = useState("0:10");
+  const [timeBlack, setTimeBlack] = useState("5:00");
+  const [timeWhite, setTimeWhite] = useState("5:00");
   const [currentIntervalId,setCurrentIntervalId]= useState();
   const [isCurrentPlayerWhite,setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore,setWhiteScore] = useState(2.5);
@@ -161,7 +162,10 @@ const RankingMatchScreen = ({ navigation }) => {
       
       
   }
-  const handleIsEnd=()=>{
+  const handleIsEnd=(gameState)=>{
+    setWhiteScore(gameState.whiteScore);
+    setBlackScore(gameState.blackScore);
+    console.log("Black Score", gameState.blackScore);
     setIsEnd(true);
   }
   const handleSurrender = (isWhite)=> {
