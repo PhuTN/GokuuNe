@@ -2,6 +2,7 @@ import React from 'react';
 import {View, StyleSheet, Platform, StatusBar} from 'react-native';
 import ChatHeader from '../components/common/ChatTabScreen/ChatHeader';
 import ChatMainTabs from '../components/common/ChatTabScreen/ChatMainTabs';
+import ChatFloatingBar from '../components/common/ChatTabScreen/ChatFloatingBar';
 
 const ChatTabScreen = () => {
   return (
@@ -20,6 +21,8 @@ const ChatTabScreen = () => {
         {/* Footer cố định đáy */}
         <View style={styles.footer}>{/* Sẽ có TextInput, icon sau */}</View>
       </View>
+      {/* Floating bar cố định */}
+      <ChatFloatingBar />
     </View>
   );
 };
