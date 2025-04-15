@@ -214,7 +214,8 @@ const whiteStyles = StyleSheet.create({
      flexDirection:'row',
      alignSelf:'center',
      gap:50,
-     padding:50
+     padding:50,
+     paddingVertical:0
    },
    linearGradient: {
     width:'100%',

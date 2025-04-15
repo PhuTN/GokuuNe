@@ -3,6 +3,8 @@ export const translations = {
       greeting: "Hello",
       toggle_theme: "Toggle Theme",
       toggle_language: "Toggle Language",
+      skip_text:"Skip",
+      surrender_text:"Surrender",
 
       //Binh
       play_button_text:'PLAY',
@@ -18,7 +20,8 @@ export const translations = {
       toggle_theme: "Chuyển giao diện",
       toggle_language: "Chuyển ngôn ngữ",
       //Binh
-
+      skip_text:"Bỏ qua lượt",
+      surrender_text:"Đầu hàng",
       play_button_text:'CHƠI',
       match_text:'SỐ TRẬN',
       search_match_text:'Đang tìm trận.....',

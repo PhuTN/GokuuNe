@@ -3,6 +3,8 @@ import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter } fro
 import Dot from "./Dot";
 import GameState from "../../../game_logic/GameState";
 import { useIsFocused } from "@react-navigation/native";
+import { useLanguage } from "../../../asycnc_store/LanguageContext";
+import { translations } from "../../../untils/i18n";
 
 
 const blackPiece= require("../../../assets/images/pieceBlack.png");
@@ -15,7 +17,8 @@ let pieceArray=[];
 export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender}) { 
     const isFocuse = useIsFocused();
     const [pArr, setPArr] = useState(pieceArray);
-   
+    const {language, toggleLanguage}= useLanguage();
+    const t=translations[language];
     const [gameState, setGameState] = useState(new GameState());
     const [whiteSkip, setWhiteSkip] = useState(false);
     const [blackSkip, setBlackSkip] = useState(false);
@@ -160,19 +163,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
     const touchable= renderTouchableRow();
     return (
         <View>
-            <TouchableOpacity onPress={(e)=>{
-                e.preventDefault();
-                onSkip(false);
-            }}>
-                <Text>Skip</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={(e)=>{
-                e.preventDefault();
-                onSurrender(false);
-            }}>
-                <Text>Surrender</Text>
-            </TouchableOpacity>
+           
         <View style={style.chessBoardBackGround} >
             <View style={style.chessBoard}>
                 {
@@ -209,21 +200,23 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             
             
         </View>
-        <TouchableOpacity onPress={(e)=>{
+        <View style={style.container}>
+        <TouchableOpacity style={style.button} onPress={(e)=>{
                 e.preventDefault();
                 onSkip(true);
             }}   
         >
-                <Text>Skip</Text>
+                <Text style={style.text}>{t.skip_text}</Text>
             </TouchableOpacity>
-            <TouchableOpacity  
+            <TouchableOpacity style={style.button} 
             onPress={(e)=>{
                 e.preventDefault();
                 onSurrender(true);
             }}  
              >
-                <Text>Surrender</Text>
+                <Text style={style.text}>{t.surrender_text}</Text>
             </TouchableOpacity>
+        </View>
         </View>
     )
 
@@ -278,5 +271,21 @@ const style=StyleSheet.create({
         position:'absolute',
         top:0,
         left:0
-    }
+    },
+    container: {
+        flexDirection: 'row', // Sắp xếp ngang
+        justifyContent: 'space-around', // Căn chỉnh khoảng cách
+        alignItems: 'center',
+        padding: 10,
+      },
+      button: {
+        backgroundColor: '#6B50F6', // Màu nền
+        padding: 15,
+        borderRadius: 10, // Bo góc
+      },
+      text: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+      }
 })
