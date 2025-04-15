@@ -10,6 +10,7 @@ import RankingScreen from '../screens/RankingScreen';
 import RankingMatchScreen from '../screens/RankingMatchScreen';
 import SettingScreen from '../screens/SettingScreen';
 import ThemeLanguageTester from '../components/test_ui/ThemeLanguageTester';
+import ChatTabScreen from '../screens/ChatTabScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -27,12 +28,13 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Chat"
+        initialRouteName="ChatTab"
         screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="TestThemeAndLanguage"
           component={ThemeLanguageTester}
         />
+        <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
