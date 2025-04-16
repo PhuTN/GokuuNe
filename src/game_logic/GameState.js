@@ -159,7 +159,7 @@ class GameState {
         }
     
         if (hasBlack && !hasWhite) {
-            if(corners[0]+corners[1]+corners[2]+corners[3]>=3) {
+            if(corners[0]+corners[1]+corners[2]+corners[3]<3) {
                 this.blackScore+=(score+1);
             }
             
@@ -167,7 +167,7 @@ class GameState {
             return;
         } 
         if (hasWhite && !hasBlack) { 
-            if(corners[0]+corners[1]+corners[2]+corners[3]>=3) {
+            if(corners[0]+corners[1]+corners[2]+corners[3]<3) {
                 this.whiteScore+=(score+1);
             }
 

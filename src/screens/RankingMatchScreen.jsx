@@ -48,31 +48,31 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
    
    if(timeWhite=='0:00') {
     if(!isCurrentPlayerWhite) {
-      return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+      return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
     }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
    }
    if(timeBlack=='0:00') {
       if(isCurrentPlayerWhite) {
-        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
       }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     }
   if(isEnd) {
       if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
         
-        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
       }
       if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
-        return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+        return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
       }
       
   }
   if((surrender==1&&isCurrentPlayerWhite)||(surrender==2&&!isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+    return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
   }
   if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore}></ResultPopup>
+    return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
   }   
    
 }
@@ -90,7 +90,8 @@ const RankingMatchScreen = ({ navigation }) => {
   const [whiteScore,setWhiteScore] = useState(2.5);
   const [blackScore,setBlackScore]= useState(0);
   const [isEnd, setIsEnd] = useState(false);
-  const [surrender, setSurrender] = useState(0); //0 new ko ai dau hang, 1 neu trang dau hang, 2 neu den dau hang;
+  const [surrender, setSurrender] = useState(0);//0 new ko ai dau hang, 1 neu trang dau hang, 2 neu den dau hang;
+  const [isStart,setIsStart]= useState(false);
   const [playerBlack, setPlayerBlack] = useState({
     userId:"user0010",
     userName:"Searching",
@@ -131,7 +132,9 @@ const RankingMatchScreen = ({ navigation }) => {
     setBlackScore(0);
     setIsEnd(false);
     setSurrender(0);
+    setIsStart(false);
     setUp.then(()=>{
+      setIsStart(true);
       setCurrentIntervalId(setInterval(()=>{
         
         setTimeBlack(prevTimeBlack=>decreaseTime(prevTimeBlack));
@@ -140,7 +143,8 @@ const RankingMatchScreen = ({ navigation }) => {
     
     
     
-  },[isFocuse])
+  },[isFocuse]);
+  
   const handleEvent = (gameState)=>{
       clearInterval(currentIntervalId);
       
@@ -162,6 +166,7 @@ const RankingMatchScreen = ({ navigation }) => {
       
       
   }
+  
   const handleIsEnd=(gameState)=>{
     setWhiteScore(gameState.whiteScore);
     setBlackScore(gameState.blackScore);
@@ -188,7 +193,7 @@ const RankingMatchScreen = ({ navigation }) => {
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
-    <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender}  ></ChessBoard>
+    <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender} isCurrentPlayerWhite={isCurrentPlayerWhite} isStart={isStart}></ChessBoard>
     <Player user={playeWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>
       <TouchableOpacity style={styles.touchable}>
