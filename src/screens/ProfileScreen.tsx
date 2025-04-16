@@ -5,15 +5,14 @@ import { format, parse } from 'date-fns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import CameraIcon from '../assets/icons/camera_icon.svg';
-import LinearGradient from 'react-native-linear-gradient';
 import Header from '../components/common/Header';
 import { launchImageLibrary, ImageLibraryOptions, Asset } from 'react-native-image-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
 import countries from 'world-countries';
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
+import Button_Save from '../components/common/Button_Save';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
@@ -128,7 +127,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
               selectedValue={country}
               onValueChange={(value) => setCountry(value)}
               style={styles.countryPicker}
-              dropdownIconColor= "#000"
+              dropdownIconColor="#000"
             >
               {countryList.map((c) => (
                 <Picker.Item key={c.value} label={c.label} value={c.value} />
@@ -139,7 +138,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
               selectedValue={country}
               onValueChange={(value) => setCountry(value)}
               style={styles.countryPicker}
-              dropdownIconColor= "#FFFFFF"
+              dropdownIconColor="#FFFFFF"
             >
               {countryList.map((c) => (
                 <Picker.Item key={c.value} label={c.label} value={c.value} />
@@ -148,18 +147,9 @@ const ProfileScreen = ({ route, navigation }: Props) => {
           )}
         </View>
 
-
         {/* Save Button */}
-        <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-          <LinearGradient
-            colors={["#6B50F6", "#CC8FED"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.saveButton}
-          >
-            <Text style={styles.saveButtonText}>{t.profile_button}</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+        <Button_Save text={t.profile_button} onPress={handleSave}/>
+
       </View>
     </ScrollView >
   );
@@ -214,17 +204,6 @@ const lightStyles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     color: "#000",
-  },
-  saveButton: {
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  saveButtonText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });
 
@@ -281,17 +260,6 @@ const darkStyles = StyleSheet.create({
     flex: 1,
     fontSize: 18,
     color: "#FFFFFF"
-  },
-  saveButton: {
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  saveButtonText: {
-    color: "#FFF",
-    fontSize: 18,
-    fontWeight: "bold",
   },
 });
 

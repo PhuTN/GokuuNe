@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 1000,
     borderBottomRightRadius: 1000,
     backgroundColor: 'rgba(188, 44, 255, 0.5)',
-    zIndex: -1,
     alignSelf: 'center',
   },
   container: {

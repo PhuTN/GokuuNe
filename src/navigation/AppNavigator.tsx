@@ -10,6 +10,8 @@ import ProfileScreen from '../screens/ProfileScreen';
 //import RankingMatchScreen from '../screens/RankingMatchScreen';
 import SettingScreen from '../screens/SettingScreen';
 // import ThemeLanguageTester from '../components/test_ui/ThemeLanguageTester';
+import FriendsScreen from '../screens/FriendsScreen';
+import AIChallengeScreen from '../screens/AIChallengeScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -20,6 +22,8 @@ export type RootStackParamList = {
   //Ranking: { accountLogin: any } | undefined;
   //RankingMatch: undefined;
   Setting: { accountLogin: any } | undefined;
+  Friends: { accountLogin: any } | undefined;
+  AIChallenge: { accountLogin: any } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -36,6 +40,8 @@ const AppNavigator = () => {
         {/* <Stack.Screen name="Ranking" component={RankingScreen} /> */}
         {/* <Stack.Screen name="RankingMatch" component={RankingMatchScreen} /> */}
         <Stack.Screen name="Setting" component={SettingScreen} />
+        <Stack.Screen name="Friends" component={FriendsScreen} />
+        <Stack.Screen name="AIChallenge" component={AIChallengeScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

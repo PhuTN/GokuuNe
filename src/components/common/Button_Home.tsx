@@ -41,6 +41,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     overflow: "hidden",
     marginVertical: 10,
+    // Thêm hiệu ứng đổ bóng
+    shadowColor: "#000", // Màu bóng (đen)
+    shadowOffset: { width: 0, height: 4 }, // Độ lệch của bóng
+    shadowOpacity: 0.3, // Độ mờ của bóng
+    shadowRadius: 4, // Bán kính mờ của bóng
+    elevation: 5, // Hiệu ứng bóng cho Android
   },
   iconButton: {
     width: 50,

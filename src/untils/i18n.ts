@@ -1,3 +1,5 @@
+import { friends } from "../fake_data/Dien/fake_data";
+
 export const translations = {
   en: {
     greeting: "Hello",
@@ -9,7 +11,7 @@ export const translations = {
     home_ranking: "RANKING",
     home_AI: "AI",
     home_friends: "FRIENDS",
-    home_host: "HOST", 
+    home_host: "HOST",
 
     login: "LOGIN",
     login_title: "Login",
@@ -23,6 +25,28 @@ export const translations = {
     login_success_ok: "Ok",
     login_error: "Error",
     login_error_message: "Invalid username or password!",
+
+    ai: "AI",
+    ai_name: "Super Nova",
+    ai_country: "United States",
+    ai_chess_army_title: "I PLAY AS",
+    ai_mode_title: "MODE",
+    ai_challenge_easy: "Easy",
+    ai_challenge_easy_detail: "All the tools available",
+    ai_challenge_medium: "Medium",
+    ai_challenge_medium_detail: "Hints & takebacks allowed",
+    ai_challenge_hard: "Hard",
+    ai_challenge_hard_detail: "No help of any kind",
+    ai_button: "Play!",
+
+    friends: "FRIENDS",
+    friends_searchbox_placeholder: "Search by ID or username",
+    friends_title: "Friends",
+    friends_leaderboard: "Leaderboard",
+    friends_list: "You have not added any friends yet",
+    friends_send_message: "Send message",
+    friends_challenge: "Challenge",
+    friends_unfriend: "Unfriend",
 
     setting: "SETTING",
     setting_guest: "Guest",
@@ -52,14 +76,14 @@ export const translations = {
     greeting: "Xin chào",
     toggle_theme: "Chuyển giao diện",
     toggle_language: "Chuyển ngôn ngữ",
-  
+
     //dien
     home_guest: "Khách",
     home_ranking: "ĐẤU XẾP HẠNG",
     home_AI: "ĐẤU MÁY",
     home_friends: "BẠN BÈ",
     home_host: "TẠO PHÒNG",
-  
+
     login: "ĐĂNG NHẬP",
     login_title: "Đăng nhập",
     login_username: "Tên đăng nhập",
@@ -72,7 +96,29 @@ export const translations = {
     login_success_ok: "OK",
     login_error: "Lỗi",
     login_error_message: "Tên đăng nhập hoặc mật khẩu không hợp lệ!",
-  
+
+    ai: "ĐẤU MÁY",
+    ai_name: "Siêu Tân Tinh",
+    ai_country: "Vietnam",
+    ai_chess_army_title: "CHỌN PHE BẮT ĐẦU",
+    ai_mode_title: "CHẾ ĐỘ CHƠI",
+    ai_challenge_easy: "Dễ",
+    ai_challenge_easy_detail: "Có đầy đủ công cụ hỗ trợ",
+    ai_challenge_medium: "Trung bình",
+    ai_challenge_medium_detail: "Cho phép gợi ý & đi lại nước trước",
+    ai_challenge_hard: "Khó",
+    ai_challenge_hard_detail: "Không có bất kỳ hỗ trợ nào",
+    ai_button: "Chơi!",
+
+    friends: "Bạn bè",
+    friends_searchbox_placeholder: "Tìm kiếm bằng ID hoặc tên người dùng",
+    friends_title: "Bạn bè",
+    friends_leaderboard: "Bảng xếp hạng",
+    friends_list_null: "Bạn chưa thêm bất kỳ bạn bè nào",
+    friends_send_message: "Gửi tin nhắn",
+    friends_challenge: "Thách thức",
+    friends_unfriend: "Hủy kết bạn",
+
     setting: "CÀI ĐẶT",
     setting_guest: "Khách",
     setting_account: "Tài khoản",
@@ -88,7 +134,7 @@ export const translations = {
     setting_other: "Khác",
     setting_contact: "Liên hệ chúng tôi",
     setting_privacy: "Chính sách bảo mật",
-  
+
     profile: "HỒ SƠ",
     profile_name: "Tên",
     profile_email: "Email",
@@ -96,6 +142,5 @@ export const translations = {
     profile_birth: "Ngày sinh",
     profile_country: "Quốc gia/Khu vực",
     profile_button: "Lưu các thay đổi"
-  }    
+  }
 };
-  

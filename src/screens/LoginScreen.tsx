@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, TextInputProps, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { accounts } from '../fake_data/Dien/fake_data';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';

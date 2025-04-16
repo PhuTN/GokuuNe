@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet, ScrollView, Alert } from "react-native";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { SafeAreaView } from "react-native-safe-area-context";
 import LinearGradient from 'react-native-linear-gradient';
 import Button_Home from '../components/common/Button_Home';
 import RankingIcon from '../assets/icons/ranking_icon.svg';
-import AIIcon from '../assets/icons/AI_icon.svg';
+import AIChallengeIcon from '../assets/icons/AIChallenge_icon.svg';
 import FriendsIcon from '../assets/icons/friends_icon.svg';
 import HostIcon from '../assets/icons/host_icon.svg';
 import ChatIcon from '../assets/icons/chat_icon.svg';
@@ -26,14 +25,17 @@ import { Dimensions } from "react-native";
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
 const HomeScreen = ({ route, navigation }: Props) => {
-  const {language, toggleLanguage} = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
-  const {theme, toggleTheme} = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
-  const styles =  isDark ? darkStyles : lightStyles; 
+  const styles = isDark ? darkStyles : lightStyles;
 
   const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
+
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
 
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
@@ -41,6 +43,18 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
   const handleSetting = () => {
     navigation.navigate('Setting', { accountLogin });
+  };
+
+  const handleFriends = () => {
+    if (!accountLogin) {
+      Alert.alert(t.setting_profile_noti, t.setting_profile_message);
+    } else {
+      navigation.navigate('Friends', { accountLogin });
+    }
+  };
+
+  const handleAIChallenge = () => {
+    navigation.navigate('AIChallenge', { accountLogin });
   };
 
   const handleLogin = () => {
@@ -54,110 +68,117 @@ const HomeScreen = ({ route, navigation }: Props) => {
     });
   };
 
+  const handleRanking = () => {
+    
+  };
+
+  const handleHost = () => {
+    
+  };
+
+  const handleChat = () => {
+    
+  };
+
   return (
-    <SafeAreaView style={styles.safeContainer}>
-      <ScrollView
-        style={styles.scrollView}
-        contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
-      >
-        {/* Header - Chess */}
-        <View style={styles.chessBoard}>
-          {/* Cột */}
-          {[...Array(6)].map((_, i) => (
-            <ChessColumnIcon 
-              key={`col-${i}`} 
-              width={40} 
-              height={150} 
-              style={{ position: "absolute", left: i * 60 }} />
-          ))}
+    <ScrollView
+      style={styles.scrollView}
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+    >
+      {/* Header - Chess */}
+      <View style={styles.chessBoard}>
+        {/* Cột */}
+        {[...Array(6)].map((_, i) => (
+          <ChessColumnIcon
+            key={`col-${i}`}
+            width={40}
+            height={150}
+            style={{ position: "absolute", left: i * 60 }} />
+        ))}
 
-          {/* Hàng */}
-          {[...Array(3)].map((_, i) => (
-            <ChessRowIcon 
-            key={`row-${i}`} 
-            width={360} 
-            height={40} 
+        {/* Hàng */}
+        {[...Array(3)].map((_, i) => (
+          <ChessRowIcon
+            key={`row-${i}`}
+            width={360}
+            height={40}
             style={{ position: "absolute", top: i * 60 }} />
-          ))}
+        ))}
 
-          {/* Quân cờ */}
-          {[
-            { row: 0, col: 1, color: 'white' },
-            { row: 0, col: 2, color: 'white' },
-            { row: 0, col: 3, color: 'black' },
-            { row: 0, col: 4, color: 'black' },
-            { row: 1, col: 1, color: 'black' },
-            { row: 1, col: 2, color: 'black' },
-            { row: 1, col: 3, color: 'white' },
-            { row: 1, col: 4, color: 'white' },
-            { row: 2, col: 2, color: 'white' },
-            { row: 2, col: 3, color: 'black' },
-            { row: 2, col: 4, color: 'black' },
-          ].map((piece, idx) => {
-            const PieceIcon = piece.color === 'black' ? ChessPieceBlackIcon : ChessPieceWhiteIcon;
-            return (
-              <PieceIcon
-                key={`piece-${idx}`}
-                width={60}
-                height={60}
-                style={{
-                  position: "absolute",
-                  left: piece.col * 60 - 8,
-                  top: piece.row * 60 - 8,
-                }}
-              />
-            );
-          })}
-        </View>
+        {/* Quân cờ */}
+        {[
+          { row: 0, col: 1, color: 'white' },
+          { row: 0, col: 2, color: 'white' },
+          { row: 0, col: 3, color: 'black' },
+          { row: 0, col: 4, color: 'black' },
+          { row: 1, col: 1, color: 'black' },
+          { row: 1, col: 2, color: 'black' },
+          { row: 1, col: 3, color: 'white' },
+          { row: 1, col: 4, color: 'white' },
+          { row: 2, col: 2, color: 'white' },
+          { row: 2, col: 3, color: 'black' },
+          { row: 2, col: 4, color: 'black' },
+        ].map((piece, idx) => {
+          const PieceIcon = piece.color === 'black' ? ChessPieceBlackIcon : ChessPieceWhiteIcon;
+          return (
+            <PieceIcon
+              key={`piece-${idx}`}
+              width={60}
+              height={60}
+              style={{
+                position: "absolute",
+                left: piece.col * 60 - 8,
+                top: piece.row * 60 - 8,
+              }}
+            />
+          );
+        })}
+      </View>
 
-        {/* Header - Avatar + Name */}
-        <View style={styles.avatarHeader}>
-          <LinearGradient
-            colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.profileGradient}
-          >
-            <View style={styles.profileContainer}>
-              <Image source={accountLogin?.avatar || require('../images/user.png')} style={styles.avatar} />
-              <Text style={styles.username}>{accountLogin?.username || t.home_guest}</Text>
-            </View>
-          </LinearGradient>
-        </View>
+      {/* Header - Avatar + Name */}
+      <View style={styles.avatarHeader}>
+        <LinearGradient
+          colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.profileGradient}
+        >
+          <View style={styles.profileContainer}>
+            <Image source={accountLogin?.avatar || require('../images/user.png')} style={styles.avatar} />
+            <Text style={styles.username}>{accountLogin?.username || t.home_guest}</Text>
+          </View>
+        </LinearGradient>
+      </View>
 
-        {/* Title */}
-        <Text style={styles.title}>GOKUU</Text>
+      {/* Title */}
+      <Text style={styles.title}>GOKUU</Text>
 
-        {/* Menu Buttons */}
-        <View style={styles.buttonGroup}>
-          <Button_Home title={t.home_ranking} Icon={RankingIcon} onPress={() => { }} />
-          <Button_Home title={t.home_AI} Icon={AIIcon} onPress={() => { }} />
-          <Button_Home title={t.home_friends} Icon={FriendsIcon} onPress={() => { }} />
-          <Button_Home title={t.home_host} Icon={HostIcon} onPress={() => { }} />
-        </View>
+      {/* Menu Buttons */}
+      <View style={styles.buttonGroup}>
+        <Button_Home title={t.home_ranking} Icon={RankingIcon} onPress={handleRanking} />
+        <Button_Home title={t.home_AI} Icon={AIChallengeIcon} onPress={handleAIChallenge} />
+        <Button_Home title={t.home_friends} Icon={FriendsIcon} onPress={handleFriends} />
+        <Button_Home title={t.home_host} Icon={HostIcon} onPress={handleHost} />
+      </View>
 
-        {/* Bottom Navigation */}
-        <View style={styles.bottomNav}>
-          <Button_Home Icon={ChatIcon} onPress={() => { }} isIconOnly />
-          <Button_Home Icon={SettingIcon} onPress={handleSetting} isIconOnly />
-          {accountLogin ? (
-            <Button_Home Icon={LogoutIcon} onPress={handleLogout} isIconOnly />
-          ) : (
-            <Button_Home Icon={LoginIcon} onPress={handleLogin} isIconOnly />
-          )}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+        <Button_Home Icon={ChatIcon} onPress={handleChat} isIconOnly />
+        <Button_Home Icon={SettingIcon} onPress={handleSetting} isIconOnly />
+        {accountLogin ? (
+          <Button_Home Icon={LogoutIcon} onPress={handleLogout} isIconOnly />
+        ) : (
+          <Button_Home Icon={LoginIcon} onPress={handleLogin} isIconOnly />
+        )}
+      </View>
+    </ScrollView>
   );
 };
 
 const lightStyles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: "#F5F5F5",
-  },
   scrollView: {
     flex: 1,
+    backgroundColor: "#F5F5F5"
   },
   chessBoard: {
     width: 360,
@@ -186,18 +207,18 @@ const lightStyles = StyleSheet.create({
   },
   profileGradient: {
     borderRadius: 10,
-    padding: 20,
+    padding: 30,
   },
   profileContainer: {
     flexDirection: "column",
     alignItems: "center"
   },
   avatar: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     borderRadius: 30,
     left: -5,
-    top: 10, 
+    top: 15,
     borderColor: "#6B50F6",
     borderWidth: 1
   },
@@ -207,13 +228,13 @@ const lightStyles = StyleSheet.create({
     color: "white",
     marginTop: 8,
     left: -5,
-    top: 10
+    top: 15
   },
   title: {
     fontSize: 33,
     fontWeight: "bold",
     color: "#FFCF26",
-    marginBottom: 20,
+    marginBottom: 10
   },
   buttonGroup: {
     width: "80%",
@@ -224,17 +245,13 @@ const lightStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: "10%",
-    marginTop: 20,
   },
 });
 
 const darkStyles = StyleSheet.create({
-  safeContainer: {
-    flex: 1,
-    backgroundColor: "#535353",
-  },
   scrollView: {
     flex: 1,
+    backgroundColor: "#535353"
   },
   chessBoard: {
     width: 360,
@@ -263,18 +280,18 @@ const darkStyles = StyleSheet.create({
   },
   profileGradient: {
     borderRadius: 10,
-    padding: 20,
+    padding: 30,
   },
   profileContainer: {
     flexDirection: "column",
     alignItems: "center"
   },
   avatar: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
     borderRadius: 30,
     left: -5,
-    top: 10, 
+    top: 15,
     borderColor: "#6B50F6",
     borderWidth: 1
   },
@@ -284,13 +301,13 @@ const darkStyles = StyleSheet.create({
     color: "white",
     marginTop: 8,
     left: -5,
-    top: 10
+    top: 15
   },
   title: {
     fontSize: 33,
     fontWeight: "bold",
     color: "#FFCF26",
-    marginBottom: 20,
+    marginBottom: 10
   },
   buttonGroup: {
     width: "80%",
@@ -301,7 +318,6 @@ const darkStyles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     gap: "10%",
-    marginTop: 20,
   },
 });
 
