@@ -4,7 +4,7 @@ import { useTheme } from '../../../asycnc_store/ThemeContext';
 
 export default function LeaderBoard({listLeaderBoard,user}) {
     const {theme, toggleTheme} = useTheme();
-    const style = (theme!=='dark')?darkStyle:whiteStyle;
+    const style = (theme==='dark')?darkStyle:whiteStyle;
     return (<View style={style.container}>
         {
             listLeaderBoard.map((item,index)=>{
@@ -28,7 +28,8 @@ const whiteStyle= StyleSheet.create( {
         flexDirection:'column',
         gap:20,
         backgroundColor:'#6B50F699',
-        borderRadius:20
+        borderRadius:20,
+        marginBottom:70
     }
 });
 const darkStyle = StyleSheet.create( {
@@ -40,6 +41,7 @@ const darkStyle = StyleSheet.create( {
         flexDirection:'column',
         gap:20,
         backgroundColor:'rgba(107, 80, 246, 0.6)',
-        borderRadius:20
+        borderRadius:20,
+        marginBottom:70
     }
 });
