@@ -9,11 +9,18 @@ interface ButtonProps {
   Icon2: React.FC<{ width: number; height: number }>;
   Icon3: React.FC<{ width: number; height: number }>;
   onPress: () => void;
+  isSelected?: boolean;
 }
 
-const Button_AIChallenge_Mode: React.FC<ButtonProps> = ({ title, subtitle, Icon1, Icon2, Icon3, onPress }) => {
+const Button_AIChallenge_Mode: React.FC<ButtonProps> = ({ title, subtitle, Icon1, Icon2, Icon3, onPress, isSelected }) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity
+    style={[
+      styles.button,
+      isSelected && { borderColor: "#FFCF26", borderWidth: 3 } // nếu isSelected = true, thêm style viền vào
+    ]}
+    onPress={onPress}
+    >
       <LinearGradient
         colors={["#6B50F6", "#CC8FED"]}
         start={{ x: 0, y: 0 }}

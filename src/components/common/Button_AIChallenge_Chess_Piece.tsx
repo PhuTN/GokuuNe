@@ -6,14 +6,21 @@ interface ButtonProps {
   onPress: () => void;
   color?: string;
   colors?: [string, string];
+  isSelected?: boolean;
 }
 
-const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, color, colors }) => {
+const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, color, colors, isSelected }) => {
   const isSplit = colors && colors.length === 2;
   const singleColor = color ?? "#6B50F6";
 
   return (
-    <TouchableOpacity style={styles.button} onPress={onPress}>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        isSelected && { borderColor: "#FFCF26", borderWidth: 3 } // nếu isSelected = true, thêm style viền vào
+      ]}
+      onPress={onPress}
+    >
       {isSplit ? (
         <View style={styles.splitWrapper}>
           <View style={[styles.half, { backgroundColor: colors[0] }]} />

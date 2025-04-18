@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, Modal, TouchableWithoutFeedback } from 'react-native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { accounts, friends } from '../fake_data/Dien/fake_data';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -11,12 +11,15 @@ import Button_AddFriend from '../components/common/Button_AddFriend';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
 import Header from '../components/common/Header';
-import SearchIcon from '../assets/icons/search_icon.svg';
+import SearchBlackIcon from '../assets/icons/search_black_icon.svg';
+import SearchWhiteIcon from '../assets/icons/search_white_icon.svg';
 import LeaderBoardIcon from '../assets/icons/leader_board_icon.svg';
 import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';
 import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
+import { notify } from '../untils/notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Friends'>;
 
@@ -52,18 +55,85 @@ const FriendsScreen = ({ route, navigation }: Props) => {
     const isDark = theme === 'dark';
     const styles = isDark ? darkStyles : lightStyles;
 
+    const { notification, toggleNotification } = useNotification();
+
     // Lấy mã ISO từ tên quốc gia
     const countryCode = accountLogin?.country ? countryMap[accountLogin.country] || 'VN' : 'VN'; // Default là 'VN' nếu không tìm thấy
 
-    const handleAddFriend = () => {
-        // navigation.navigate('Login');
+    const [isMoreModalVisible, setMoreModalVisible] = useState(false);
+    const [selectedFriend, setSelectedFriend] = useState(null);
+
+    const openMoreModal = (friend: any) => {
+        setSelectedFriend(friend);
+        setMoreModalVisible(true);
     };
 
-    const handleMoreFunction = () => {
-        // navigation.navigate('Login');
+    const closeMoreModal = () => {
+        setMoreModalVisible(false);
+        setSelectedFriend(null);
+    };
+
+    const handleAddFriend = () => {
+        notify({
+            message: t.noti_success,
+            description: t.noti_friends_add_new,
+            type: 'success',
+            enabled: notification === 'on',
+        });
+    };
+
+    const handleMoreFunction = (friend: any) => {
+        openMoreModal(friend);
+    };
+
+    const handleMoreFunctionChallenge = () => {
+        notify({
+            message: t.noti_info,
+            description: t.noti_go_friends_challenge,
+            type: 'info',
+            enabled: notification === 'on',
+        });
+        closeMoreModal();
+    };
+
+    const handleMoreFunctionSendMessage = () => {
+        notify({
+            message: t.noti_info,
+            description: t.noti_go_friends_message,
+            type: 'info',
+            enabled: notification === 'on',
+        });
+        closeMoreModal();
+    };
+
+    const handleMoreFunctionUnfriend = () => {
+        notify({
+            message: t.noti_success,
+            description: t.noti_friends_remove_success,
+            type: 'success',
+            enabled: notification === 'on',
+        });
+        closeMoreModal();
+        // hàm xóa friend
     };
 
     const handleChallenge = () => {
+        notify({
+            message: t.noti_info,
+            description: t.noti_go_friends_challenge,
+            type: 'info',
+            enabled: notification === 'on',
+        });
+        // navigation.navigate('Login');
+    };
+
+    const handleLeaderBoard = () => {
+        notify({
+            message: t.noti_info,
+            description: t.noti_go_leader_board,
+            type: 'info',
+            enabled: notification === 'on',
+        });
         // navigation.navigate('Login');
     };
 
@@ -81,7 +151,11 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                     placeholder={t.friends_searchbox_placeholder}
                     placeholderTextColor={isDark ? '#888' : '#666'}
                 />
-                <SearchIcon width={16} height={16} />
+                {!isDark ? (
+                    <SearchBlackIcon width={22} height={22} />
+                ) : (
+                    <SearchWhiteIcon width={22} height={22} />
+                )}
             </View>
 
             <View style={{ width: '100%', alignItems: 'center' }}>
@@ -90,7 +164,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                         <Text style={styles.friendsTitle}>
                             {`${t.friends_title} (${filteredFriends.length})`}
                         </Text>
-                        <TouchableOpacity style={styles.leaderboardBtn}>
+                        <TouchableOpacity style={styles.leaderboardBtn} onPress={handleLeaderBoard}>
                             <LeaderBoardIcon width={30} height={30} />
                             <Text style={styles.leaderboardText}>{t.friends_leaderboard}</Text>
                         </TouchableOpacity>
@@ -121,7 +195,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                                     </View>
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <Button_AddFriend Icon={MoreFunctionIcon} onPress={handleMoreFunction} />
+                                    <Button_AddFriend Icon={MoreFunctionIcon} onPress={() => handleMoreFunction(item)} />
                                     <Button_AddFriend Icon={ChallengeIcon} onPress={handleChallenge} />
                                 </View>
                             </View>
@@ -162,6 +236,31 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                     />
                 )}
             </View>
+
+            <Modal
+                visible={isMoreModalVisible}
+                transparent
+                animationType="fade"
+                onRequestClose={closeMoreModal}
+            >
+                <TouchableWithoutFeedback onPress={closeMoreModal}>
+                    <View style={styles.modalOverlay}>
+                        <TouchableWithoutFeedback onPress={() => { }}>
+                            <View style={styles.modalContainer}>
+                                <TouchableOpacity onPress={handleMoreFunctionChallenge}>
+                                    <Text style={styles.modalOption}>{t.friends_challenge}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleMoreFunctionSendMessage}>
+                                    <Text style={styles.modalOption}>{t.friends_send_message}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={handleMoreFunctionUnfriend}>
+                                    <Text style={styles.modalOption}>{t.friends_unfriend}</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
         </View>
     );
 };
@@ -187,7 +286,7 @@ const lightStyles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 16,
+        fontSize: 14,
         paddingVertical: 8,
         color: '#000',
     },
@@ -269,6 +368,25 @@ const lightStyles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: '#F5F5F5',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+    },
+    modalOption: {
+        fontSize: 16,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+        color: 'black'
+    },
 });
 
 const darkStyles = StyleSheet.create({
@@ -292,7 +410,7 @@ const darkStyles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 16,
+        fontSize: 14,
         paddingVertical: 8,
         color: 'white',
     },
@@ -376,6 +494,25 @@ const darkStyles = StyleSheet.create({
     buttonContainer: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContainer: {
+        backgroundColor: '#535353',
+        padding: 20,
+        borderRadius: 10,
+        width: '80%',
+    },
+    modalOption: {
+        fontSize: 16,
+        paddingVertical: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: 'white',
+        color: 'white'
     },
 });
 

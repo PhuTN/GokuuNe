@@ -18,11 +18,11 @@ import countries from 'world-countries';
 import ToggleButtonLanguage from "../components/common/ToggleButton_Language";
 import ToggleButtonTheme from "../components/common/ToggleButton_Theme";
 import ToggleButtonNotification from "../components/common/ToggleButton_Notification";
-import LigthTheme from '../assets/icons/light_theme_icon.svg';
-import DarkTheme from '../assets/icons/dark_theme_icon.svg';
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
+import { notify } from '../untils/notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Setting'>;
 
@@ -41,7 +41,7 @@ const SettingScreen = ({ route, navigation }: Props) => {
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const [isNotificationOn, setIsNotificationOn] = useState(true); // mặc định có bật
+  const { notification, toggleNotification } = useNotification();
 
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
@@ -52,10 +52,78 @@ const SettingScreen = ({ route, navigation }: Props) => {
 
   const handleProfile = () => {
     if (accountLogin) {
+      notify({
+        message: t.noti_info,
+        description: t.noti_profile,
+        type: 'info',
+        enabled: notification === 'on',
+      });
       navigation.navigate('Profile', { accountLogin });
     } else {
-      Alert.alert(t.setting_profile_noti, t.setting_profile_message);
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        enabled: notification === 'on',
+      });
     }
+  };
+
+  const handleAchievement = () => {
+    if (accountLogin) {
+      notify({
+        message: t.noti_info,
+        description: t.noti_achive,
+        type: 'info',
+        enabled: notification === 'on',
+      });
+      //navigation.navigate('Profile', { accountLogin });
+    } else {
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        enabled: notification === 'on',
+      });
+    }
+  };
+
+  const handleHistory = () => {
+    if (accountLogin) {
+      notify({
+        message: t.noti_info,
+        description: t.noti_history,
+        type: 'info',
+        enabled: notification === 'on',
+      });
+      //navigation.navigate('Profile', { accountLogin });
+    } else {
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        enabled: notification === 'on',
+      });
+    }
+  };
+
+  const handleContact = () => {
+    notify({
+      message: t.noti_info,
+      description: t.noti_contact,
+      type: 'info',
+      enabled: notification === 'on',
+    });
+
+  };
+
+  const handlePrivacy = () => {
+    notify({
+      message: t.noti_info,
+      description: t.noti_privacy,
+      type: 'info',
+      enabled: notification === 'on',
+    });
   };
 
   return (
@@ -78,8 +146,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_account}</Text>
         <Button_Setting icon={ProfileIcon} title={t.setting_profile} onPress={handleProfile} />
-        <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={() => { }} />
-        <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={() => { }} />
+        <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={handleAchievement} />
+        <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={handleHistory} />
       </Card>
 
       <Card style={styles.card}>
@@ -114,16 +182,16 @@ const SettingScreen = ({ route, navigation }: Props) => {
             <Text style={styles.cardItem}>{t.setting_popup}</Text>
           </View>
           <ToggleButtonNotification
-            value={isNotificationOn}
-            onToggle={() => setIsNotificationOn(prev => !prev)} />
+            value={notification === 'on'}
+            onToggle={toggleNotification} />
         </View>
 
       </Card>
 
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_other}</Text>
-        <Button_Setting icon={ContactIcon} title={t.setting_contact} onPress={() => { }} />
-        <Button_Setting icon={PrivacyIcon} title={t.setting_privacy} onPress={() => { }} />
+        <Button_Setting icon={ContactIcon} title={t.setting_contact} onPress={handleContact} />
+        <Button_Setting icon={PrivacyIcon} title={t.setting_privacy} onPress={handlePrivacy} />
       </Card>
     </ScrollView>
   );

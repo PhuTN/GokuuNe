@@ -21,6 +21,9 @@ import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
 import { Dimensions } from "react-native";
+import { showMessage } from "react-native-flash-message";
+import { notify } from '../untils/notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -32,6 +35,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
+  const { notification, toggleNotification } = useNotification();
+
   const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
 
   const windowWidth = Dimensions.get('window').width;
@@ -42,26 +47,61 @@ const HomeScreen = ({ route, navigation }: Props) => {
   }, [route.params]);
 
   const handleSetting = () => {
+    notify({
+      message: t.noti_info,
+      description: t.noti_go_setting,
+      type: 'info',
+      enabled: notification === 'on',
+    });
     navigation.navigate('Setting', { accountLogin });
   };
 
   const handleFriends = () => {
-    if (!accountLogin) {
-      Alert.alert(t.setting_profile_noti, t.setting_profile_message);
-    } else {
+    if (accountLogin) {
+      notify({
+        message: t.noti_success ,
+        description: t.noti_go_friends,
+        type: 'success',
+        enabled: notification === 'on',
+      });
       navigation.navigate('Friends', { accountLogin });
+    } else {
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        enabled: notification === 'on',
+      });
     }
   };
 
   const handleAIChallenge = () => {
+    notify({
+      message: t.noti_success,
+      description: t.noti_go_ai,
+      type: 'success',
+      enabled: notification === 'on',
+    });
     navigation.navigate('AIChallenge', { accountLogin });
   };
 
   const handleLogin = () => {
+    notify({
+      message: t.noti_info ,
+      description: t.noti_login,
+      type: 'info',
+      enabled: notification === 'on',
+    });
     navigation.navigate('Login');
   };
 
   const handleLogout = () => {
+    notify({
+      message: t.noti_success,
+      description: t.noti_logout,
+      type: 'success',
+      enabled: notification === 'on',
+    });
     navigation.reset({
       index: 0,
       routes: [{ name: 'Home', params: { accountLogin: null } }],
@@ -69,15 +109,30 @@ const HomeScreen = ({ route, navigation }: Props) => {
   };
 
   const handleRanking = () => {
-    
+    notify({
+      message: t.noti_success,
+      description: t.noti_go_rank,
+      type: 'success',
+      enabled: notification === 'on',
+    });
   };
 
   const handleHost = () => {
-    
+    notify({
+      message: t.noti_success,
+      description: t.noti_go_host,
+      type: 'success',
+      enabled: notification === 'on',
+    });
   };
 
   const handleChat = () => {
-    
+    notify({
+      message: t.noti_info,
+      description: t.noti_go_chat,
+      type: 'info',
+      enabled: notification === 'on',
+    });
   };
 
   return (

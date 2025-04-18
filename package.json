@@ -19,6 +19,7 @@
     "react-native": "^0.78.1",
     "react-native-country-flag": "^2.0.2",
     "react-native-date-picker": "^5.0.12",
+    "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "^2.24.0",
     "react-native-image-picker": "^8.2.0",
     "react-native-linear-gradient": "^2.8.3",

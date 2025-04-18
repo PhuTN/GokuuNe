@@ -8,6 +8,8 @@ import Header from '../components/common/Header';
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
+import { notify } from '../untils/notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -22,20 +24,28 @@ const LoginScreen = ({ navigation }: Props) => {
     const isDark = theme === 'dark';
     const styles = isDark ? darkStyles : lightStyles;
 
+    const { notification, toggleNotification } = useNotification();
+
     const passwordInputRef = useRef<TextInput>(null);
 
     const handleLogin = () => {
         const accountExist = accounts.find(account => account.username === username && account.password === password);
 
         if (accountExist) {
-            Alert.alert(t.login_success, t.login_success_message, [
-                {
-                    text: t.login_success_ok,
-                    onPress: () => navigation.navigate('Home', { accountLogin: accountExist })
-                }
-            ]);
+            notify({
+                message: t.noti_success,
+                description: t.noti_login_success,
+                type: 'success',
+                enabled: notification === 'on',
+            });
+            navigation.navigate('Home', { accountLogin: accountExist })
         } else {
-            Alert.alert(t.login_error, t.login_error_message);
+            notify({
+                message: t.noti_danger,
+                description: t.noti_login_faile,
+                type: 'danger',
+                enabled: notification === 'on',
+            });
         }
     };
 
