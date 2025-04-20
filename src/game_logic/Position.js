@@ -62,16 +62,32 @@ class Position {
         }
         const res=[];
         this.state=state;
+        if(this.canBreath(isVisited,[])) {
+            return true;
+        }
         
-        if(!this.canBreath(isVisited,res)) {
-            this.state='0';
-
-            return false;
-        } 
+        for(let i=0;i<this.arounds.length;i++) {
+            const child = this.arounds[i];
+            if(child.state!='0'&&child.state!=this.state) {
+                const isV = new Array(13);
+                for(let j=0;j<13;j++) {
+                    isV[j]= new Array(13).fill(false);
+                }
+                if(!child.canBreath(isV,[])) 
+                {
+                    this.state=state;
+                    
+                    return true;
+                }
+            }
+            
+        }
         this.state='0';
-        return true;
+        
+        return false;
         
     }
+    
     findGroup(isVisited,res) {
         isVisited[this.row][this.column]= true;
         res.push(this);

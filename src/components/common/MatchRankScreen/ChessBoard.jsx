@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter, Alert } from "react-native"; 
 import Dot from "./Dot";
-import GameState from "../../../game_logic/GameState";
+
 import { useIsFocused } from "@react-navigation/native";
 import { useLanguage } from "../../../asycnc_store/LanguageContext";
 import { translations } from "../../../untils/i18n";
-import { OnOpponentMove } from "../../../untils/OpponentEvent";
-import { EventRegister } from "react-native-event-listeners";
+import { GameState } from "../../../logic/GameLogic";
+
 
 const blackPiece= require("../../../assets/images/pieceBlack.png");
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -23,32 +23,32 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
     const [gameState, setGameState] = useState(new GameState());
     const [whiteSkip, setWhiteSkip] = useState(false);
     const [blackSkip, setBlackSkip] = useState(false);
-    const [disable, setDisable]= useState(false);
+    
     useEffect(()=>{
         setGameState(new GameState());
         setPArr(pieceArray);
-        loadBoardFromGameState();
+        loadBoardFromGameState(gameState);
         setBlackSkip(false);
         setWhiteSkip(false);
-        setDisable(!isCurrentPlayerWhite);
+        
         
     },[isFocuse]);
-    useEffect(()=>{
+    /*useEffect(()=>{
         if(isStart==true) {
             if(isCurrentPlayerWhite!=flag) {
-                setDisable(true);
+                
                 ListenOpponentMove();
                 
                 return;
             }
             else {
-                setDisable(false);
+                
             }
             console.log("Start");
         }
-    },[isStart,flag])
-    function renderSkipSurrenderButtons(isCurrentPlayerWhite, isWhite) {
-        if(isWhite==isCurrentPlayerWhite) {
+    },[isStart,flag])*/
+    function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
+        
                 return <View style={style.container}>
                 <TouchableOpacity style={style.button} onPress={(e)=>{
                     e.preventDefault();
@@ -65,10 +65,8 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
                 </TouchableOpacity>
                 </View>
             
-        }
-        else {
-            return <></>
-        }
+        
+        
     }
     function renderCellInRow(index) {
         let res=[];
@@ -89,8 +87,8 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
         gameState.calculateScore();
        handleSurrender(isWhite);
     }
-    function loadBoardFromGameState() {
-        const boardData = gameState.convertToBoardData();
+    function loadBoardFromGameState(gameState) {
+        const boardData = gameState.posArray;
         for(let i=0;i<13;i++) {
             for(let j=0;j<13;j++) {
                 if(boardData[i][j]=='B') {
@@ -117,79 +115,53 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             }
         }
     }
-    function ListenOpponentMove() {
-        if(flag==isCurrentPlayerWhite) {
-            return ;
-        }
-        const waitingOpponentMove = new Promise((resolve,reject)=>{
-            setTimeout(()=>{
-                const opponentMove = OnOpponentMove(gameState,isCurrentPlayerWhite);
-                const nextMove = isCurrentPlayerWhite?'B':'W';
-                
-                
-                resolve({
-                    opponentMove:opponentMove,
-                    nextMove:nextMove
-                });
-            },1000)
-        })
-       
-        waitingOpponentMove.then((data)=>{
-            if(data.opponentMove==0) {
-                onSkip(!isCurrentPlayerWhite);
-                Alert.alert(t.skip_text,t.opponent_skip_text);
-                return;
-            } 
-            if(data.opponentMove==1) {
-                onSurrender(!isCurrentPlayerWhite);
-                return;
-            }
-            loadBoardFromGameState();
-            setBlackSkip(false);
-            setWhiteSkip(false);   
-            handleEvent(gameState);
-            setDisable(false);
-        })
-        
-        return ;
-    }
+    
     function renderTouchableCell(index) {
         let res=[];
         
         for(let i=0;i<13;i++) {
-            res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index} disabled={disable} onPress={(e)=>{
+            res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index}  onPress={(e)=>{
                 e.preventDefault();
                 
                 const tempParray = [...pArr];
-                if(flag==isCurrentPlayerWhite) {
+                
                     if(tempParray[index*13+i]!=null) {
                         return;
                     }
 
                     if(flag) {
-                        if(gameState.posArray[index][i].canMove('W')) {
-                            setGameState((gameState)=>{
-                                gameState.move(index,i,'W');
+                            setGameState(gameState=>{
+                                if(gameState.move(index,i,'W')) {  
+                                    loadBoardFromGameState(gameState);
+                                    setBlackSkip(false);
+                                    setWhiteSkip(false);   
+                                    handleEvent(gameState);
+                                }
                                 return gameState;
-                            });
+                            })
+                                
                             
-                        }
+                        
                     } 
                     else {
-                        if(gameState.posArray[index][i].canMove('B')) {
-                        
-                            setGameState((gameState)=>{
-                                gameState.move(index,i,'B');
-                                return gameState;
-                            });
+                        /*if(gameState.isEnd()) {
+                            gameState.calculateScore();
                             
-                        }
+                        }*/
+                            setGameState(gameState=>{
+                                if(gameState.move(index,i,'B')) {  
+                                    loadBoardFromGameState(gameState);
+                                    setBlackSkip(false);
+                                    setWhiteSkip(false);   
+                                    handleEvent(gameState);
+                                }
+                                return gameState;
+                            })
+                        
+
                     } 
-                    loadBoardFromGameState();
-                    setBlackSkip(false);
-                    setWhiteSkip(false);   
-                    handleEvent(gameState);
-                }
+                    
+                
                 /*else {
                     const opponentMove = OnOpponentMove(gameState,isCurrentPlayerWhite);
                     const nextMove = isCurrentPlayerWhite?'B':'W';
@@ -223,6 +195,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             if(blackSkip) {
                 gameState.calculateScore();
                 handleIsEnd(gameState);
+                console.log("White Skip");
             }
             else {
                 handleEvent(gameState)
@@ -234,6 +207,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             if(whiteSkip) {
                 gameState.calculateScore();
                 handleIsEnd(gameState);
+                console.log("Black Skip");
             }
             else {
                 handleEvent(gameState)
@@ -247,7 +221,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
     return (
         <View>
            {
-             renderSkipSurrenderButtons(isCurrentPlayerWhite,false)
+             renderSkipSurrenderButtons(false)
            }
         <View style={style.chessBoardBackGround} >
             <View style={style.chessBoard}>
@@ -286,7 +260,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             
         </View>
         {
-            renderSkipSurrenderButtons(isCurrentPlayerWhite,true)
+            renderSkipSurrenderButtons(true)
         }
         
         </View>

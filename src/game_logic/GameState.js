@@ -21,6 +21,18 @@ class GameState {
                 }
             }
         }*/
+       this.history1= this.cloneGameState();
+       this.history2=this.cloneGameState();
+    }
+    isEnd() {
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                if(this.posArray[i][j].canMove('B')||this.posArray[i][j].canMove('W')) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     connectPositions() {
         for(let i=0;i<13;i++) {
@@ -59,11 +71,49 @@ class GameState {
         } 
         return boardData;
     } 
+    
     move(row, column, state) {
-        
-        this.posArray[row][column].state = state;
-        
-        this.checkAfterMove();
+       const cloneGameState= this.cloneGameState();
+       if(this.posArray[row][column].canMove(state)) {
+         if(!this.isRepeat()) {
+            this.history1=this.history2;
+            this.history2= this.cloneGameState();
+            return true;
+         }
+         else {
+            for(let i=0;i<13;i++) {
+                for(let j=0;j<13;j++) {
+                    this.posArray[i][j]= cloneGameState[i][j];
+                }
+            }
+            return false;
+         }
+       } 
+       else {
+          console.log("Can not move",false);
+       }
+       return false;
+       
+    }
+    cloneGameState() {
+        const res = new Array(13);
+        for(let i=0;i<13;i++) {
+            res[i]= new Array(13);
+            for(let j=0;j<13;j++) {
+                res[i][j]= this.posArray[i][j].state;
+            }
+        }
+        return res;
+    }
+    isRepeat() {
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                if(this.history1[i][j]!=this.posArray[i][j].state) {
+                    return false;
+                }
+            }
+        } 
+        return true;
     }
     checkAfterMove() {
         
@@ -199,6 +249,11 @@ class GameState {
             }
         }
         return false;
+    }
+    calculteScoreAt(row, column) {
+        if(!this.posArray[row][column].canBreath()) {
+            
+        }
     }
 
 }
