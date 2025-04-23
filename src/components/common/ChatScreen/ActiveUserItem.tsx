@@ -1,78 +1,38 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Image,
-  Dimensions,
-} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 
-const users = [
-  {
-    id: 1,
-    name: 'Isabelle',
-    avatar: require('../../../assets/images/ChatScreen/avt1.png'),
-    bgColor: '#F7DF56',
-  },
-  {
-    id: 2,
-    name: 'Ethan',
-    avatar: require('../../../assets/images/ChatScreen/avt2.png'),
-    bgColor: '#00A3FF',
-  },
-  {
-    id: 3,
-    name: 'Harper',
-    avatar: require('../../../assets/images/ChatScreen/avt3.png'),
-    bgColor: '#00D5C5',
-  },
-  {
-    id: 4,
-    name: 'Alexander',
-    avatar: require('../../../assets/images/ChatScreen/avt4.png'),
-    bgColor: '#00A3FF',
-  },
-];
+type Props = {
+  user: {
+    id: string | number;
+    name: string;
+    avatar: any;
+    bgColor?: string;
+  };
+};
 
-export default function ActiveUserSection() {
+export default function ActiveUserItem({user}: Props) {
   return (
-    <View style={styles.wrapper}>
-      {/* ScrollView avatar */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scroll}>
-        {users.map(user => (
-          <View key={user.id} style={styles.userItem}>
-            <View
-              style={[styles.avatarWrapper, {backgroundColor: user.bgColor}]}>
-              <Image
-                source={user.avatar}
-                style={styles.avatar}
-                resizeMode="contain"
-              />
-            </View>
-            <Text style={styles.name}>{user.name}</Text>
-          </View>
-        ))}
-      </ScrollView>
+    <View style={styles.userItem}>
+      <View
+        style={[
+          styles.avatarWrapper,
+          {backgroundColor: user.bgColor || '#00A3FF'},
+        ]}>
+        <Image
+          source={user.avatar}
+          style={styles.avatar}
+          resizeMode="contain"
+        />
+      </View>
+      <Text style={styles.name}>{user.name}</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    marginTop: 8,
-    marginBottom: -1,
-    paddingHorizontal: 16,
-  },
-  scroll: {
-    gap: 16,
-    paddingRight: 16,
-  },
   userItem: {
     alignItems: 'center',
+    marginRight: 16,
   },
   avatarWrapper: {
     width: 80,

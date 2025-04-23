@@ -6,12 +6,13 @@ import {translations} from '../../../untils/i18n';
 
 const {width} = Dimensions.get('window');
 
-export default function SearchBar() {
+// 👇 Nhận props từ cha
+export default function SearchBar({onSearch, value}) {
   const {theme} = useTheme();
   const isDark = theme === 'light';
-
   const {language} = useLanguage();
   const t = translations[language];
+
   return (
     <View
       style={[
@@ -22,6 +23,8 @@ export default function SearchBar() {
         },
       ]}>
       <TextInput
+        value={value}
+        onChangeText={text => onSearch(text)}
         placeholder={t.search || 'Search...'}
         placeholderTextColor={isDark ? '#999' : '#FFD700'}
         style={[
@@ -58,12 +61,12 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    fontSize: 20, // ← to hơn
+    fontSize: 20,
     color: '#FFD700',
     paddingVertical: 6,
   },
   icon: {
-    width: 50, // ← tăng từ 20 → 24
+    width: 50,
     height: 24,
     marginLeft: 10,
   },

@@ -8,11 +8,128 @@ import {
   StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+const emojiList = [
+  '😀',
+  '😃',
+  '😄',
+  '😁',
+  '😆',
+  '😅',
+  '🤣',
+  '😂',
+  '🙂',
+  '🙃',
+  '😉',
+  '😊',
+  '😇',
+  '😍',
+  '🥰',
+  '😘',
+  '😗',
+  '😚',
+  '😙',
+  '😋',
+  '😛',
+  '😜',
+  '🤪',
+  '😝',
+  '🤑',
+  '🤗',
+  '🤭',
+  '🤫',
+  '🤔',
+  '🤐',
+  '🤨',
+  '😐',
+  '😑',
+  '😶',
+  '😏',
+  '😒',
+  '🙄',
+  '😬',
+  '🤥',
+  '😌',
+  '😔',
+  '😪',
+  '🤤',
+  '😴',
+  '😷',
+  '🤒',
+  '🤕',
+  '🤢',
+  '🤮',
+  '🤧',
+  '🥵',
+  '🥶',
+  '🥴',
+  '😵',
+  '🤯',
+  '🤠',
+  '🥳',
+  '😎',
+  '🤓',
+  '🧐',
+  '😕',
+  '😟',
+  '🙁',
+  '☹️',
+  '😮',
+  '😯',
+  '😲',
+  '😳',
+  '🥺',
+  '😦',
+  '😧',
+  '😨',
+  '😰',
+  '😥',
+  '😢',
+  '😭',
+  '😱',
+  '😖',
+  '😣',
+  '😞',
+  '😓',
+  '😩',
+  '😫',
+  '🥱',
+  '😤',
+  '😡',
+  '😠',
+  '🤬',
+  '😈',
+  '👿',
+  '💀',
+  '☠️',
+  '💩',
+  '🤡',
+  '👹',
+  '👺',
+  '👻',
+  '👽',
+  '👾',
+  '🤖',
+  '😺',
+  '😸',
+  '😹',
+  '😻',
+  '😼',
+  '😽',
+  '🙀',
+  '😿',
+  '😾',
+  '🙈',
+  '🙉',
+  '🙊',
+  '💋',
+  '💌',
+];
 
 const ChatMainTabs = () => {
   const [activeTab, setActiveTab] = useState<'Chat' | 'Quick'>('Chat');
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<string[]>([]);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const handleSend = (text: string) => {
     if (text.trim()) {
@@ -145,7 +262,7 @@ const ChatMainTabs = () => {
         ))}
       </View>
 
-      {/* Content */}
+      {/* Chat Tab */}
       {activeTab === 'Chat' ? (
         <View style={styles.chatView}>
           <ScrollView style={styles.messageArea}>
@@ -156,42 +273,56 @@ const ChatMainTabs = () => {
             ))}
           </ScrollView>
 
-          <View>
-            <Text style={styles.chatNotice}>
-              Please be kind and respectful in your messages. You can block and
-              report unfriendly messages.
-            </Text>
+          {showEmojiPicker && (
+            <View style={styles.emojiPicker}>
+              <ScrollView contentContainerStyle={styles.emojiGrid}>
+                {emojiList.map((e, i) => (
+                  <TouchableOpacity
+                    key={i}
+                    onPress={() => setMessage(prev => prev + e)}>
+                    <Text style={styles.emoji}>{e}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          )}
 
-            <View style={styles.inputBar}>
+          <Text style={styles.chatNotice}>
+            Please be kind and respectful in your messages. You can block and
+            report unfriendly messages.
+          </Text>
+
+          <View style={styles.inputBar}>
+            <TouchableOpacity onPress={() => setShowEmojiPicker(prev => !prev)}>
               <Icon
                 name="emoticon-outline"
                 size={20}
                 color="#fff"
                 style={{marginHorizontal: 6}}
               />
-              <TextInput
-                value={message}
-                onChangeText={setMessage}
-                placeholder="Send a message..."
-                placeholderTextColor="#aaa"
-                style={styles.textInput}
+            </TouchableOpacity>
+            <TextInput
+              value={message}
+              onChangeText={setMessage}
+              placeholder="Send a message..."
+              placeholderTextColor="#aaa"
+              style={styles.textInput}
+            />
+            <View style={styles.chatActions}>
+              <Icon
+                name="paperclip"
+                size={20}
+                color="#fff"
+                style={{marginHorizontal: 6}}
               />
-              <View style={styles.chatActions}>
+              <TouchableOpacity onPress={() => handleSend(message)}>
                 <Icon
-                  name="paperclip"
+                  name="send"
                   size={20}
                   color="#fff"
                   style={{marginHorizontal: 6}}
                 />
-                <TouchableOpacity onPress={() => handleSend(message)}>
-                  <Icon
-                    name="send"
-                    size={20}
-                    color="#fff"
-                    style={{marginHorizontal: 6}}
-                  />
-                </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -234,9 +365,7 @@ const ChatMainTabs = () => {
 export default ChatMainTabs;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: {flex: 1},
   tabBar: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -244,18 +373,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     backgroundColor: '#1a1a1a',
   },
-  tabItem: {
-    alignItems: 'center',
-    paddingVertical: 12,
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#aaa',
-  },
-  activeTab: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
+  tabItem: {alignItems: 'center', paddingVertical: 12},
+  tabText: {fontSize: 16, color: '#aaa'},
+  activeTab: {color: '#fff', fontWeight: 'bold'},
   activeLine: {
     height: 2,
     backgroundColor: '#fff',
@@ -266,11 +386,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: '#2e2b2b',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
   },
-  messageArea: {
-    flexGrow: 0,
-  },
+  messageArea: {flexGrow: 0},
   messageBubble: {
     alignSelf: 'flex-end',
     backgroundColor: '#444',
@@ -280,10 +398,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     maxWidth: '80%',
   },
-  messageText: {
-    color: '#fff',
-    fontSize: 14,
-  },
+  messageText: {color: '#fff', fontSize: 14},
   chatNotice: {
     color: '#ccc',
     fontSize: 14,
@@ -297,15 +412,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 8,
   },
-  textInput: {
-    flex: 1,
-    color: '#fff',
-    fontSize: 14,
-  },
-  chatActions: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  textInput: {flex: 1, color: '#fff', fontSize: 14},
+  chatActions: {flexDirection: 'row', alignItems: 'center'},
   quickView: {
     flex: 1,
     padding: 10,
@@ -316,9 +424,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginVertical: 10,
   },
+  emojiPicker: {
+    maxHeight: 200,
+    backgroundColor: '#1a1a1a',
+    borderTopWidth: 1,
+    borderColor: '#444',
+    marginVertical: 8,
+  },
   emojiGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    padding: 8,
   },
   emoji: {
     fontSize: 24,

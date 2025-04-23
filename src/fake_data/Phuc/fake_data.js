@@ -16,7 +16,27 @@ export const activeUsers = [
   },
   {
     id: '4',
-    name: 'Alexander',
+    name: 'Alexander1',
+    avatar: require('../../assets/images/ChatScreen/avt4.png'),
+  },
+  {
+    id: '5',
+    name: 'Isabelle1',
+    avatar: require('../../assets/images/ChatScreen/avt1.png'),
+  },
+  {
+    id: '6',
+    name: 'Ethan1',
+    avatar: require('../../assets/images/ChatScreen/avt2.png'),
+  },
+  {
+    id: '7',
+    name: 'Harper1',
+    avatar: require('../../assets/images/ChatScreen/avt3.png'),
+  },
+  {
+    id: '8',
+    name: 'Alexander1',
     avatar: require('../../assets/images/ChatScreen/avt4.png'),
   },
 ];

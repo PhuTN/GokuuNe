@@ -1,27 +1,34 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet} from 'react-native';
+import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import {useTheme} from '../../../asycnc_store/ThemeContext';
 
 export default function ChatCardItem({chat}) {
   const {theme} = useTheme();
   const isDark = theme === 'light';
+  const navigation = useNavigation();
+  const goToChatDetail = () => {
+    navigation.navigate('ChatDetail'); // ✅ Không truyền param
+  };
 
   return (
-    <View style={[styles.card, isDark && {backgroundColor: '#1E1E1E'}]}>
-      <Image source={chat.avatar} style={styles.avatar} />
-      <View style={{flex: 1}}>
-        <Text style={styles.name}>{chat.user}</Text>
-        <Text style={styles.message}>{chat.message}</Text>
+    <TouchableOpacity onPress={goToChatDetail}>
+      <View style={[styles.card, isDark && {backgroundColor: '#1E1E1E'}]}>
+        <Image source={chat.avatar} style={styles.avatar} />
+        <View style={{flex: 1}}>
+          <Text style={styles.name}>{chat.user}</Text>
+          <Text style={styles.message}>{chat.message}</Text>
+        </View>
+        <View style={{alignItems: 'flex-end'}}>
+          <Text style={styles.time}>{chat.time}</Text>
+          {chat.unreadCount > 0 && (
+            <View style={styles.unreadBubble}>
+              <Text style={styles.unreadText}>{chat.unreadCount}</Text>
+            </View>
+          )}
+        </View>
       </View>
-      <View style={{alignItems: 'flex-end'}}>
-        <Text style={styles.time}>{chat.time}</Text>
-        {chat.unreadCount > 0 && (
-          <View style={styles.unreadBubble}>
-            <Text style={styles.unreadText}>{chat.unreadCount}</Text>
-          </View>
-        )}
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 const styles = StyleSheet.create({

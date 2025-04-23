@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, Text, ImageBackground} from 'react-native';
 import ChatHeader from '../components/common/ChatScreen/ChatHeader';
 import SearchBar from '../components/common/ChatScreen/SearchBar';
@@ -16,32 +16,51 @@ export default function ChatScreen() {
   const {language} = useLanguage();
   const t = translations[language];
 
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredUsers = activeUsers.filter(
+    user =>
+      user.name &&
+      user.name.trim().toLowerCase().includes(searchQuery.trim().toLowerCase()),
+  );
+
+  const filteredChats = recentChats.filter(chat =>
+    chat.user.toLowerCase().includes(searchQuery.toLowerCase()),
+  );
+
   const renderContent = () => (
     <>
       <ChatHeader />
-      <SearchBar />
+      <SearchBar onSearch={setSearchQuery} value={searchQuery} />
 
-      {/* Currently Active section */}
+      {/* Currently Active Section */}
       <View style={styles.sectionWrapper}>
         <View style={styles.labelContainer}>
           <Text style={styles.label}>{t.currently_active}</Text>
           <View style={styles.dot} />
         </View>
-        <FlatList
-          data={activeUsers}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.activeList}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => <ActiveUserItem user={item} />}
-        />
+
+        {filteredUsers.length === 0 ? (
+          <Text style={styles.noUserText}>
+            {t.no_user_found || 'No active user found.'}
+          </Text>
+        ) : (
+          <FlatList
+            data={filteredUsers}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.activeList}
+            keyExtractor={item => item.id}
+            renderItem={({item}) => <ActiveUserItem user={item} />}
+          />
+        )}
       </View>
 
-      {/* Recents section */}
+      {/* Recent Chats Section */}
       <View style={styles.scrollArea}>
         <SectionLabel label={t.recents} iconType="clock" />
         <FlatList
-          data={recentChats}
+          data={filteredChats}
           keyExtractor={item => item.id}
           renderItem={({item}) => <ChatCardItem chat={item} />}
           contentContainerStyle={styles.chatList}
@@ -92,7 +111,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 12,
     paddingVertical: 4,
-    marginBottom: -10,
+    marginBottom: 10,
     marginLeft: 10,
   },
   label: {
@@ -106,5 +125,11 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: '#FFD700',
     marginLeft: 8,
+  },
+  noUserText: {
+    color: '#aaa',
+    fontSize: 16,
+    textAlign: 'center',
+    marginVertical: 12,
   },
 });
