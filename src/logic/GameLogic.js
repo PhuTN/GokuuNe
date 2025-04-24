@@ -158,6 +158,7 @@ export class GameState {
             }
         }
     }
+    
     clearCapture(row,column) {
         console.log("Clear capture");
         const res=[];
@@ -213,7 +214,91 @@ export class GameState {
             }
         }
     }
+    isFree(row, column, isVisited) {
+        
+        
+        const corner=[0,0,0,0]; 
+        const touch={
+            black:false,
+            white:false
+        }
+        const res=[];
+        this.dfs(isVisited,row,column,corner,touch,res);
+        const cornerSum = corner[0]+corner[1]+corner[2]+corner[3];
+        return cornerSum>=3;
+    }
+    isDeathTechnique(row, column) { 
+        
+        if(this.posArray[row][column]!='0') {
+            const res=[];
+            const isVisited = new Array(13);
+            for(let i=0;i<13;i++) {
+                isVisited[i]=new Array(13).fill(false);
+            }
+            this.findGroup(isVisited,row,column,res);
+            const surroundedPos=[];
+            for(let i=0;i<res.length;i++) {
+                const allieRow=res[i][0];
+                const allieColumn=res[i][1];
+                const aroundAllie= this.arounds(allieRow,allieColumn);
+                
+                const isV = new Array(13);
+                for(let k=0;k<13;k++) {
+                    isV[k]= new Array(13).fill(false);
+                }
+                for(let j=0;j<aroundAllie.length;j++) {
+                    const childRow=aroundAllie[j][0];
+                    const childColmun=aroundAllie[j][1];
+                    if(this.posArray[childRow][childColmun]=='0') {
+                        
+                        const corner=[0,0,0,0]; 
+                        const touch={
+                            black:false,
+                            white:false
+                        }
+                        const res=[];
+                        if(!isV[childRow][childColmun]) {
+                            this.dfs(isV,childRow,childColmun,corner,touch,res);
+                            const cornerSum= corner[0]+corner[1]+corner[2]+corner[3];
+                            if(cornerSum>=3){
+                                return {
+                                    isDeath:false,
+                                    group:res
+                                }
+                            }
+                            surroundedPos.push([childRow,childColmun]);
+                    }
+
+                    }
+                }
+
+            }
+            return {
+                isDeath:surroundedPos.length<2,
+                group:res
+            }
+
+        }
+        return {
+            isDeath:false,
+            group:[]
+        }
+
+    }
+    clearDeathTechnique() {
+        for(let i=0;i<13;i++) {
+            for(let j=0;j<13;j++) {
+                const boxData = this.isDeathTechnique(i,j);
+                if(boxData.isDeath) {
+                    for(let k=0;k<boxData.group.length;k++) {
+                        this.posArray[boxData.group[k][0]][boxData.group[k][1]]='0';
+                    }
+                }
+            }
+        }
+    }
     calculateScore() {
+        this.clearDeathTechnique();
         const isVisited = new Array(13);
         for(let i=0;i<13;i++) {
             isVisited[i]=new Array(13).fill(false);
