@@ -237,15 +237,16 @@ export class GameState {
             }
             this.findGroup(isVisited,row,column,res);
             const surroundedPos=[];
+            const isV = new Array(13);
+            for(let k=0;k<13;k++) {
+                isV[k]= new Array(13).fill(false);
+            }
             for(let i=0;i<res.length;i++) {
                 const allieRow=res[i][0];
                 const allieColumn=res[i][1];
                 const aroundAllie= this.arounds(allieRow,allieColumn);
                 
-                const isV = new Array(13);
-                for(let k=0;k<13;k++) {
-                    isV[k]= new Array(13).fill(false);
-                }
+                
                 for(let j=0;j<aroundAllie.length;j++) {
                     const childRow=aroundAllie[j][0];
                     const childColmun=aroundAllie[j][1];
@@ -273,6 +274,7 @@ export class GameState {
                 }
 
             }
+            console.log(surroundedPos);
             return {
                 isDeath:surroundedPos.length<2,
                 group:res
