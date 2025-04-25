@@ -21,7 +21,6 @@ import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
 import { Dimensions } from "react-native";
-import { showMessage } from "react-native-flash-message";
 import { notify } from '../untils/notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
@@ -51,7 +50,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_info,
       description: t.noti_go_setting,
       type: 'info',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
     navigation.navigate('Setting', { accountLogin });
   };
@@ -59,10 +59,11 @@ const HomeScreen = ({ route, navigation }: Props) => {
   const handleFriends = () => {
     if (accountLogin) {
       notify({
-        message: t.noti_success ,
+        message: t.noti_success,
         description: t.noti_go_friends,
         type: 'success',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
       navigation.navigate('Friends', { accountLogin });
     } else {
@@ -70,7 +71,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
         message: t.noti_warning,
         description: t.noti_login_require,
         type: 'warning',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
     }
   };
@@ -80,17 +82,19 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_success,
       description: t.noti_go_ai,
       type: 'success',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
     navigation.navigate('AIChallenge', { accountLogin });
   };
 
   const handleLogin = () => {
     notify({
-      message: t.noti_info ,
+      message: t.noti_info,
       description: t.noti_login,
       type: 'info',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
     navigation.navigate('Login');
   };
@@ -100,7 +104,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_success,
       description: t.noti_logout,
       type: 'success',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
     navigation.reset({
       index: 0,
@@ -113,7 +118,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_success,
       description: t.noti_go_rank,
       type: 'success',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
   };
 
@@ -122,7 +128,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_success,
       description: t.noti_go_host,
       type: 'success',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
   };
 
@@ -131,7 +138,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
       message: t.noti_info,
       description: t.noti_go_chat,
       type: 'info',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
   };
 

@@ -56,7 +56,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_info,
         description: t.noti_profile,
         type: 'info',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
       navigation.navigate('Profile', { accountLogin });
     } else {
@@ -64,7 +65,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_warning,
         description: t.noti_login_require,
         type: 'warning',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
     }
   };
@@ -75,7 +77,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_info,
         description: t.noti_achive,
         type: 'info',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
       //navigation.navigate('Profile', { accountLogin });
     } else {
@@ -83,7 +86,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_warning,
         description: t.noti_login_require,
         type: 'warning',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
     }
   };
@@ -94,7 +98,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_info,
         description: t.noti_history,
         type: 'info',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
       //navigation.navigate('Profile', { accountLogin });
     } else {
@@ -102,7 +107,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
         message: t.noti_warning,
         description: t.noti_login_require,
         type: 'warning',
-        enabled: notification === 'on',
+        systemNotification: true,
+        pushState: notification,
       });
     }
   };
@@ -112,7 +118,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
       message: t.noti_info,
       description: t.noti_contact,
       type: 'info',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
 
   };
@@ -122,7 +129,8 @@ const SettingScreen = ({ route, navigation }: Props) => {
       message: t.noti_info,
       description: t.noti_privacy,
       type: 'info',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
   };
 

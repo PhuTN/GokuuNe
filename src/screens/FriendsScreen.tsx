@@ -78,7 +78,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_success,
             description: t.noti_friends_add_new,
             type: 'success',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -91,7 +92,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_go_friends_challenge,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
         closeMoreModal();
     };
@@ -101,7 +103,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_go_friends_message,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
         closeMoreModal();
     };
@@ -111,7 +114,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_success,
             description: t.noti_friends_remove_success,
             type: 'success',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
         closeMoreModal();
         // hàm xóa friend
@@ -122,7 +126,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_go_friends_challenge,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
         // navigation.navigate('Login');
     };
@@ -132,7 +137,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_go_leader_board,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
         // navigation.navigate('Login');
     };

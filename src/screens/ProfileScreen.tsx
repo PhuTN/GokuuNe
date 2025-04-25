@@ -74,7 +74,8 @@ const ProfileScreen = ({ route, navigation }: Props) => {
       message: t.noti_success,
       description: t.noti_save_changes,
       type: 'success',
-      enabled: notification === 'on',
+      systemNotification: true,
+      pushState: notification,
     });
   };
 

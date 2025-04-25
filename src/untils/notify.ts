@@ -1,4 +1,5 @@
-import { showMessage } from 'react-native-flash-message';
+import PushNotification from 'react-native-push-notification';
+import { NotificationType } from '../asycnc_store/NotificationContext';
 
 type NotifyType = 'success' | 'info' | 'warning' | 'danger';
 
@@ -7,39 +8,32 @@ interface NotifyOptions {
   description?: string;
   type?: NotifyType;
   enabled?: boolean;
-  backgroundColor?: string;
-  color?: string;
-  icon?: 'auto' | 'success' | 'info' | 'warning' | 'danger' | 'none';
+  systemNotification?: boolean;
+  pushState?: NotificationType;
 }
 
 /**
- * Helper hiển thị thông báo (flash message) toàn app.
- * @param options NotifyOptions
+ * Hiển thị thông báo Android system notification nếu được bật
  */
 export const notify = ({
   message,
   description,
-  type = 'info',
   enabled = true,
-  backgroundColor,
-  color = '#fff',
-  icon = 'auto',
+  systemNotification = false,
+  pushState = 'on',
 }: NotifyOptions) => {
   if (!enabled) return;
 
-  const typeColors: Record<NotifyType, string> = {
-    success: '#27AE60',
-    info: '#2D9CDB',
-    warning: '#F2C94C',
-    danger: '#EB5757',
-  };
-
-  showMessage({
-    message,
-    description,
-    type,
-    backgroundColor: backgroundColor || typeColors[type],
-    color,
-    icon,
-  });
+  if (systemNotification && pushState === 'on') {
+    PushNotification.localNotification({
+      channelId: 'default-channel-id',
+      title: message,
+      message: description || '',
+      playSound: true,
+      soundName: 'custom_sound',
+      smallIcon: 'ic_notification',
+      importance: 'high',
+      vibrate: true,
+    });
+  }
 };

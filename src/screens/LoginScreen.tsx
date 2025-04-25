@@ -36,7 +36,8 @@ const LoginScreen = ({ navigation }: Props) => {
                 message: t.noti_success,
                 description: t.noti_login_success,
                 type: 'success',
-                enabled: notification === 'on',
+                systemNotification: true,
+                pushState: notification,
             });
             navigation.navigate('Home', { accountLogin: accountExist })
         } else {
@@ -44,7 +45,8 @@ const LoginScreen = ({ navigation }: Props) => {
                 message: t.noti_danger,
                 description: t.noti_login_faile,
                 type: 'danger',
-                enabled: notification === 'on',
+                systemNotification: true,
+                pushState: notification,
             });
         }
     };

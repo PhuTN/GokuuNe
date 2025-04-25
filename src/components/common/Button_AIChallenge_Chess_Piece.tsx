@@ -26,12 +26,12 @@ const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, 
           <View style={[styles.half, { backgroundColor: colors[0] }]} />
           <View style={[styles.half, { backgroundColor: colors[1] }]} />
           <View style={styles.iconContainer}>
-            <Icon width={50} height={50} />
+            <Icon width={40} height={40} />
           </View>
         </View>
       ) : (
         <View style={[styles.gradientButton, { backgroundColor: singleColor }]}>
-          <Icon width={50} height={50} />
+          <Icon width={30} height={30} />
         </View>
       )}
     </TouchableOpacity>

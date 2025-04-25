@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-type NotificationType = 'on' | 'off';
+export type NotificationType = 'on' | 'off';
 
 interface NotificationContextType {
   notification: NotificationType;

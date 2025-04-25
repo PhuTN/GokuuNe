@@ -57,7 +57,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_white_army,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -67,7 +68,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_black_army,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -77,7 +79,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_random_army,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -87,7 +90,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_hard_mode,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -97,7 +101,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_medium_mode,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -107,7 +112,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_info,
             description: t.noti_ai_easy_mode,
             type: 'info',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -116,7 +122,8 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             message: t.noti_success,
             description: t.noti_ai_play,
             type: 'success',
-            enabled: notification === 'on',
+            systemNotification: true,
+            pushState: notification,
         });
     };
 
@@ -144,19 +151,19 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             <View style={styles.sectionButton}>
                 <Button_AIChallenge_Chess_Piece
                     Icon={WhiteArmyIcon}
-                    color="white"
-                    onPress={handleWhiteArmy} 
-                    isSelected={selectedPiece === "white"}/>
+                    color="black"
+                    onPress={handleWhiteArmy}
+                    isSelected={selectedPiece === "white"} />
                 <Button_AIChallenge_Chess_Piece
                     Icon={RandomIcon}
                     colors={["white", "black"]}
-                    onPress={handleRandomArmy} 
-                    isSelected={selectedPiece === "random"}/>
+                    onPress={handleRandomArmy}
+                    isSelected={selectedPiece === "random"} />
                 <Button_AIChallenge_Chess_Piece
                     Icon={BlackArmyIcon}
-                    color="black"
-                    onPress={handleBlackArmy} 
-                    isSelected={selectedPiece === "black"}/>
+                    color="white"
+                    onPress={handleBlackArmy}
+                    isSelected={selectedPiece === "black"} />
             </View>
 
             <View style={styles.modeContainer}>
@@ -167,24 +174,24 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
                     Icon1={CrownLightIcon}
                     Icon2={CrownLightIcon}
                     Icon3={CrownLightIcon}
-                    onPress={handleHardMode} 
-                    isSelected={selectedMode === "hard"}/>
+                    onPress={handleHardMode}
+                    isSelected={selectedMode === "hard"} />
                 <Button_AIChallenge_Mode
                     title={t.ai_challenge_medium}
                     subtitle={t.ai_challenge_medium_detail}
                     Icon1={CrownLightIcon}
                     Icon2={CrownLightIcon}
                     Icon3={CrownBlackIcon}
-                    onPress={handleMediumMode} 
-                    isSelected={selectedMode === "medium"}/>
+                    onPress={handleMediumMode}
+                    isSelected={selectedMode === "medium"} />
                 <Button_AIChallenge_Mode
                     title={t.ai_challenge_easy}
                     subtitle={t.ai_challenge_easy_detail}
                     Icon1={CrownLightIcon}
                     Icon2={CrownBlackIcon}
                     Icon3={CrownBlackIcon}
-                    onPress={handleEasyMode} 
-                    isSelected={selectedMode === "easy"}/>
+                    onPress={handleEasyMode}
+                    isSelected={selectedMode === "easy"} />
             </View>
 
             {/* Play Button */}
