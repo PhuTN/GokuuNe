@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter, Alert } from "react-native"; 
 import Dot from "./Dot";
 
@@ -6,7 +6,9 @@ import { useIsFocused } from "@react-navigation/native";
 import { useLanguage } from "../../../asycnc_store/LanguageContext";
 import { translations } from "../../../untils/i18n";
 import { GameState } from "../../../logic/GameLogic";
-
+import { Animated } from 'react-native';
+import { opacity } from "react-native-reanimated/lib/typescript/Colors";
+import { AnimatedImage } from "react-native-reanimated/lib/typescript/component/Image";
 
 const blackPiece= require("../../../assets/images/pieceBlack.png");
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -18,19 +20,28 @@ let pieceArray=[];
 export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender, isCurrentPlayerWhite, isStart}) { 
     const isFocuse = useIsFocused();
     const [pArr, setPArr] = useState(pieceArray);
+    const [animatedParr, setAnimatedParr] = useState(pieceArray);
     const {language, toggleLanguage}= useLanguage();
     const t=translations[language];
     const [gameState, setGameState] = useState(new GameState());
     const [whiteSkip, setWhiteSkip] = useState(false);
     const [blackSkip, setBlackSkip] = useState(false);
-    
+    const fadeAnim = useRef(new Animated.Value(1)).current;     
+    const fadeAnimArr = useRef(
+        Array.from({ length: 13 * 13 }, () => new Animated.Value(1))
+      ).current;
     useEffect(()=>{
         setGameState(new GameState());
         setPArr(pieceArray);
+        const aniPArr = new Array(13);
+        for(let i=0;i<13*13;i++) {
+            aniPArr.push(null);
+        }
+        setAnimatedParr(aniPArr);
         loadBoardFromGameState(gameState);
         setBlackSkip(false);
         setWhiteSkip(false);
-        
+       
         
     },[isFocuse]);
     /*useEffect(()=>{
@@ -116,6 +127,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
         }
     }
     
+   
     function renderTouchableCell(index) {
         let res=[];
         
@@ -131,7 +143,26 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
 
                     if(flag) {
                             setGameState(gameState=>{
-                                if(gameState.move(index,i,'W')) {  
+                                const moveData = gameState.move(index,i,'W');
+                                if(moveData.canMove) {  
+                                    const animatedSequence = [];
+                                    
+                                    const tempPAnimationArr = [...animatedParr];
+                                    for(let j=0;j<moveData.deathPosition.length;j++) {
+                                        
+                                        const id = moveData.deathPosition[j][0]*13+moveData.deathPosition[j][1];
+                                        
+                                        setAnimatedParr(tempPAnimationArr); 
+                                        Animated.timing(fadeAnimArr[id],{
+                                            toValue: 0, 
+                                            duration: 2000, 
+                                            useNativeDriver: true}).start();
+                                            tempPAnimationArr[id]=blackPiece;
+                                    } 
+                                    
+                                    setAnimatedParr(tempPAnimationArr);
+                                    
+                                   
                                     loadBoardFromGameState(gameState);
                                     setBlackSkip(false);
                                     setWhiteSkip(false);   
@@ -148,12 +179,30 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
                             gameState.calculateScore();
                             
                         }*/
-                            setGameState(gameState=>{
-                                if(gameState.move(index,i,'B')) {  
+                            setGameState(gameState=>{ 
+                                const moveData = gameState.move(index,i,'B');
+                                if(moveData.canMove) { 
+                                    const animatedSequence = [];
+                                    
+                                    const tempPAnimationArr = [...animatedParr];
+                                    for(let j=0;j<moveData.deathPosition.length;j++) {
+                                        
+                                        const id = moveData.deathPosition[j][0]*13+moveData.deathPosition[j][1];
+                                        
+                                        setAnimatedParr(tempPAnimationArr); 
+                                        Animated.timing(fadeAnimArr[id],{
+                                            toValue: 0, 
+                                            duration: 2000, 
+                                            useNativeDriver: true}).start();
+                                            tempPAnimationArr[id]=whitePiece;
+                                    } 
+                                    
+                                    setAnimatedParr(tempPAnimationArr);
+                                    
                                     loadBoardFromGameState(gameState);
                                     setBlackSkip(false);
                                     setWhiteSkip(false);   
-                                    handleEvent(gameState);
+                                    handleEvent(gameState); 
                                 }
                                 return gameState;
                             })
@@ -175,8 +224,9 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
                 
                     
             <Dot index={index*13+i}></Dot>
-            <Image style={style.pieceImageEnable} source = {pArr[index*13+i]}></Image>
-
+            <Animated.Image style={[style.pieceImageEnable,{opacity:fadeAnimArr[index*13+i]}]} source={animatedParr[index*13+i]}></Animated.Image>
+            <Animated.Image style={style.pieceImageEnable} source = {pArr[index*13+i]} ></Animated.Image>
+            
             </TouchableOpacity>)
         }
         return  res;
@@ -218,6 +268,7 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
     }
     const board = renderRow();
     const touchable= renderTouchableRow();
+    
     return (
         <View>
            {
@@ -315,6 +366,12 @@ const style=StyleSheet.create({
         position:'absolute',
         top:0,
         left:0
+    },
+    pieceImageFade: {
+        top:0,
+        left:0,
+        position:'absolute',
+        
     },
     pieceImageEnable:{
         position:'absolute',

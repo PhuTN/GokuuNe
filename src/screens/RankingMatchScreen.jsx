@@ -13,6 +13,7 @@ import GameState from '../game_logic/GameState';
 import ResultPopup from '../components/common/MatchRankScreen/ResultPopup';
 import { useIsFocused } from '@react-navigation/native';
 import FindMatch from '../untils/FindMatch';
+import GameResultCard from '../components/common/MatchRankScreen/MatchResultCard';
 
 
 const default_avatar = require("../assets/images/default_avatar.jpg");
@@ -42,37 +43,66 @@ function RenderSearchPopup(userName) {
   } 
   return <></>
 }
-function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender) {
+function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender, playerBlack, playerWhite, currentIntervalId) {
    const yoursCore = isCurrentPlayerWhite?whiteScore:blackScore;
    const opponentScore = isCurrentPlayerWhite?blackScore:whiteScore;
-   
+   const gameResult = {
+    blackScore:blackScore,
+    whiteScore:whiteScore,
+    resultText:"",
+    playerBlack:playerBlack,
+    playerWhite:playerWhite
+   }
    if(timeWhite=='0:00') {
+    clearInterval(currentIntervalId);
     if(!isCurrentPlayerWhite) {
-      return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
+      gameResult.resultText="Victory";
+      
+      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
     }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
+      //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
+      gameResult.resultText="Defeat";
+      return <GameResultCard gameResult={gameResult}></GameResultCard>
    }
    if(timeBlack=='0:00') {
+    clearInterval(currentIntervalId);
       if(isCurrentPlayerWhite) {
-        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
+        gameResult.resultText="Victory";
+        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
       }
-      return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
+      //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup> 
+      gameResult.resultText="Defeat";
+      return <GameResultCard gameResult={gameResult}></GameResultCard>
     }
   if(isEnd) {
+    clearInterval(currentIntervalId);
       if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
-        
-        return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
+        gameResult.resultText="Victory";
+        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
       }
       if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
-        return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
+        gameResult.resultText="Defeat";
+        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
       }
       
   }
   if((surrender==1&&isCurrentPlayerWhite)||(surrender==2&&!isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
+    clearInterval(currentIntervalId);
+    gameResult.resultText="Defeat";
+    console.log(gameResult.playerBlack);
+    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
   }
   if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
-    return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
+    clearInterval(currentIntervalId);
+    gameResult.resultText="Victory";
+    console.log(gameResult.playerBlack);
+    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
   }   
    
 }
@@ -128,7 +158,7 @@ const RankingMatchScreen = ({ navigation }) => {
       
     });
     setFlag(false);
-    setWhiteScore(2.5);
+    setWhiteScore(6.5);
     setBlackScore(0);
     setIsEnd(false);
     setSurrender(0);
@@ -189,7 +219,7 @@ const RankingMatchScreen = ({ navigation }) => {
       
       <ScreenHeader screenName={"Gokuu"} navigation={navigation}></ScreenHeader>
       {RenderSearchPopup(playerBlack.userName)}
-      {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite,isEnd,whiteScore,blackScore,surrender)}
+      {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite,isEnd,whiteScore,blackScore,surrender, playerBlack, playeWhite, currentIntervalId)}
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>

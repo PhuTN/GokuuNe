@@ -32,8 +32,12 @@ export class GameState {
     }
     move(row, column, state) {
         if(this.posArray[row][column]!='0') {
-            return false;
+            return {
+                canMove:false,
+                deathPosition:[]
+            }
         }
+        let deathPosition=[];
         const currentGameState = new Array(13);
         for(let i=0;i<13;i++) {
             currentGameState[i]= new Array(13);
@@ -62,7 +66,7 @@ export class GameState {
                     }
                     if(!this.canBreath(isV,childRow,childColmun)) {
                         console.log("Capture");
-                        this.clearCapture(childRow,childColmun);
+                        deathPosition=this.clearCapture(childRow,childColmun);
                     }
                 }
             }
@@ -70,11 +74,17 @@ export class GameState {
                 this.posArray=currentGameState;
                 this.blackScore=currentBlackSocre;
                 this.whiteScore=currentWhiteScore;
-                return false;
+                return {
+                    canMove:false,
+                    deathPosition:[]
+                }
             }
             else {
                 this.saveHistory();
-                return true;
+                return {
+                    canMove:true,
+                    deathPosition:deathPosition
+                }
             }
         }
         else {
@@ -97,17 +107,26 @@ export class GameState {
             }
             if(isCapture) {
                 this.state='0';
-                return false;
+                return {
+                    canMove:false,
+                    deathPosition:[]
+                }
             }
             if(this.isRepeat()) {
                 this.posArray=currentGameState;
                 this.blackScore=currentBlackSocre;
                 this.whiteScore=currentWhiteScore;
-                return false;
+                return {
+                    canMove:false,
+                    deathPosition:[]
+                }
             }
             else {
                 this.saveHistory();
-                return true;
+                return {
+                    canMove:true,
+                    deathPosition:deathPosition
+                }
             }
         }
     }
@@ -160,7 +179,7 @@ export class GameState {
     }
     
     clearCapture(row,column) {
-        console.log("Clear capture");
+        const capturePos = [];
         const res=[];
         const isVisited= new Array(13);
         for(let i=0;i<13;i++) {
@@ -176,7 +195,9 @@ export class GameState {
                 this.whiteScore++;
             }
             this.posArray[res[i][0]][res[i][1]]='0';
+            capturePos.push([res[i][0],res[i][1]]);
         }
+        return capturePos;
     }
     dfs(isVisited, row, column, corner, touch,res) {
         isVisited[row][column]=true;
