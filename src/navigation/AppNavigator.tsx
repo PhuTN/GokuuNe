@@ -9,22 +9,24 @@ import ProfileScreen from '../screens/ProfileScreen';
 import RankingScreen from '../screens/RankingScreen';
 import RankingMatchScreen from '../screens/RankingMatchScreen';
 import SettingScreen from '../screens/SettingScreen';
-import ThemeLanguageTester from '../components/test_ui/ThemeLanguageTester';
 import FriendsScreen from '../screens/FriendsScreen';
 import AIChallengeScreen from '../screens/AIChallengeScreen';
 import ChatTabScreen from '../screens/ChatTabScreen';
+import HostScreen from '../screens/HostScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Home: {accountLogin: any} | undefined;
-  //Chat: { accountLogin: any } | undefined;
-  //ChatDetail: undefined;
+  Chat: { accountLogin: any } | undefined;
+  ChatDetail: {accountLogin: any} | undefined;
+  ChatTab: {accountLogin: any} | undefined;
   Profile: {accountLogin: any} | undefined;
-  //Ranking: { accountLogin: any } | undefined;
-  //RankingMatch: undefined;
+  Ranking: { accountLogin: any } | undefined;
+  RankingMatch: {accountLogin: any} | undefined;
   Setting: {accountLogin: any} | undefined;
   Friends: {accountLogin: any} | undefined;
   AIChallenge: {accountLogin: any} | undefined;
+  Host: {accountLogin: any} | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -33,14 +35,15 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="RankingMatch"
+        initialRouteName="Home"
         screenOptions={{headerShown: false}}>
-        <Stack.Screen
+        {/* <Stack.Screen
           name="TestThemeAndLanguage"
           component={ThemeLanguageTester}
-        />
+        /> */}
         <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -49,6 +52,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Setting" component={SettingScreen} />
         <Stack.Screen name="Friends" component={FriendsScreen} />
         <Stack.Screen name="AIChallenge" component={AIChallengeScreen} />
+        <Stack.Screen name="Host" component={HostScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

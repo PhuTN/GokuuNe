@@ -1,4 +1,4 @@
-import {friends} from '../fake_data/Dien/fake_data';
+import { friends } from '../fake_data/Dien/fake_data';
 
 export const translations = {
   en: {
@@ -141,6 +141,7 @@ export const translations = {
     search: 'Search...',
     currently_active: 'Currently Active',
     recents: 'Recents',
+    no_user_found: 'No active user found'
   },
   vi: {
     greeting: 'Xin chào',
@@ -288,5 +289,6 @@ export const translations = {
     search: 'Tìm kiếm...',
     currently_active: 'Đang hoạt động',
     recents: 'Gần đây',
+    no_user_found: 'Không tìm thấy người dùng nào'
   },
 };

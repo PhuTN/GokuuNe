@@ -42,7 +42,7 @@ export default function ChatScreen() {
 
         {filteredUsers.length === 0 ? (
           <Text style={styles.noUserText}>
-            {t.no_user_found || 'No active user found.'}
+            {t.no_user_found}
           </Text>
         ) : (
           <FlatList

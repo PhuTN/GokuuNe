@@ -121,6 +121,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
       systemNotification: true,
       pushState: notification,
     });
+    navigation.navigate('Ranking', { accountLogin });
   };
 
   const handleHost = () => {
@@ -131,6 +132,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
       systemNotification: true,
       pushState: notification,
     });
+    navigation.navigate('Host', { accountLogin });
   };
 
   const handleChat = () => {
@@ -141,12 +143,13 @@ const HomeScreen = ({ route, navigation }: Props) => {
       systemNotification: true,
       pushState: notification,
     });
+    navigation.navigate('Chat', { accountLogin });
   };
 
   return (
     <ScrollView
       style={styles.scrollView}
-      contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+      contentContainerStyle={{ alignItems: "center" }}
     >
       {/* Header - Chess */}
       <View style={styles.chessBoard}>

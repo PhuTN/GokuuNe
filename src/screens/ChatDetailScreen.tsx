@@ -15,7 +15,7 @@ const ChatDetailScreen = () => {
   const {language} = useLanguage();
   const t = translations[language];
 
-  const handleSendMessage = newMessage => {
+  const handleSendMessage = (newMessage: string) => {
     setMessages([
       ...messages,
       {
