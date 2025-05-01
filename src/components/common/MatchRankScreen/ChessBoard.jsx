@@ -1,50 +1,64 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Text,View,Image, StyleSheet, TouchableOpacity, DeviceEventEmitter, Alert } from "react-native"; 
-import Dot from "./Dot";
+import React, {useEffect, useRef, useState} from 'react';
+import {
+  Text,
+  View,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  DeviceEventEmitter,
+  Alert,
+} from 'react-native';
+import Dot from './Dot';
+import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
+import {playVictorySound} from '../../../untils/VictorySound';
+import {useIsFocused} from '@react-navigation/native';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
+import {GameState} from '../../../logic/GameLogic';
+import {Animated} from 'react-native';
+import {opacity} from 'react-native-reanimated/lib/typescript/Colors';
+import {AnimatedImage} from 'react-native-reanimated/lib/typescript/component/Image';
 
-import { useIsFocused } from "@react-navigation/native";
-import { useLanguage } from "../../../asycnc_store/LanguageContext";
-import { translations } from "../../../untils/i18n";
-import { GameState } from "../../../logic/GameLogic";
-import { Animated } from 'react-native';
-import { opacity } from "react-native-reanimated/lib/typescript/Colors";
-import { AnimatedImage } from "react-native-reanimated/lib/typescript/component/Image";
-
-const blackPiece= require("../../../assets/images/pieceBlack.png");
+const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
-let pieceArray=[];
-    for(let i=0;i<13*13;i++) {
-        pieceArray.push(null);
-    }
+let pieceArray = [];
+for (let i = 0; i < 13 * 13; i++) {
+  pieceArray.push(null);
+}
 
-export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender, isCurrentPlayerWhite, isStart}) { 
-    const isFocuse = useIsFocused();
-    const [pArr, setPArr] = useState(pieceArray);
-    const [animatedParr, setAnimatedParr] = useState(pieceArray);
-    const {language, toggleLanguage}= useLanguage();
-    const t=translations[language];
-    const [gameState, setGameState] = useState(new GameState());
-    const [whiteSkip, setWhiteSkip] = useState(false);
-    const [blackSkip, setBlackSkip] = useState(false);
-    const fadeAnim = useRef(new Animated.Value(1)).current;     
-    const fadeAnimArr = useRef(
-        Array.from({ length: 13 * 13 }, () => new Animated.Value(1))
-      ).current;
-    useEffect(()=>{
-        setGameState(new GameState());
-        setPArr(pieceArray);
-        const aniPArr = new Array(13);
-        for(let i=0;i<13*13;i++) {
-            aniPArr.push(null);
-        }
-        setAnimatedParr(aniPArr);
-        loadBoardFromGameState(gameState);
-        setBlackSkip(false);
-        setWhiteSkip(false);
-       
-        
-    },[isFocuse]);
-    /*useEffect(()=>{
+export default function ChessBoard({
+  handleEvent,
+  flag,
+  handleIsEnd,
+  handleSurrender,
+  isCurrentPlayerWhite,
+  isStart,
+}) {
+  const isFocuse = useIsFocused();
+  const [pArr, setPArr] = useState(pieceArray);
+  const [animatedParr, setAnimatedParr] = useState(pieceArray);
+  const {language, toggleLanguage} = useLanguage();
+  const t = translations[language];
+  const [gameState, setGameState] = useState(new GameState());
+  const [whiteSkip, setWhiteSkip] = useState(false);
+  const [blackSkip, setBlackSkip] = useState(false);
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnimArr = useRef(
+    Array.from({length: 13 * 13}, () => new Animated.Value(1)),
+  ).current;
+  useEffect(() => {
+    setGameState(new GameState());
+    setPArr(pieceArray);
+    const aniPArr = new Array(13);
+    for (let i = 0; i < 13 * 13; i++) {
+      aniPArr.push(null);
+    }
+    setAnimatedParr(aniPArr);
+    loadBoardFromGameState(gameState);
+    setBlackSkip(false);
+    setWhiteSkip(false);
+  }, [isFocuse]);
+  /*useEffect(()=>{
         if(isStart==true) {
             if(isCurrentPlayerWhite!=flag) {
                 
@@ -58,160 +72,173 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
             console.log("Start");
         }
     },[isStart,flag])*/
-    function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
-        
-                return <View style={style.container}>
-                <TouchableOpacity style={style.button} onPress={(e)=>{
-                    e.preventDefault();
-                    onSkip(isCurrentPlayerWhite);
-                }}>
-                    <Text style={style.text}>{t.skip_text}</Text>
-                </TouchableOpacity>
-    
-                <TouchableOpacity style={style.button} onPress={(e)=>{
-                    e.preventDefault();
-                    onSurrender(isCurrentPlayerWhite);
-                }}>
-                    <Text style={style.text}>{t.surrender_text}</Text>
-                </TouchableOpacity>
-                </View>
-            
-        
-        
-    }
-    function renderCellInRow(index) {
-        let res=[];
-        for( let i=0;i<14;i++) {
-            res.push(<View style={style.cell} key={"Cell"+i+"_Row"+index}></View>)
-        }
-        return res;
-    } 
-    function renderRow() {
-        let res=[];
-        for(let i=0;i<14;i++) {
-            res.push(renderCellInRow(i));
-        }
-        return res;
-    }
-    
-    async function onSurrender(isWhite) {
-        gameState.calculateScore();
-       handleSurrender(isWhite);
-    }
-    function loadBoardFromGameState(gameState) {
-        const boardData = gameState.posArray;
-        for(let i=0;i<13;i++) {
-            for(let j=0;j<13;j++) {
-                if(boardData[i][j]=='B') {
-                    setPArr(pArr=>{
-                        pArr[i*13+j]=blackPiece;
-                        return pArr;
-                    });
-                    continue;
-                }
-                if(boardData[i][j]=='W') {
-                    setPArr(pArr=>{
-                        pArr[i*13+j]=whitePiece;
-                        return pArr;
-                    });
-                    continue;
-                }
-                if(boardData[i][j]=='0') {
-                    setPArr(pArr=>{
-                        pArr[i*13+j]=null;
-                        return pArr;
-                    })
-                }
-                
-            }
-        }
-    }
-    
-   
-    function renderTouchableCell(index) {
-        let res=[];
-        
-        for(let i=0;i<13;i++) {
-            res.push(<TouchableOpacity style={style.touchable} key={"Button"+i+"_Row"+index}  onPress={(e)=>{
-                e.preventDefault();
-                
-                const tempParray = [...pArr];
-                
-                    if(tempParray[index*13+i]!=null) {
-                        return;
-                    }
+  function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
+    return (
+      <View style={style.container}>
+        <TouchableOpacity
+          style={style.button}
+          onPress={e => {
+            e.preventDefault();
+            onSkip(isCurrentPlayerWhite);
+          }}>
+          <Text style={style.text}>{t.skip_text}</Text>
+        </TouchableOpacity>
 
-                    if(flag) {
-                            setGameState(gameState=>{
-                                const moveData = gameState.move(index,i,'W');
-                                if(moveData.canMove) {  
-                                    const animatedSequence = [];
-                                    
-                                    const tempPAnimationArr = [...animatedParr];
-                                    for(let j=0;j<moveData.deathPosition.length;j++) {
-                                        
-                                        const id = moveData.deathPosition[j][0]*13+moveData.deathPosition[j][1];
-                                        
-                                        setAnimatedParr(tempPAnimationArr); 
-                                        Animated.timing(fadeAnimArr[id],{
-                                            toValue: 0, 
-                                            duration: 2000, 
-                                            useNativeDriver: true}).start();
-                                            tempPAnimationArr[id]=blackPiece;
-                                    } 
-                                    
-                                    setAnimatedParr(tempPAnimationArr);
-                                    
-                                   
-                                    loadBoardFromGameState(gameState);
-                                    setBlackSkip(false);
-                                    setWhiteSkip(false);   
-                                    handleEvent(gameState);
-                                }
-                                return gameState;
-                            })
-                                
-                            
-                        
-                    } 
-                    else {
-                        /*if(gameState.isEnd()) {
+        <TouchableOpacity
+          style={style.button}
+          onPress={e => {
+            e.preventDefault();
+            onSurrender(isCurrentPlayerWhite);
+          }}>
+          <Text style={style.text}>{t.surrender_text}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  function renderCellInRow(index) {
+    let res = [];
+    for (let i = 0; i < 14; i++) {
+      res.push(
+        <View style={style.cell} key={'Cell' + i + '_Row' + index}></View>,
+      );
+    }
+    return res;
+  }
+  function renderRow() {
+    let res = [];
+    for (let i = 0; i < 14; i++) {
+      res.push(renderCellInRow(i));
+    }
+    return res;
+  }
+
+  async function onSurrender(isWhite) {
+    gameState.calculateScore();
+    playVictorySound();
+    handleSurrender(isWhite);
+  }
+  function loadBoardFromGameState(gameState) {
+    const boardData = gameState.posArray;
+    for (let i = 0; i < 13; i++) {
+      for (let j = 0; j < 13; j++) {
+        if (boardData[i][j] == 'B') {
+          setPArr(pArr => {
+            pArr[i * 13 + j] = blackPiece;
+            return pArr;
+          });
+          continue;
+        }
+        if (boardData[i][j] == 'W') {
+          setPArr(pArr => {
+            pArr[i * 13 + j] = whitePiece;
+            return pArr;
+          });
+          continue;
+        }
+        if (boardData[i][j] == '0') {
+          setPArr(pArr => {
+            pArr[i * 13 + j] = null;
+            return pArr;
+          });
+        }
+      }
+    }
+  }
+
+  function renderTouchableCell(index) {
+    let res = [];
+
+    for (let i = 0; i < 13; i++) {
+      res.push(
+        <TouchableOpacity
+          style={style.touchable}
+          key={'Button' + i + '_Row' + index}
+          onPress={e => {
+            e.preventDefault();
+
+            const tempParray = [...pArr];
+
+            if (tempParray[index * 13 + i] != null) {
+              return;
+            }
+
+            if (flag) {
+              setGameState(gameState => {
+                const moveData = gameState.move(index, i, 'W');
+                if (moveData.canMove) {
+                  if (moveData.deathPosition.length > 0) {
+                    playCaptureSound(); // Có ăn quân
+                  } else {
+                    playAttackSound(); // Chỉ đánh bình thường
+                  }
+                  const animatedSequence = [];
+
+                  const tempPAnimationArr = [...animatedParr];
+                  for (let j = 0; j < moveData.deathPosition.length; j++) {
+                    const id =
+                      moveData.deathPosition[j][0] * 13 +
+                      moveData.deathPosition[j][1];
+
+                    setAnimatedParr(tempPAnimationArr);
+                    Animated.timing(fadeAnimArr[id], {
+                      toValue: 0,
+                      duration: 2000,
+                      useNativeDriver: true,
+                    }).start();
+                    tempPAnimationArr[id] = blackPiece;
+                  }
+
+                  setAnimatedParr(tempPAnimationArr);
+
+                  loadBoardFromGameState(gameState);
+                  setBlackSkip(false);
+                  setWhiteSkip(false);
+                  handleEvent(gameState);
+                }
+                return gameState;
+              });
+            } else {
+              /*if(gameState.isEnd()) {
                             gameState.calculateScore();
                             
                         }*/
-                            setGameState(gameState=>{ 
-                                const moveData = gameState.move(index,i,'B');
-                                if(moveData.canMove) { 
-                                    const animatedSequence = [];
-                                    
-                                    const tempPAnimationArr = [...animatedParr];
-                                    for(let j=0;j<moveData.deathPosition.length;j++) {
-                                        
-                                        const id = moveData.deathPosition[j][0]*13+moveData.deathPosition[j][1];
-                                        
-                                        setAnimatedParr(tempPAnimationArr); 
-                                        Animated.timing(fadeAnimArr[id],{
-                                            toValue: 0, 
-                                            duration: 2000, 
-                                            useNativeDriver: true}).start();
-                                            tempPAnimationArr[id]=whitePiece;
-                                    } 
-                                    
-                                    setAnimatedParr(tempPAnimationArr);
-                                    
-                                    loadBoardFromGameState(gameState);
-                                    setBlackSkip(false);
-                                    setWhiteSkip(false);   
-                                    handleEvent(gameState); 
-                                }
-                                return gameState;
-                            })
-                        
+              setGameState(gameState => {
+                const moveData = gameState.move(index, i, 'B');
+                if (moveData.canMove) {
+                  if (moveData.deathPosition.length > 0) {
+                    playCaptureSound(); // Có ăn quân
+                  } else {
+                    playAttackSound(); // Chỉ đánh bình thường
+                  }
+                  const animatedSequence = [];
 
-                    } 
-                    
-                
-                /*else {
+                  const tempPAnimationArr = [...animatedParr];
+                  for (let j = 0; j < moveData.deathPosition.length; j++) {
+                    const id =
+                      moveData.deathPosition[j][0] * 13 +
+                      moveData.deathPosition[j][1];
+
+                    setAnimatedParr(tempPAnimationArr);
+                    Animated.timing(fadeAnimArr[id], {
+                      toValue: 0,
+                      duration: 2000,
+                      useNativeDriver: true,
+                    }).start();
+                    tempPAnimationArr[id] = whitePiece;
+                  }
+
+                  setAnimatedParr(tempPAnimationArr);
+
+                  loadBoardFromGameState(gameState);
+                  setBlackSkip(false);
+                  setWhiteSkip(false);
+                  handleEvent(gameState);
+                }
+                return gameState;
+              });
+            }
+
+            /*else {
                     const opponentMove = OnOpponentMove(gameState,isCurrentPlayerWhite);
                     const nextMove = isCurrentPlayerWhite?'B':'W';
                     setGameState((gameState)=>{
@@ -219,179 +246,160 @@ export default function ChessBoard({handleEvent,flag,handleIsEnd,handleSurrender
                         return gameState;
                     })
                 }*/
-                
-            }}>
-                
-                    
-            <Dot index={index*13+i}></Dot>
-            <Animated.Image style={[style.pieceImageEnable,{opacity:fadeAnimArr[index*13+i]}]} source={animatedParr[index*13+i]}></Animated.Image>
-            <Animated.Image style={style.pieceImageEnable} source = {pArr[index*13+i]} ></Animated.Image>
-            
-            </TouchableOpacity>)
-        }
-        return  res;
+          }}>
+          <Dot index={index * 13 + i}></Dot>
+          <Animated.Image
+            style={[
+              style.pieceImageEnable,
+              {opacity: fadeAnimArr[index * 13 + i]},
+            ]}
+            source={animatedParr[index * 13 + i]}></Animated.Image>
+          <Animated.Image
+            style={style.pieceImageEnable}
+            source={pArr[index * 13 + i]}></Animated.Image>
+        </TouchableOpacity>,
+      );
     }
-    function renderTouchableRow() {
-        let res=[];
-        for(let i=0;i<13;i++) {
-            res.push(renderTouchableCell(i));
-        } 
-        return res;
+    return res;
+  }
+  function renderTouchableRow() {
+    let res = [];
+    for (let i = 0; i < 13; i++) {
+      res.push(renderTouchableCell(i));
     }
-    
-    function onSkip(isWhite) {
-        if(isWhite&&flag) {
-            setWhiteSkip(true);
-            if(blackSkip) {
-                gameState.calculateScore();
-                handleIsEnd(gameState);
-                console.log("White Skip");
-            }
-            else {
-                handleEvent(gameState)
-            }
-            return;
-        }
-        if(!isWhite&&!flag) {
-            setBlackSkip(true);
-            if(whiteSkip) {
-                gameState.calculateScore();
-                handleIsEnd(gameState);
-                console.log("Black Skip");
-            }
-            else {
-                handleEvent(gameState)
-            }
-        }
-        
-        
-    }
-    const board = renderRow();
-    const touchable= renderTouchableRow();
-    
-    return (
-        <View>
-           {
-             renderSkipSurrenderButtons(false)
-           }
-        <View style={style.chessBoardBackGround} >
-            <View style={style.chessBoard}>
-                {
-                    board.map((item, index)=>{
-                        return (
-                            <View style={style.row} key={"Row"+index}>
-                                {
-                                    item.map((cell,i)=>{
-                                        return cell;
-                                    })
-                                }
-                            </View>
-                        )
-                    })
-                }
-                <View style={style.touchableArea}>
-                    {
-                        touchable.map((item,index)=>{
-                            return (
-                                <View style={style.row} key={"TouchableRow"+index}>
-                                    {
-                                        item.map((cell,i)=>{
-                                            return cell;
-                                        })
-                                    }
-                                </View>
-                            )
-                        })
-                    }
+    return res;
+  }
 
-</View>
-            </View>
-            
-            
-            
-        </View>
-        {
-            renderSkipSurrenderButtons(true)
-        }
-        
-        </View>
-    )
-
-}
-export const currentPlayerMove = {WAITING:{
-    move:[],
-    isSkip:false
-}};
-const style=StyleSheet.create({
-    chessBoardBackGround: {
-        width:388,
-        height:388,
-        backgroundColor:'#f1b152',
-        alignSelf:'center'
-    },
-    chessBoard: {
-        width:378,
-        height:378,
-        position:'absolute',
-        top:5,
-        left:5,
-        backgroundColor:'#fff5e9'
-    },
-    cell:{
-        width:27,
-        height:27,
-        borderWidth:1,
-        borderColor:'black'
-    },
-    row:{
-        display:'flex',
-        flexDirection:'row'
-    },
-    touchableArea: {
-        width:351,
-        height:351,
-        position:'absolute',
-        top:13.5,
-        left:13.5,
-        borderColor:'black',
-        
-    },
-    touchable: {
-        width:27,
-        height:27,
-        
-    },
-    pieceImageDisable:{
-        display:'none',
-        position:'absolute',
-        top:0,
-        left:0
-    },
-    pieceImageFade: {
-        top:0,
-        left:0,
-        position:'absolute',
-        
-    },
-    pieceImageEnable:{
-        position:'absolute',
-        top:0,
-        left:0
-    },
-    container: {
-        flexDirection: 'row', // Sắp xếp ngang
-        justifyContent: 'space-around', // Căn chỉnh khoảng cách
-        alignItems: 'center',
-        padding: 10,
-      },
-      button: {
-        backgroundColor: '#6B50F6', // Màu nền
-        padding: 15,
-        borderRadius: 10, // Bo góc
-      },
-      text: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: 'bold',
+  function onSkip(isWhite) {
+    if (isWhite && flag) {
+      setWhiteSkip(true);
+      if (blackSkip) {
+        gameState.calculateScore();
+        handleIsEnd(gameState);
+        console.log('White Skip');
+      } else {
+        handleEvent(gameState);
       }
-})
+      return;
+    }
+    if (!isWhite && !flag) {
+      setBlackSkip(true);
+      if (whiteSkip) {
+        gameState.calculateScore();
+        handleIsEnd(gameState);
+        console.log('Black Skip');
+      } else {
+        handleEvent(gameState);
+      }
+    }
+  }
+  const board = renderRow();
+  const touchable = renderTouchableRow();
+
+  return (
+    <View>
+      {renderSkipSurrenderButtons(false)}
+      <View style={style.chessBoardBackGround}>
+        <View style={style.chessBoard}>
+          {board.map((item, index) => {
+            return (
+              <View style={style.row} key={'Row' + index}>
+                {item.map((cell, i) => {
+                  return cell;
+                })}
+              </View>
+            );
+          })}
+          <View style={style.touchableArea}>
+            {touchable.map((item, index) => {
+              return (
+                <View style={style.row} key={'TouchableRow' + index}>
+                  {item.map((cell, i) => {
+                    return cell;
+                  })}
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      </View>
+      {renderSkipSurrenderButtons(true)}
+    </View>
+  );
+}
+export const currentPlayerMove = {
+  WAITING: {
+    move: [],
+    isSkip: false,
+  },
+};
+const style = StyleSheet.create({
+  chessBoardBackGround: {
+    width: 388,
+    height: 388,
+    backgroundColor: '#f1b152',
+    alignSelf: 'center',
+  },
+  chessBoard: {
+    width: 378,
+    height: 378,
+    position: 'absolute',
+    top: 5,
+    left: 5,
+    backgroundColor: '#fff5e9',
+  },
+  cell: {
+    width: 27,
+    height: 27,
+    borderWidth: 1,
+    borderColor: 'black',
+  },
+  row: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  touchableArea: {
+    width: 351,
+    height: 351,
+    position: 'absolute',
+    top: 13.5,
+    left: 13.5,
+    borderColor: 'black',
+  },
+  touchable: {
+    width: 27,
+    height: 27,
+  },
+  pieceImageDisable: {
+    display: 'none',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  pieceImageFade: {
+    top: 0,
+    left: 0,
+    position: 'absolute',
+  },
+  pieceImageEnable: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  container: {
+    flexDirection: 'row', // Sắp xếp ngang
+    justifyContent: 'space-around', // Căn chỉnh khoảng cách
+    alignItems: 'center',
+    padding: 10,
+  },
+  button: {
+    backgroundColor: '#6B50F6', // Màu nền
+    padding: 15,
+    borderRadius: 10, // Bo góc
+  },
+  text: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});

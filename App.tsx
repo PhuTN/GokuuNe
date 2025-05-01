@@ -6,6 +6,8 @@ import {NotificationProvider} from './src/asycnc_store/NotificationContext';
 import PushNotification from 'react-native-push-notification';
 import {PermissionsAndroid, Platform} from 'react-native';
 import {playBackgroundMusic} from './src/untils/BackgroundMusic';
+import {loadSoundEffects} from './src/untils/SoundEffects';
+import {loadVictorySound} from './src/untils/VictorySound';
 
 export default function App() {
   useEffect(() => {
@@ -32,7 +34,9 @@ export default function App() {
       });
     }
     // 🔊 Phát nhạc nền khi mở app
-    playBackgroundMusic();
+    // playBackgroundMusic();
+    loadSoundEffects(); // Load nhạc hiệu ứng
+    loadVictorySound(); // 👈 Load file riêng cho chiến thắng
   }, []);
 
   return (
