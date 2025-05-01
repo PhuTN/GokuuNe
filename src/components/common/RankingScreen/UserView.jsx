@@ -12,7 +12,7 @@ export default function UserView({user}) {
         <View
          style={styles.container}>
             <LinearGradient  
-                colors={['#6B50F6', '#C150F6']} // Colors for gradient
+                colors={['#6B50F6', '#C150F6']} 
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 0 }} 
                 style={styles.lineargradient}

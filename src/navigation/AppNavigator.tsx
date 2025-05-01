@@ -12,6 +12,8 @@ import SettingScreen from '../screens/SettingScreen';
 // import ThemeLanguageTester from '../components/test_ui/ThemeLanguageTester';
 import FriendsScreen from '../screens/FriendsScreen';
 import AIChallengeScreen from '../screens/AIChallengeScreen';
+import RankingScreen from '../screens/RankingScreen';
+import RankingMatchScreen from '../screens/RankingMatchScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -37,11 +39,12 @@ const AppNavigator = () => {
         {/* <Stack.Screen name="Chat" component={ChatScreen} /> */}
         {/* <Stack.Screen name="ChatDetail" component={ChatDetailScreen} /> */}
         <Stack.Screen name="Profile" component={ProfileScreen} />
-        {/* <Stack.Screen name="Ranking" component={RankingScreen} /> */}
-        {/* <Stack.Screen name="RankingMatch" component={RankingMatchScreen} /> */}
+         <Stack.Screen name="Ranking" component={RankingScreen} /> 
+        <Stack.Screen name="RankingMatch" component={RankingMatchScreen} /> 
         <Stack.Screen name="Setting" component={SettingScreen} />
         <Stack.Screen name="Friends" component={FriendsScreen} />
         <Stack.Screen name="AIChallenge" component={AIChallengeScreen} />
+        
       </Stack.Navigator>
     </NavigationContainer>
   );

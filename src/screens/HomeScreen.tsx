@@ -121,6 +121,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
       systemNotification: true,
       pushState: notification,
     });
+    navigation.navigate("Ranking");
   };
 
   const handleHost = () => {

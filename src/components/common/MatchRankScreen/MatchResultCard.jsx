@@ -3,8 +3,9 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
+import { Result } from '../../../fake_data/Binh/fake_data';
 
-const GameResultCard = ({gameResult}) => {
+const GameResultCard = ({gameResult, navigation}) => {
     const {language, toggleLanguage}= useLanguage();
     const t = translations[language];
     const resText = gameResult.resultText=="Victory"?t.win_text:t.lose_text
@@ -25,6 +26,7 @@ const GameResultCard = ({gameResult}) => {
       </View>
 
       {/* Players */}
+      <View style={styles.body}>
       <View style={styles.playersRow}>
         {/* Player 1 */}
         <View style={styles.player}>
@@ -50,29 +52,36 @@ const GameResultCard = ({gameResult}) => {
 
       {/* Ratings */}
       <View style={styles.ratings}>
-        <Text style={styles.ratingTitle}>Rapid Rating</Text>
+        <Text style={styles.ratingTitle}>{t.rank_text}</Text>
         <Text style={styles.ratingValue}>
-          599 <Text style={styles.ratingChange}>+0</Text>
+          {Result.currentRank} <Text style={styles.ratingChange}>{Result.rankRising}</Text>
         </Text>
-        <Text style={styles.leagueTitle}>Stone League</Text>
+        <Text style={styles.leagueTitle}>{t.elo_text}</Text>
         <Text style={styles.ratingValue}>
-          163 <Text style={styles.ratingGain}>+5</Text>
+          {Result.currentElo} <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
         </Text>
       </View>
 
       {/* Buttons */}
       <TouchableOpacity style={styles.primaryButton}>
-        <Text style={styles.primaryButtonText}>Game Report</Text>
+        <Text style={styles.primaryButtonText}>{t.report_text}</Text>
       </TouchableOpacity>
 
       <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text>Rematch</Text>
+        <TouchableOpacity style={styles.secondaryButton} onPress={(e)=>{
+          e.preventDefault();
+          navigation.replace("RankingMatch");
+        }}>
+          <Text>{t.rematch_text}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text>New 10 min</Text>
+        <TouchableOpacity style={styles.secondaryButton} onPress={(e)=>{
+          e.preventDefault();
+          navigation.replace("RankingMatch");
+        }}>
+          <Text>{t.new_text}</Text>
         </TouchableOpacity>
       </View>
+    </View> 
     </View>
     </View>
   );
@@ -94,7 +103,7 @@ overlay:{
   container: {
     backgroundColor: '#f9f9f9',
     borderRadius: 12,
-    padding: 16,
+    
     width: 300,
     alignSelf: 'center',
     shadowColor: '#000',
@@ -103,9 +112,16 @@ overlay:{
     shadowRadius: 8,
     elevation: 5,
   },
+  body:{
+    width:"100%",
+    padding:16
+  },
   header: {
     alignItems: 'center',
     marginBottom: 12,
+    backgroundColor:'gray',
+    borderRadius:10,
+    paddingVertical:10 
   },
   title: {
     fontSize: 30,

@@ -9,8 +9,8 @@ import { Matches } from '../fake_data/Binh/fake_data';
 import LinearGradient from 'react-native-linear-gradient';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
-import GameState from '../game_logic/GameState';
-import ResultPopup from '../components/common/MatchRankScreen/ResultPopup';
+
+
 import { useIsFocused } from '@react-navigation/native';
 import FindMatch from '../untils/FindMatch';
 import GameResultCard from '../components/common/MatchRankScreen/MatchResultCard';
@@ -44,8 +44,7 @@ function RenderSearchPopup(userName) {
   return <></>
 }
 function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite,isEnd,whiteScore, blackScore,surrender, playerBlack, playerWhite, currentIntervalId) {
-   const yoursCore = isCurrentPlayerWhite?whiteScore:blackScore;
-   const opponentScore = isCurrentPlayerWhite?blackScore:whiteScore;
+   
    const gameResult = {
     blackScore:blackScore,
     whiteScore:whiteScore,
@@ -58,34 +57,34 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
     if(!isCurrentPlayerWhite) {
       gameResult.resultText="Victory";
       
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
       //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
     }
       //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
       gameResult.resultText="Defeat";
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
    }
    if(timeBlack=='0:00') {
     clearInterval(currentIntervalId);
       if(isCurrentPlayerWhite) {
         gameResult.resultText="Victory";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
       }
       //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup> 
       gameResult.resultText="Defeat";
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     }
   if(isEnd) {
     clearInterval(currentIntervalId);
       if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
         gameResult.resultText="Victory";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
       }
       if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
         gameResult.resultText="Defeat";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
       }
       
@@ -94,14 +93,14 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
     clearInterval(currentIntervalId);
     gameResult.resultText="Defeat";
     console.log(gameResult.playerBlack);
-    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
   }
   if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
     clearInterval(currentIntervalId);
     gameResult.resultText="Victory";
     console.log(gameResult.playerBlack);
-    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
   }   
    
@@ -223,6 +222,7 @@ const RankingMatchScreen = ({ navigation }) => {
       <View style={styles.mainView}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
+    
     <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender} isCurrentPlayerWhite={isCurrentPlayerWhite} isStart={isStart}></ChessBoard>
     <Player user={playeWhite} isWhite={true} time={timeWhite}  score={whiteScore}></Player>
     <View style={styles.buttonContainer}>

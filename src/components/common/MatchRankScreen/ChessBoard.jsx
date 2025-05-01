@@ -387,7 +387,9 @@ const style=StyleSheet.create({
       button: {
         backgroundColor: '#6B50F6', // Màu nền
         padding: 15,
-        borderRadius: 10, // Bo góc
+        borderRadius: 10,
+        width:120,
+        alignItems:'center'
       },
       text: {
         color: '#fff',
