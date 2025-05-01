@@ -91,6 +91,10 @@ export const translations = {
     noti_warning: 'Wanring',
     noti_danger: 'Error',
 
+    noti_permission_deny: 'You have denied notification permission. Please grant permission in Settings!',
+    noti_permission_cancel: 'Cancel',
+    noti_permission_setting:'Open Setting',
+
     noti_login: 'You have chosen to login',
     noti_login_success: 'Log in successfully!',
     noti_login_faile: 'Incorrect username or password!',
@@ -238,6 +242,10 @@ export const translations = {
     noti_success: 'Thành công',
     noti_warning: 'Cảnh báo',
     noti_danger: 'Lỗi',
+
+    noti_permission_deny: 'Bạn đã từ chối quyền thông báo. Vui lòng cấp quyền trong Cài đặt!',
+    noti_permission_cancel: 'Hủy',
+    noti_permission_setting:'Mở Cài Đặt',
 
     noti_login: 'Bạn đã chọn đăng nhập',
     noti_login_success: 'Đăng nhập thành công!',
