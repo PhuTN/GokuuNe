@@ -118,6 +118,16 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
     };
 
     const handlePlay = () => {
+        if (selectedPiece === null || selectedMode === null) {
+            notify({
+                message: t.noti_warning,
+                description: t.noti_ai_choose_piece_and_mode,
+                type: 'warning',
+                systemNotification: true,
+                pushState: notification,
+            });
+            return;
+        }
         notify({
             message: t.noti_success,
             description: t.noti_ai_play,
@@ -125,6 +135,9 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
+        navigation.navigate('AIMatch', { accountLogin, selectedPiece, selectedMode }); // Tạo màn hình chơi với AI
+        setSelectedMode(null);
+        setSelectedPiece(null);
     };
 
     return (
@@ -147,6 +160,7 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
                 </View>
             </View>
 
+            {/* Choose army type */}
             <Text style={styles.sectionTitle}>{t.ai_chess_army_title}</Text>
             <View style={styles.sectionButton}>
                 <Button_AIChallenge_Chess_Piece
@@ -166,6 +180,7 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
                     isSelected={selectedPiece === "black"} />
             </View>
 
+            {/* Choose play mode */}
             <View style={styles.modeContainer}>
                 <Text style={styles.modeTitle}>{t.ai_mode_title}</Text>
                 <Button_AIChallenge_Mode
@@ -234,7 +249,7 @@ const lightStyles = StyleSheet.create({
     sectionButton: {
         flex: 1,
         flexDirection: "row",
-        marginBottom: 40,
+        marginBottom: 30,
     },
     sectionTitle: {
         fontSize: 18,
@@ -286,7 +301,7 @@ const darkStyles = StyleSheet.create({
     sectionButton: {
         flex: 1,
         flexDirection: "row",
-        marginBottom: 40,
+        marginBottom: 30,
     },
     sectionTitle: {
         fontSize: 18,

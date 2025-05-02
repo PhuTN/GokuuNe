@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -10,9 +9,9 @@ import { useNotification } from '../asycnc_store/NotificationContext';
 import { StyleSheet, Text, View } from "react-native";
 import Header from '../components/common/Header';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'FriendLeaderBoard'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'AIMatch'>;
 
-const FriendLeaderBoardScreen = ({ route, navigation }: Props) => {
+const AIMatchScreen = ({ route, navigation }: Props) => {
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
 
@@ -26,7 +25,7 @@ const FriendLeaderBoardScreen = ({ route, navigation }: Props) => {
 
     return (
         <View>
-            <Header title="LEADERBOARD" />
+            <Header title="AI MATCH" />
         </View>
     );
 };
@@ -39,4 +38,4 @@ const darkStyles = StyleSheet.create({
 
 });
 
-export default FriendLeaderBoardScreen;
+export default AIMatchScreen;

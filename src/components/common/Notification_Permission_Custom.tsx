@@ -1,17 +1,19 @@
 // src/components/Notification_Permission_Custom.tsx
 import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, Linking, TouchableWithoutFeedback } from 'react-native';
 import { useLanguage } from "../../asycnc_store/LanguageContext";
 import { useTheme } from "../../asycnc_store/ThemeContext";
 import { translations } from "../../untils/i18n";
 import NotificationIcon from "../../assets/icons/notification_permission_icon.svg";
+import LinearGradient from 'react-native-linear-gradient';
 
 type Props = {
     visible: boolean;
+    setModalVisible: (visible: boolean) => void;
     onClose: () => void;
 };
 
-const NotificationPermissionCustom: React.FC<Props> = ({ visible, onClose }) => {
+const NotificationPermissionCustom: React.FC<Props> = ({ visible, setModalVisible, onClose }) => {
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
 
@@ -19,34 +21,51 @@ const NotificationPermissionCustom: React.FC<Props> = ({ visible, onClose }) => 
     const isDark = theme === 'dark';
     const styles = isDark ? darkStyles : lightStyles;
 
+    const hanldeSetting = () => {
+        Linking.openSettings();
+        setModalVisible(false);
+    };
+
     return (
         <Modal
             transparent
             visible={visible}
             animationType="fade"
+            onRequestClose={() => setModalVisible(false)}
         >
-            <View style={styles.overlay}>
-                <View style={styles.container}>
-                    {/* Hàng đầu - Icon */}
-                    <NotificationIcon width={60} height={60} />
+            <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+                <View style={styles.overlay}>
+                    <TouchableWithoutFeedback onPress={() => { }}>
+                        <View style={styles.container}>
+                            {/* Hàng đầu - Icon */}
+                            <NotificationIcon width={60} height={60} />
 
-                    {/* Hàng giữa - Nội dung */}
-                    <View style={styles.contentContainer}>
-                        {/* <Text style={styles.title}>Thông báo</Text> */}
-                        <Text style={styles.message}>{t.noti_permission_deny}</Text>
-                    </View>
+                            {/* Hàng giữa - Nội dung */}
+                            <View style={styles.contentContainer}>
+                                {/* <Text style={styles.title}>Thông báo</Text> */}
+                                <Text style={styles.message}>{t.noti_permission_deny}</Text>
+                            </View>
 
-                    {/* Hàng cuối - Button */}
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                            <Text style={styles.cancelText}>{t.noti_permission_cancel}</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.settingButton} onPress={Linking.openSettings}>
-                            <Text style={styles.settingText}>{t.noti_permission_setting}</Text>
-                        </TouchableOpacity>
-                    </View>
+                            {/* Hàng cuối - Button */}
+                            <View style={styles.buttonContainer}>
+                                <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
+                                    <Text style={styles.cancelText}>{t.noti_permission_cancel}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={hanldeSetting}>
+                                    <LinearGradient
+                                        colors={["#6B50F6", "#CC8FED"]}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                        style={styles.settingButton}
+                                    >
+                                        <Text style={styles.settingText}>{t.noti_permission_setting}</Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 };
@@ -96,10 +115,16 @@ const lightStyles = StyleSheet.create({
         borderRadius: 8,
     },
     settingButton: {
-        backgroundColor: '#007bff',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+        shadowColor: "#6B50F6",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
     },
     cancelText: {
         color: '#000',
@@ -154,10 +179,16 @@ const darkStyles = StyleSheet.create({
         borderRadius: 8,
     },
     settingButton: {
-        backgroundColor: '#007bff',
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 8,
+        alignItems: "center",
+        justifyContent: "center",
+        elevation: 5,
+        shadowColor: "#6B50F6",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
     },
     cancelText: {
         color: '#000',

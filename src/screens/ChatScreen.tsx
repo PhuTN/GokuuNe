@@ -12,7 +12,7 @@ import {translations} from '../untils/i18n';
 
 export default function ChatScreen() {
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   const {language} = useLanguage();
   const t = translations[language];
 

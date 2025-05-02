@@ -61,6 +61,7 @@ export const translations = {
     friends_send_message: 'Send message',
     friends_challenge: 'Challenge',
     friends_unfriend: 'Unfriend',
+    friends_no_user_found: 'No users found',
 
     setting: 'SETTING',
     setting_guest: 'Guest',
@@ -113,6 +114,7 @@ export const translations = {
     noti_ai_hard_mode: 'You have chosen hard mode',
     noti_ai_medium_mode: 'You have chosen medium mode',
     noti_ai_easy_mode: 'You have chosen easy mode',
+    noti_ai_choose_piece_and_mode: 'Please select starting army and game mode!',
     noti_ai_play: "Get ready! You're playing against the AI!",
 
     noti_friends_challenge: 'Challenge',
@@ -211,6 +213,7 @@ export const translations = {
     friends_send_message: 'Gửi tin nhắn',
     friends_challenge: 'Thách thức',
     friends_unfriend: 'Hủy kết bạn',
+    friends_no_user_found: 'Không tìm thấy người dùng nào',
 
     setting: 'CÀI ĐẶT',
     setting_guest: 'Khách',
@@ -265,6 +268,7 @@ export const translations = {
     noti_ai_hard_mode: 'Bạn đã chọn chế độ khó',
     noti_ai_medium_mode: 'Bạn đã chọn chế độ trung bình',
     noti_ai_easy_mode: 'Bạn đã chọn chế độ dễ',
+    noti_ai_choose_piece_and_mode: 'Vui lòng chọn quân bắt đầu và chế độ chơi!',
     noti_ai_play: 'Sẵn sàng chưa? Bạn đang đấu với AI!',
 
     noti_friends_challenge: 'Thách thức',

@@ -37,15 +37,16 @@ const FriendsScreen = ({ route, navigation }: Props) => {
     const filteredFriends = searchText.trim() === ''
         ? accountFriends
         : accountFriends.filter(friend =>
-            friend.usernameFriend.toLowerCase().includes(searchText.toLowerCase()) ||
-            friend.nameFriend.toLowerCase().includes(searchText.toLowerCase())
+            friend.idFriend.toString() === searchText || // Kiểm tra ID
+            friend.usernameFriend.toLowerCase().includes(searchText.toLowerCase()) // Tìm kiếm theo username
         );
     const filteredAccounts = searchText.trim() === ''
         ? []
         : accounts.filter(account =>
-            (account.id.toString() === searchText ||
-                account.username.toLowerCase().includes(searchText.toLowerCase())) &&
-            !accountFriends.some(friend => friend.idFriend === account.id) // Chỉ hiển thị những account chưa là bạn bè
+            (account.id.toString() === searchText || // Kiểm tra ID
+                account.username.toLowerCase().includes(searchText.toLowerCase())) && // Tìm kiếm theo username
+            !accountFriends.some(friend => friend.idFriend === account.id) && // Chỉ hiển thị những account chưa là bạn bè
+            account.id !== accountLogin.id // Loại bỏ accountLogin
         );
 
     const { language, toggleLanguage } = useLanguage();
@@ -69,8 +70,8 @@ const FriendsScreen = ({ route, navigation }: Props) => {
     };
 
     const closeMoreModal = () => {
-        setMoreModalVisible(false);
         setSelectedFriend(null);
+        setMoreModalVisible(false);
     };
 
     const handleAddFriend = () => {
@@ -95,6 +96,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
+        navigation.navigate('Host', { accountLogin, friend: selectedFriend });
         closeMoreModal();
     };
 
@@ -106,10 +108,11 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
+        navigation.navigate('ChatDetail', { accountLogin, friend: selectedFriend });
         closeMoreModal();
     };
 
-    const handleMoreFunctionUnfriend = () => {
+    const handleMoreFunctionUnfriend = (friend: any) => {
         notify({
             message: t.noti_success,
             description: t.noti_friends_remove_success,
@@ -121,7 +124,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
         // hàm xóa friend
     };
 
-    const handleChallenge = () => {
+    const handleChallenge = (friend: any) => {
         notify({
             message: t.noti_info,
             description: t.noti_go_friends_challenge,
@@ -129,7 +132,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
-        // navigation.navigate('Login');
+        navigation.navigate('Host', { accountLogin, friend });
     };
 
     const handleLeaderBoard = () => {
@@ -140,7 +143,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
-        // navigation.navigate('Login');
+        navigation.navigate('FriendLeaderBoard', { accountLogin });
     };
 
     return (
@@ -163,6 +166,11 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                     <SearchWhiteIcon width={22} height={22} />
                 )}
             </View>
+
+            {/* No users found */}
+            {searchText.trim() !== '' && filteredFriends.length === 0 && filteredAccounts.length === 0 && (
+                <Text style={styles.noUserFound}>{t.friends_no_user_found}</Text>
+            )}
 
             <View style={{ width: '100%', alignItems: 'center' }}>
                 {searchText.trim() === '' && (
@@ -202,7 +210,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                                 </View>
                                 <View style={styles.buttonContainer}>
                                     <Button_AddFriend Icon={MoreFunctionIcon} onPress={() => handleMoreFunction(item)} />
-                                    <Button_AddFriend Icon={ChallengeIcon} onPress={handleChallenge} />
+                                    <Button_AddFriend Icon={ChallengeIcon} onPress={() => handleChallenge(item)} />
                                 </View>
                             </View>
                         </Card>
@@ -393,6 +401,10 @@ const lightStyles = StyleSheet.create({
         borderBottomColor: '#eee',
         color: 'black'
     },
+    noUserFound: {
+        fontSize: 16,
+        color: "black"
+    }
 });
 
 const darkStyles = StyleSheet.create({
@@ -520,6 +532,10 @@ const darkStyles = StyleSheet.create({
         borderBottomColor: 'white',
         color: 'white'
     },
+    noUserFound: {
+        fontSize: 16,
+        color: "white"
+    }
 });
 
 export default FriendsScreen;

@@ -46,6 +46,7 @@ export default function App() {
           <NotificationPermissionCustom
             visible={showPermissionModal}
             onClose={() => setShowPermissionModal(false)}
+            setModalVisible={setShowPermissionModal}
           />
         </LanguageProvider>
       </ThemeProvider>
