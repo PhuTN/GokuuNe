@@ -121,6 +121,7 @@ const RankingMatchScreen = ({ navigation }) => {
   const [isEnd, setIsEnd] = useState(false);
   const [surrender, setSurrender] = useState(0);//0 new ko ai dau hang, 1 neu trang dau hang, 2 neu den dau hang;
   const [isStart,setIsStart]= useState(false);
+  
   const [playerBlack, setPlayerBlack] = useState({
     userId:"user0010",
     userName:"Searching",

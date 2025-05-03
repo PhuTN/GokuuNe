@@ -1,4 +1,4 @@
-import {Text,View,Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text,View,Image, StyleSheet, TouchableOpacity, useWindowDimensions} from 'react-native';
 import { isWhite } from './ChessBoard';
 import { useTheme } from '../../../asycnc_store/ThemeContext';
 export default  function Player({user,isWhite,time,score}) { 
@@ -9,9 +9,13 @@ export default  function Player({user,isWhite,time,score}) {
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
     const styles = isDark?darkStyles:whiteStyles;
+    const {height} = useWindowDimensions();
+    const marginStyle= {
+        marginBottom:isWhite?(height-688)/4 :0
+    }
     return (
         
-        <View style={styles.container}>
+        <View style={[styles.container,marginStyle]}>
             <View style={styles.playerInfo}>
             <Image style={styles.avatar} source={user.userAvatarURL}></Image> 
             <View  >
