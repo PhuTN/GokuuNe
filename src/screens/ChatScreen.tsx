@@ -9,8 +9,9 @@ import {activeUsers, recentChats} from '../fake_data/Phuc/fake_data';
 import {useTheme} from '../asycnc_store/ThemeContext';
 import {useLanguage} from '../asycnc_store/LanguageContext';
 import {translations} from '../untils/i18n';
+import ScreenHeader from '../components/common/ScreenHeader';
 
-export default function ChatScreen() {
+export default function ChatScreen({navigation}) {
   const {theme} = useTheme();
   const isDark = theme === 'light';
   const {language} = useLanguage();
@@ -30,7 +31,8 @@ export default function ChatScreen() {
 
   const renderContent = () => (
     <>
-      <ChatHeader />
+      <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader>
+      {/* <ChatHeader /> */}
       <SearchBar onSearch={setSearchQuery} value={searchQuery} />
 
       {/* Currently Active Section */}

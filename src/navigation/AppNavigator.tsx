@@ -33,7 +33,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="RankingMatch"
+        initialRouteName="Chat"
         screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="TestThemeAndLanguage"

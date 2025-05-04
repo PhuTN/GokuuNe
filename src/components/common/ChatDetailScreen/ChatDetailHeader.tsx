@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   wrapper: {
     flexDirection: 'row',
     padding: 16,
-    backgroundColor: '#E5A8FF',
+    backgroundColor: '#BC2CFF80',
     borderBottomLeftRadius: 300, // Bo tròn đáy header nhiều hơn
     borderBottomRightRadius: 300, // Bo tròn đáy header nhiều hơn
     alignItems: 'center',
