@@ -114,7 +114,7 @@ export default function ChessBoard({
 
   async function onSurrender(isWhite) {
     gameState.calculateScore();
-    playVictorySound();
+    //playVictorySound();
     handleSurrender(isWhite);
   }
   function loadBoardFromGameState(gameState) {

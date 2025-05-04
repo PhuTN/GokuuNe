@@ -134,3 +134,9 @@ export const Matches = {
         rank:10
     }
 }
+export const Result = {
+    currentRank:20,
+    rankRising:"+2",
+    currentElo:2500,
+    eloRisiing:"+100"
+}

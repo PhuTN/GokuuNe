@@ -59,34 +59,34 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
     if(!isCurrentPlayerWhite) {
       gameResult.resultText="Victory";
       
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
       //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
     }
       //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
       gameResult.resultText="Defeat";
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
    }
    if(timeBlack=='0:00') {
     clearInterval(currentIntervalId);
       if(isCurrentPlayerWhite) {
         gameResult.resultText="Victory";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
       }
       //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup> 
       gameResult.resultText="Defeat";
-      return <GameResultCard gameResult={gameResult}></GameResultCard>
+      return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     }
   if(isEnd) {
     clearInterval(currentIntervalId);
       if((whiteScore>blackScore&&isCurrentPlayerWhite)||(whiteScore<blackScore&&!isCurrentPlayerWhite)) {
         gameResult.resultText="Victory";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
       }
       if((whiteScore<blackScore&&isCurrentPlayerWhite)||(whiteScore>blackScore&&!isCurrentPlayerWhite)) {
         gameResult.resultText="Defeat";
-        return <GameResultCard gameResult={gameResult}></GameResultCard>
+        return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
         //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
       }
       
@@ -95,14 +95,14 @@ function RenderResultPopup( timeWhite,timeBlack,navigation, isCurrentPlayerWhite
     clearInterval(currentIntervalId);
     gameResult.resultText="Defeat";
     console.log(gameResult.playerBlack);
-    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
   }
   if((surrender==1&&!isCurrentPlayerWhite)||(surrender==2&&isCurrentPlayerWhite)) {
     clearInterval(currentIntervalId);
     gameResult.resultText="Victory";
     console.log(gameResult.playerBlack);
-    return <GameResultCard gameResult={gameResult}></GameResultCard>
+    return <GameResultCard gameResult={gameResult} navigation={navigation}></GameResultCard>
     //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
   }   
    
@@ -148,7 +148,7 @@ const RankingMatchScreen = ({ navigation }) => {
   const [flag,setFlag] = useState(false);
   
   useEffect(()=>{
-    
+    console.log("Height",height);
     const setUp= new Promise(function(resolve,reject) {
       setTimeout(()=>{
         const matchResult = FindMatch();
@@ -223,7 +223,7 @@ const RankingMatchScreen = ({ navigation }) => {
       {RenderSearchPopup(playerBlack.userName)}
       {RenderResultPopup(timeWhite,timeBlack,navigation,isCurrentPlayerWhite,isEnd,whiteScore,blackScore,surrender, playerBlack, playeWhite, currentIntervalId)}
       <ScrollView>
-      <View style={[styles.mainView,{height:height+200}]}>
+      <View style={[styles.mainView,{height:(height>800)?height:height+200}]}>
       
     <Player user = {playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
     <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender} isCurrentPlayerWhite={isCurrentPlayerWhite} isStart={isStart}></ChessBoard>
