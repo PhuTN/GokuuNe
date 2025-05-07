@@ -1,17 +1,17 @@
 // src/components/Header.tsx
 
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import BackIcon from '../../assets/icons/back_icon.svg';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {Platform} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Platform } from 'react-native';
 interface HeaderProps {
   title: string;
   showBack?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({title, showBack = true}) => {
+const Header: React.FC<HeaderProps> = ({ title, showBack = true }) => {
   const navigation = useNavigation();
 
   return (
@@ -20,7 +20,7 @@ const Header: React.FC<HeaderProps> = ({title, showBack = true}) => {
       <View
         style={[
           styles.ellipseBackground,
-          {height: Platform.OS === 'ios' ? 510 : 480},
+          { height: Platform.OS === 'ios' ? 510 : 480 },
         ]}
       />
 
@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({title, showBack = true}) => {
       <View
         style={[
           styles.container,
-          {paddingVertical: Platform.OS === 'ios' ? 40 : 30},
+          { paddingVertical: Platform.OS === 'ios' ? 40 : 20 },
         ]}>
         {showBack && (
           <TouchableOpacity
