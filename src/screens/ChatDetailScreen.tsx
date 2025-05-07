@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, Text, ImageBackground} from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/AppNavigator';
 import ChatDetailHeader from '../components/common/ChatDetailScreen/ChatDetailHeader';
 import MessageBubble from '../components/common/ChatDetailScreen/MessageBubble';
 import MessageInput from '../components/common/ChatDetailScreen/MessageInput';

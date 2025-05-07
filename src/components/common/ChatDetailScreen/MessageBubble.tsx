@@ -4,7 +4,7 @@ import {useTheme} from '../../../asycnc_store/ThemeContext';
 
 const MessageBubble = ({message, sender, avatar}) => {
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   return (
     <View
       style={[
