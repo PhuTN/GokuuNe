@@ -1,4 +1,4 @@
-import {Text,View,Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Text,View,Image, StyleSheet, TouchableOpacity, useWindowDimensions} from 'react-native';
 import { isWhite } from './ChessBoard';
 import { useTheme } from '../../../asycnc_store/ThemeContext';
 export default  function Player({user,isWhite,time,score}) { 
@@ -9,9 +9,13 @@ export default  function Player({user,isWhite,time,score}) {
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
     const styles = isDark?darkStyles:whiteStyles;
+    const {height} = useWindowDimensions();
+    const heightStyle = {
+        marginBottom:isWhite?(height-688)/4:0
+    }
     return (
         
-        <View style={styles.container}>
+        <View style={[styles.container,heightStyle]}>
             <View style={styles.playerInfo}>
             <Image style={styles.avatar} source={user.userAvatarURL}></Image> 
             <View  >
@@ -37,11 +41,12 @@ const whiteStyles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between',
         padding:20,
-        alignItems:'center'
+        alignItems:'center',
+        
     },
     avatar:{
-        width:50,
-        height:50,borderRadius: 50, // Half of width/height for a perfect circle
+        width:40,
+        height:40,borderRadius: 50, // Half of width/height for a perfect circle
         borderWidth: 3, // Thickness of the border
         borderColor: '#6B50F6'
     },

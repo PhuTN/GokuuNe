@@ -13,7 +13,7 @@ import ScreenHeader from '../components/common/ScreenHeader';
 import { User,Top10 } from '../fake_data/Binh/fake_data';
 import { useTheme } from '../asycnc_store/ThemeContext';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Ranking'>;
 const listLeaderBoard = [
   {name:"Alex White",elo:3900},
   {name:"Alex White",elo:3900},

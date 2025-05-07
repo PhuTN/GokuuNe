@@ -10,9 +10,9 @@ import { useNotification } from '../asycnc_store/NotificationContext';
 import { StyleSheet, Text, View } from "react-native";
 import Header from '../components/common/Header';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'FriendLeaderBoard'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'Host'>;
 
-const FriendLeaderBoardScreen = ({ route, navigation }: Props) => {
+const HostScreen = ({ route, navigation }: Props) => {
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
 
@@ -26,7 +26,7 @@ const FriendLeaderBoardScreen = ({ route, navigation }: Props) => {
 
     return (
         <View>
-            <Header title="LEADERBOARD" />
+            <Header title="HOST" />
         </View>
     );
 };
@@ -39,4 +39,4 @@ const darkStyles = StyleSheet.create({
 
 });
 
-export default FriendLeaderBoardScreen;
+export default HostScreen;

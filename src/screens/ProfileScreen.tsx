@@ -97,7 +97,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   };
 
   return (
-    <ScrollView style={styles.scrollView} contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}>
+    <ScrollView style={styles.scrollView} contentContainerStyle={{ alignItems: "center" }}>
       {/* Header */}
       <Header title={t.profile} />
 

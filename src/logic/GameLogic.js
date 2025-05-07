@@ -107,6 +107,9 @@ export class GameState {
             }
             if(isCapture) {
                 this.state='0';
+                this.posArray=currentGameState;
+                this.blackScore=currentBlackSocre;
+                this.whiteScore=currentWhiteScore;
                 return {
                     canMove:false,
                     deathPosition:[]

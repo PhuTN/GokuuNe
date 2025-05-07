@@ -1,5 +1,7 @@
 import React, {useState} from 'react';
 import {View, FlatList, StyleSheet, Text, ImageBackground} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
 import ChatDetailHeader from '../components/common/ChatDetailScreen/ChatDetailHeader';
 import MessageBubble from '../components/common/ChatDetailScreen/MessageBubble';
 import MessageInput from '../components/common/ChatDetailScreen/MessageInput';
@@ -8,14 +10,16 @@ import {useTheme} from '../asycnc_store/ThemeContext';
 import {useLanguage} from '../asycnc_store/LanguageContext';
 import {translations} from '../untils/i18n';
 
+type Props = NativeStackScreenProps<RootStackParamList, 'ChatDetail'>;
+
 const ChatDetailScreen = () => {
   const [messages, setMessages] = useState(fakeMessages);
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   const {language} = useLanguage();
   const t = translations[language];
 
-  const handleSendMessage = newMessage => {
+  const handleSendMessage = (newMessage: string) => {
     setMessages([
       ...messages,
       {

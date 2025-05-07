@@ -114,7 +114,7 @@ export default function ChessBoard({
 
   async function onSurrender(isWhite) {
     gameState.calculateScore();
-    playVictorySound();
+    //playVictorySound();
     handleSurrender(isWhite);
   }
   function loadBoardFromGameState(gameState) {
@@ -171,7 +171,7 @@ export default function ChessBoard({
                   } else {
                     playAttackSound(); // Chỉ đánh bình thường
                   }
-                  const animatedSequence = [];
+                  
 
                   const tempPAnimationArr = [...animatedParr];
                   for (let j = 0; j < moveData.deathPosition.length; j++) {
@@ -179,7 +179,7 @@ export default function ChessBoard({
                       moveData.deathPosition[j][0] * 13 +
                       moveData.deathPosition[j][1];
 
-                    setAnimatedParr(tempPAnimationArr);
+                    //setAnimatedParr(tempPAnimationArr);
                     Animated.timing(fadeAnimArr[id], {
                       toValue: 0,
                       duration: 2000,
@@ -218,7 +218,7 @@ export default function ChessBoard({
                       moveData.deathPosition[j][0] * 13 +
                       moveData.deathPosition[j][1];
 
-                    setAnimatedParr(tempPAnimationArr);
+                    //setAnimatedParr(tempPAnimationArr);
                     Animated.timing(fadeAnimArr[id], {
                       toValue: 0,
                       duration: 2000,

@@ -13,7 +13,7 @@ import ScreenHeader from '../components/common/ScreenHeader';
 
 export default function ChatScreen({navigation}) {
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   const {language} = useLanguage();
   const t = translations[language];
 
@@ -44,7 +44,7 @@ export default function ChatScreen({navigation}) {
 
         {filteredUsers.length === 0 ? (
           <Text style={styles.noUserText}>
-            {t.no_user_found || 'No active user found.'}
+            {t.no_user_found}
           </Text>
         ) : (
           <FlatList

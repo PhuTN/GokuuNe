@@ -5,7 +5,7 @@ import {useTheme} from '../../../asycnc_store/ThemeContext';
 
 export default function ChatCardItem({chat}) {
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   const navigation = useNavigation();
   const goToChatDetail = () => {
     navigation.navigate('ChatDetail'); // ✅ Không truyền param
