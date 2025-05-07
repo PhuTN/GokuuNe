@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({ title, showBack = true }) => {
       <View
         style={[
           styles.container,
-          { paddingVertical: Platform.OS === 'ios' ? 40 : 20 },
+          { paddingVertical: Platform.OS === 'ios' ? 40 : 25 },
         ]}>
         {showBack && (
           <TouchableOpacity
