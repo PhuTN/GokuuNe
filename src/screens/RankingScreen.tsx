@@ -67,7 +67,7 @@ const whiteStyle = StyleSheet.create({
   topContainer: {
     height: 100,
     paddingHorizontal: 40,
-    marginTop: 200,
+    marginTop: 100,
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
