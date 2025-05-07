@@ -21,7 +21,7 @@ const Header: React.FC<HeaderProps> = ({ title, showBack = true }) => {
       <View style={[styles.ellipseBackground, { height: Platform.OS === 'ios' ? 510 : 480 }]} />
 
       {/* Header */}
-      <View style={[styles.container, { paddingVertical: Platform.OS === 'ios' ? 40 : 10 }]}>
+      <View style={[styles.container, { paddingVertical: Platform.OS === 'ios' ? 40 : 20 }]}>
         {showBack && (
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
             <BackIcon width={35} height={35} />
