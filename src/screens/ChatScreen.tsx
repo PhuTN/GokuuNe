@@ -10,6 +10,7 @@ import {useTheme} from '../asycnc_store/ThemeContext';
 import {useLanguage} from '../asycnc_store/LanguageContext';
 import {translations} from '../untils/i18n';
 import ScreenHeader from '../components/common/ScreenHeader';
+import Header from '../components/common/Header';
 
 export default function ChatScreen({navigation}) {
   const {theme} = useTheme();
@@ -31,7 +32,8 @@ export default function ChatScreen({navigation}) {
 
   const renderContent = () => (
     <>
-      <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader>
+      <Header title="Chat"></Header>
+      {/* <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader> */}
       {/* <ChatHeader /> */}
       <SearchBar onSearch={setSearchQuery} value={searchQuery} />
 
@@ -43,9 +45,7 @@ export default function ChatScreen({navigation}) {
         </View>
 
         {filteredUsers.length === 0 ? (
-          <Text style={styles.noUserText}>
-            {t.no_user_found}
-          </Text>
+          <Text style={styles.noUserText}>{t.no_user_found}</Text>
         ) : (
           <FlatList
             data={filteredUsers}
