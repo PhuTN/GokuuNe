@@ -5,7 +5,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import BackIcon from '../../assets/icons/back_icon.svg';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { Platform } from 'react-native';
 interface HeaderProps {
   title: string;
   showBack?: boolean;
@@ -16,28 +16,26 @@ const Header: React.FC<HeaderProps> = ({ title, showBack = true }) => {
 
   return (
     <>
-      <SafeAreaView style={styles.safeArea}>
-        {/* Elip nền */}
-        <View style={styles.ellipseBackground} />
 
-        {/* Header */}
-        <View style={styles.container}>
-          {showBack && (
-            <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-              <BackIcon width={35} height={35} />
-            </TouchableOpacity>
-          )}
-          <Text style={styles.title}>{title}</Text>
-        </View>
-      </SafeAreaView>
+      {/* Elip nền */}
+      <View style={[styles.ellipseBackground, { height: Platform.OS === 'ios' ? 510 : 480 }]} />
+
+      {/* Header */}
+      <View style={[styles.container, { paddingVertical: Platform.OS === 'ios' ? 40 : 10 }]}>
+        {showBack && (
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <BackIcon width={35} height={35} />
+          </TouchableOpacity>
+        )}
+        <Text style={styles.title}>{title}</Text>
+      </View>
+
     </>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: 'transparent',
-  },
+
   ellipseBackground: {
     position: 'absolute',
     top: -400,
@@ -53,7 +51,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    paddingVertical: 10,
+
     position: "relative",
   },
   backButton: {
