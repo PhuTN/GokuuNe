@@ -4,22 +4,24 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
 import { Result } from '../../../fake_data/Binh/fake_data';
-import { playVictorySound } from '../../../untils/VictorySound';
+// import { playVictorySound } from '../../../untils/VictorySound';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
 
 const GameResultCard = ({ gameResult, navigation }) => {
+  const { playWinSound, playLoseSound } = useSoundEffect();
   const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
-  const resText = gameResult.resultText == "Victory" ? t.win_text : t.lose_text
+  const resText = gameResult.resultText === "Victory" ? t.win_text : t.lose_text
   const resTextStyle = StyleSheet.create({
     title: {
       fontSize: 30,
       fontWeight: 'bold',
-      color: gameResult.resultText == "Victory" ? "#FFF400" : "red"
+      color: gameResult.resultText === "Victory" ? "#FFF400" : "red"
     }
   });
   useEffect(() => {
-    if (gameResult.resultText == "Victory") {
-      playVictorySound();
+    if (gameResult.resultText === "Victory") {
+      playWinSound();
     }
   }, [])
   return (
