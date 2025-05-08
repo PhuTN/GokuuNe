@@ -9,8 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import Dot from './Dot';
-import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
-import {playVictorySound} from '../../../untils/VictorySound';
+//import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
+//import {playVictorySound} from '../../../untils/VictorySound';
 import {useIsFocused} from '@react-navigation/native';
 import {useLanguage} from '../../../asycnc_store/LanguageContext';
 import {translations} from '../../../untils/i18n';
@@ -114,7 +115,7 @@ export default function ChessBoard({
 
   async function onSurrender(isWhite) {
     gameState.calculateScore();
-    //playVictorySound();
+    playWinSound();
     handleSurrender(isWhite);
   }
   function loadBoardFromGameState(gameState) {
@@ -145,6 +146,8 @@ export default function ChessBoard({
     }
   }
 
+  const { playMoveSound, playCaptureSound, playWinSound, playLoseSound } = useSoundEffect();
+
   function renderTouchableCell(index) {
     let res = [];
 
@@ -169,7 +172,7 @@ export default function ChessBoard({
                   if (moveData.deathPosition.length > 0) {
                     playCaptureSound(); // Có ăn quân
                   } else {
-                    playAttackSound(); // Chỉ đánh bình thường
+                    playMoveSound(); // Chỉ đánh bình thường
                   }
                   
 
@@ -208,7 +211,7 @@ export default function ChessBoard({
                   if (moveData.deathPosition.length > 0) {
                     playCaptureSound(); // Có ăn quân
                   } else {
-                    playAttackSound(); // Chỉ đánh bình thường
+                    playMoveSound(); // Chỉ đánh bình thường
                   }
                   const animatedSequence = [];
 

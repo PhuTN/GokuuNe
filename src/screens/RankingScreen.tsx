@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, Button, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 
@@ -13,6 +13,7 @@ import ScreenHeader from '../components/common/ScreenHeader';
 import { User, Top10 } from '../fake_data/Binh/fake_data';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import Header from '../components/common/Header';
+import { he } from 'date-fns/locale';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Ranking'>;
 const listLeaderBoard = [
@@ -30,10 +31,12 @@ const RankingScreen = ({ navigation }: Props) => {
   const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const style = isDark ? darkStyle : whiteStyle;
+  const { height } = useWindowDimensions();
   return (
     <View style={style.container}>
       <Header title='Ranking'></Header>
-      <ScrollView>
+
+      <ScrollView style={{ paddingBottom: 30, height: height }} >
 
         <UserView user={User}></UserView>
         <PlayButton navigation={navigation}></PlayButton>
@@ -50,6 +53,7 @@ const RankingScreen = ({ navigation }: Props) => {
         </View>
         <LeaderBoard listLeaderBoard={Top10.slice(3, 10)} user={User}></LeaderBoard>
       </ScrollView>
+
     </View>
   );
 };

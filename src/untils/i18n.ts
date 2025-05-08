@@ -1,36 +1,36 @@
 import { friends } from "../fake_data/Dien/fake_data";
 
 export const translations = {
-    en: {
-      greeting: "Hello",
-      toggle_theme: "Toggle Theme",
-      toggle_language: "Toggle Language",
-      skip_text:"Skip",
-      surrender_text:"Surrender",
+  en: {
+    greeting: "Hello",
+    toggle_theme: "Toggle Theme",
+    toggle_language: "Toggle Language",
+    skip_text: "Skip",
+    surrender_text: "Surrender",
 
-      //Binh
-      play_button_text:'PLAY',
-      match_text:'Matches',
-      search_match_text:'Searching.....',
-      win_text:"Victory",
-      lose_text:"Defeated",
-      another_match_text:"Another match",
-      back_text:"Back",
-      your_score_text:"Your Score",
-      opponent_score_text:"Opponent's Score",
-      you_time_out_text:"You are out of time",
-      opponent_time_out_text:"Opponent is out of time",
-      you_many_score_text:"You have many scores than opponent",
-      opponent_many_score_text:"Opponent has many scores than you",
-      you_surrender_text:"You surrendered",
-      opponent_surrender_text:"Opponent surrendered",
-      opponent_skip_text:"Opponent skip", 
-      rank_text:"Rank",
-      elo_text:"Elo score",
-      report_text:"Game Report",
-      rematch_text:"Rematch",
-      new_text:"New 10 min",
-         //dien
+    //Binh
+    play_button_text: 'PLAY',
+    match_text: 'Matches',
+    search_match_text: 'Searching.....',
+    win_text: "Victory",
+    lose_text: "Defeated",
+    another_match_text: "Another match",
+    back_text: "Back",
+    your_score_text: "Your Score",
+    opponent_score_text: "Opponent's Score",
+    you_time_out_text: "You are out of time",
+    opponent_time_out_text: "Opponent is out of time",
+    you_many_score_text: "You have many scores than opponent",
+    opponent_many_score_text: "Opponent has many scores than you",
+    you_surrender_text: "You surrendered",
+    opponent_surrender_text: "Opponent surrendered",
+    opponent_skip_text: "Opponent skip",
+    rank_text: "Rank",
+    elo_text: "Elo score",
+    report_text: "Game Report",
+    rematch_text: "Rematch",
+    new_text: "New 10 min",
+    //dien
     home_guest: "Guest",
     home_ranking: "RANKING",
     home_AI: "AI",
@@ -66,6 +66,7 @@ export const translations = {
     friends_send_message: "Send message",
     friends_challenge: "Challenge",
     friends_unfriend: "Unfriend",
+    friends_no_user_found:"No user found",
 
     setting: "SETTING",
     setting_guest: "Guest",
@@ -80,6 +81,10 @@ export const translations = {
     setting_other: "Other",
     setting_contact: "Contact Us",
     setting_privacy: "Privacy Policy",
+    setting_sound_and_music: "Sound And Music",
+    setting_sound_effect: "Sound Effects",
+    setting_notification_sound: "Notification",
+    setting_background_music:"Background Music",
 
     profile: "PROFILE",
     profile_name: "Name",
@@ -89,7 +94,7 @@ export const translations = {
     profile_birth_confirm: "Confirm date",
     profile_country: "Country/Region",
     profile_button: "Save changes",
-    profile_find_country_placeholder:"Find country/region",
+    profile_find_country_placeholder: "Find country/region",
 
     noti_info: "Notification",
     noti_success: "Success",
@@ -115,12 +120,13 @@ export const translations = {
     noti_ai_medium_mode: "You have chosen medium mode",
     noti_ai_easy_mode: "You have chosen easy mode",
     noti_ai_play: "Get ready! You're playing against the AI!",
+    noti_ai_choose_piece_and_mode:"Please select chess piece and game mode!",
 
-    noti_friends_challenge:"Challenge",
+    noti_friends_challenge: "Challenge",
     noti_go_friends_challenge: "You have chosen challenge",
-    noti_friends_message:"Send message",
+    noti_friends_message: "Send message",
     noti_go_friends_message: "You have chosen send message",
-    noti_friends_remove:"Unfriend",
+    noti_friends_remove: "Unfriend",
     noti_friends_remove_success: "Unfriended successfully!",
     noti_friends_add_new: "Friend request sent successfully!",
     noti_go_leader_board: "You have chosen leaderboard",
@@ -138,7 +144,7 @@ export const translations = {
     noti_privacy: "You have selected a policy",
 
     noti_save_changes: "Changes saved",
-    noti_save_changes_faile: "Can't saved changes", 
+    noti_save_changes_faile: "Can't saved changes",
     //Phuc
     active_status: 'Active',
     today_label: 'Today',
@@ -147,36 +153,36 @@ export const translations = {
     currently_active: 'Currently Active',
     recents: 'Recents',
     no_user_found: 'No active user found'
-    },
-    vi: {
-      greeting: "Xin chào",
-      toggle_theme: "Chuyển giao diện",
-      toggle_language: "Chuyển ngôn ngữ",
-      //Binh
-      skip_text:"Bỏ qua lượt",
-      surrender_text:"Đầu hàng",
-      play_button_text:'CHƠI',
-      match_text:'SỐ TRẬN',
-      search_match_text:'Đang tìm trận.....',
-      win_text:"Chiến thắng",
-      lose_text:"Thất bại",
-      another_match_text:"Tìm trận khác",
-      back_text:"Quay lại",
-      your_score_text:"Điểm của bạn",
-      opponent_score_text:"Điểm của đối phương",
-      you_time_out_text:"Bạn đã hết thời gian",
-      opponent_time_out_text:"Đối phương đã hết thời gian",
-      you_many_score_text:"Bạn có nhiều điểm hơn đối phương",
-      opponent_many_score_text:"Đối phương có nhiều điểm hơn bạn",
-      you_surrender_text:"Bạn đã đầu hàng",
-      opponent_surrender_text:"Đối phương đã đầu hàng",
-      opponent_skip_text:"Đối phương bỏ lượt",  
-      rank_text:"Thứ hạng",
-      elo_text:"Điểm elo",
-      report_text:"Báo cáo",
-      rematch_text:"Đấu lại",
-      new_text:"Trận 10 phút mới",
-       //dien
+  },
+  vi: {
+    greeting: "Xin chào",
+    toggle_theme: "Chuyển giao diện",
+    toggle_language: "Chuyển ngôn ngữ",
+    //Binh
+    skip_text: "Bỏ qua lượt",
+    surrender_text: "Đầu hàng",
+    play_button_text: 'CHƠI',
+    match_text: 'SỐ TRẬN',
+    search_match_text: 'Đang tìm trận.....',
+    win_text: "Chiến thắng",
+    lose_text: "Thất bại",
+    another_match_text: "Tìm trận khác",
+    back_text: "Quay lại",
+    your_score_text: "Điểm của bạn",
+    opponent_score_text: "Điểm của đối phương",
+    you_time_out_text: "Bạn đã hết thời gian",
+    opponent_time_out_text: "Đối phương đã hết thời gian",
+    you_many_score_text: "Bạn có nhiều điểm hơn đối phương",
+    opponent_many_score_text: "Đối phương có nhiều điểm hơn bạn",
+    you_surrender_text: "Bạn đã đầu hàng",
+    opponent_surrender_text: "Đối phương đã đầu hàng",
+    opponent_skip_text: "Đối phương bỏ lượt",
+    rank_text: "Thứ hạng",
+    elo_text: "Điểm elo",
+    report_text: "Báo cáo",
+    rematch_text: "Đấu lại",
+    new_text: "Trận 10 phút mới",
+    //dien
     home_guest: "Khách",
     home_ranking: "ĐẤU XẾP HẠNG",
     home_AI: "ĐẤU MÁY",
@@ -217,6 +223,7 @@ export const translations = {
     friends_send_message: "Gửi tin nhắn",
     friends_challenge: "Thách thức",
     friends_unfriend: "Hủy kết bạn",
+    friends_no_user_found: "Không tìm thấy người dùng nào",
 
     setting: "CÀI ĐẶT",
     setting_guest: "Khách",
@@ -233,6 +240,10 @@ export const translations = {
     setting_other: "Khác",
     setting_contact: "Liên hệ chúng tôi",
     setting_privacy: "Chính sách bảo mật",
+    setting_sound_and_music: "Âm thanh và nhạc",
+    setting_sound_effect: "Hiệu ứng",
+    setting_notification_sound: "Thông báo",
+    setting_background_music:"Nhạc nền",
 
     profile: "HỒ SƠ",
     profile_name: "Tên",
@@ -242,7 +253,7 @@ export const translations = {
     profile_birth_confirm: "Xác nhận ngày",
     profile_country: "Quốc gia/Khu vực",
     profile_button: "Lưu các thay đổi",
-    profile_find_country_placeholder:"Tìm kiếm quốc gia/khu vực",
+    profile_find_country_placeholder: "Tìm kiếm quốc gia/khu vực",
 
     noti_info: "Thông báo",
     noti_success: "Thành công",
@@ -268,12 +279,13 @@ export const translations = {
     noti_ai_medium_mode: "Bạn đã chọn chế độ trung bình",
     noti_ai_easy_mode: "Bạn đã chọn chế độ dễ",
     noti_ai_play: "Sẵn sàng chưa? Bạn đang đấu với AI!",
+    noti_ai_choose_piece_and_mode:"Vui lòng chọn phe và chế độ chơi!",
 
-    noti_friends_challenge:"Thách thức",
+    noti_friends_challenge: "Thách thức",
     noti_go_friends_challenge: "Bạn đã chọn thách thức",
-    noti_friends_message:"Gửi tin nhắn",
+    noti_friends_message: "Gửi tin nhắn",
     noti_go_friends_message: "Bạn đã chọn gửi tin nhắn",
-    noti_friends_remove:"Hủy kết bạn",
+    noti_friends_remove: "Hủy kết bạn",
     noti_friends_remove_success: "Hủy kết bạn thành công!",
     noti_friends_add_new: "Gửi lời mời kết bạn thành công!",
     noti_go_leader_board: "Bạn đã chọn bảng xếp hạng",
@@ -291,7 +303,7 @@ export const translations = {
     noti_privacy: "Bạn đã chọn chính sách bảo mật",
 
     noti_save_changes: "Các thay đổi đã được lưu",
-    noti_save_changes_faile: "Không thể lưu các thay đổi", 
+    noti_save_changes_faile: "Không thể lưu các thay đổi",
     //Phuc
     active_status: 'Đang hoạt động',
     today_label: 'Hôm nay',
@@ -300,8 +312,8 @@ export const translations = {
     currently_active: 'Đang hoạt động',
     recents: 'Gần đây',
     no_user_found: 'Không tìm thấy người dùng nào'
-    
-    }
-  };
-  
-  
+
+  }
+};
+
+

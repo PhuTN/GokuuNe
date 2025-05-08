@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
     width: "100%",
     borderRadius: 10,
     overflow: "hidden",
-    marginVertical: 10,
+    marginVertical: '5%',
     // Thêm hiệu ứng đổ bóng
     shadowColor: "#000", // Màu bóng (đen)
     shadowOffset: { width: 0, height: 4 }, // Độ lệch của bóng

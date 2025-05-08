@@ -11,6 +11,9 @@ import ThemeIcon from '../assets/icons/theme_icon.svg';
 import NotificationIcon from '../assets/icons/notification_icon.svg';
 import ContactIcon from '../assets/icons/contact_icon.svg';
 import PrivacyIcon from '../assets/icons/privacy_icon.svg';
+import BackgroundMusicIcon from '../assets/icons/background_music_icon.svg';
+import SoundEffectIcon from '../assets/icons/sound_effect_icon.svg';
+import NotificationSoundIcon from '../assets/icons/notification_sound_icon.svg';
 import Button_Setting from "../components/common/Button_Setting";
 import Header from '../components/common/Header';
 import CountryFlag from 'react-native-country-flag';
@@ -18,11 +21,13 @@ import countries from 'world-countries';
 import ToggleButtonLanguage from "../components/common/ToggleButton_Language";
 import ToggleButtonTheme from "../components/common/ToggleButton_Theme";
 import ToggleButtonNotification from "../components/common/ToggleButton_Notification";
+import ToggleButtonSoundMusic from "../components/common/ToggleButton_Sound_Music";
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
+import { useSoundEffect, useBackgroundMusic } from "../asycnc_store/SoundAndMusicContext";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Setting'>;
 
@@ -42,6 +47,13 @@ const SettingScreen = ({ route, navigation }: Props) => {
   const styles = isDark ? darkStyles : lightStyles;
 
   const { notification, toggleNotification } = useNotification();
+
+  const handleVolumeChange = (setter: (volume: number) => void) => (value: number) => {
+    const normalizedVolume = value / 100; // Normalize to 0.0 - 1.0
+    setter(normalizedVolume);
+  };
+  const { soundEffectEnabled, toggleSoundEffect, soundEffectVolume, setSoundEffectVolume } = useSoundEffect();
+  const { backgroundMusicEnabled, toggleBackgroundMusic, backgroundMusicVolume, setBackgroundMusicVolume } = useBackgroundMusic();
 
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
@@ -139,8 +151,10 @@ const SettingScreen = ({ route, navigation }: Props) => {
       style={styles.scrollView}
       contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
     >
+      {/* Header */}
       <Header title={t.setting} />
 
+      {/* Avatar */}
       <View style={styles.profileContainer}>
         <Image source={accountLogin?.avatar || require('../images/user.png')} style={styles.avatar} />
         <View style={styles.usernameContainer}>
@@ -151,6 +165,7 @@ const SettingScreen = ({ route, navigation }: Props) => {
         </View>
       </View>
 
+      {/* Account Card */}
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_account}</Text>
         <Button_Setting icon={ProfileIcon} title={t.setting_profile} onPress={handleProfile} />
@@ -158,6 +173,7 @@ const SettingScreen = ({ route, navigation }: Props) => {
         <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={handleHistory} />
       </Card>
 
+      {/* App Card*/}
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_app}</Text>
         <View style={styles.rowItem}>
@@ -196,6 +212,30 @@ const SettingScreen = ({ route, navigation }: Props) => {
 
       </Card>
 
+      {/* Sound and Music Card*/}
+      <Card style={styles.card}>
+        <Text style={styles.cardTitle}>{t.setting_sound_and_music}</Text>
+
+        <ToggleButtonSoundMusic
+          Icon={SoundEffectIcon}
+          enable={soundEffectEnabled === 'on'}
+          onToggle={toggleSoundEffect}
+          volume={soundEffectVolume}
+          setVolume={setSoundEffectVolume}
+          label={t.setting_sound_effect}
+        />
+
+        <ToggleButtonSoundMusic
+          Icon={BackgroundMusicIcon}
+          enable={backgroundMusicEnabled === 'on'}
+          onToggle={toggleBackgroundMusic}
+          volume={backgroundMusicVolume}
+          setVolume={setBackgroundMusicVolume}
+          label={t.setting_background_music}
+        />
+      </Card>
+
+      {/* Other Card */}
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_other}</Text>
         <Button_Setting icon={ContactIcon} title={t.setting_contact} onPress={handleContact} />

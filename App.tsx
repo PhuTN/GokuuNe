@@ -3,10 +3,11 @@ import AppNavigator from './src/navigation/AppNavigator';
 import { LanguageProvider } from './src/asycnc_store/LanguageContext';
 import { ThemeProvider } from './src/asycnc_store/ThemeContext';
 import { NotificationProvider } from './src/asycnc_store/NotificationContext';
+import { SoundEffectProvider, BackgroundMusicProvider } from './src/asycnc_store/SoundAndMusicContext';
 import PushNotification from 'react-native-push-notification';
-import { playBackgroundMusic } from './src/untils/BackgroundMusic';
-import  { loadSoundEffects }  from './src/untils/SoundEffects';
-import { loadVictorySound } from './src/untils/VictorySound';
+// import { playBackgroundMusic } from './src/untils/BackgroundMusic';
+// import  { loadSoundEffects }  from './src/untils/SoundEffects';
+// import { loadVictorySound } from './src/untils/VictorySound';
 import { checkAndRequestNotificationPermission } from './src/untils/NotificationPermission';
 import NotificationPermissionCustom from './src/components/common/Notification_Permission_Custom';
 
@@ -34,20 +35,24 @@ export default function App() {
 
     init();
     // playBackgroundMusic();
-    loadSoundEffects();
-    loadVictorySound();
+    // loadSoundEffects();
+    // loadVictorySound();
   }, []);
 
   return (
     <NotificationProvider>
       <ThemeProvider>
         <LanguageProvider>
-          <AppNavigator />
-          <NotificationPermissionCustom
-            visible={showPermissionModal}
-            onClose={() => setShowPermissionModal(false)}
-            setModalVisible={setShowPermissionModal}
-          />
+          <SoundEffectProvider>
+            <BackgroundMusicProvider>
+              <AppNavigator />
+              <NotificationPermissionCustom
+                visible={showPermissionModal}
+                onClose={() => setShowPermissionModal(false)}
+                setModalVisible={setShowPermissionModal}
+              />
+            </BackgroundMusicProvider>
+          </SoundEffectProvider>
         </LanguageProvider>
       </ThemeProvider>
     </NotificationProvider>

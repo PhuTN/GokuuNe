@@ -46,7 +46,7 @@ const Header: React.FC<HeaderProps> = ({title, showBack = true}) => {
 const styles = StyleSheet.create({
   ellipseBackground: {
     position: 'absolute',
-    top: -400,
+    top: -380,
     width: '270%',
     height: 480,
     borderBottomLeftRadius: 1000,
