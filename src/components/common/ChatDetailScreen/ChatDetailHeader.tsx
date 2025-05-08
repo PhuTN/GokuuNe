@@ -67,8 +67,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center', // Đảm bảo các phần ở giữa căn giữa
   },
   avatar: {
-    width: 65,
-    height: 65,
+    width: 50,
+    height: 50,
     borderRadius: 50,
     marginRight: 8,
   },

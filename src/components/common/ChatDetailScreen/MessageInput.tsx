@@ -140,7 +140,7 @@ export default function MessageInput({
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const {theme} = useTheme();
-  const isDark = theme === 'light';
+  const isDark = theme === 'dark';
   const {language} = useLanguage();
   const t = translations[language];
 
@@ -286,6 +286,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emoji: {
-    fontSize: 26,
+    fontSize: 16,
   },
 });
