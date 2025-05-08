@@ -18,7 +18,7 @@ import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';
 import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Friends'>;
@@ -300,7 +300,7 @@ const lightStyles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 14,
+        fontSize: 12,
         paddingVertical: 8,
         color: '#000',
     },
@@ -428,7 +428,7 @@ const darkStyles = StyleSheet.create({
     },
     input: {
         flex: 1,
-        fontSize: 14,
+        fontSize: 12,
         paddingVertical: 8,
         color: 'white',
     },

@@ -4,112 +4,117 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
 import { Result } from '../../../fake_data/Binh/fake_data';
-import { playVictorySound } from '../../../untils/VictorySound';
+// import { playVictorySound } from '../../../untils/VictorySound';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
 
-const GameResultCard = ({gameResult, navigation}) => {
-    const {language, toggleLanguage}= useLanguage();
-    const t = translations[language];
-    const resText = gameResult.resultText=="Victory"?t.win_text:t.lose_text
-    const resTextStyle = StyleSheet.create({
-        title: {
-            fontSize: 30,
-            fontWeight: 'bold',
-            color:gameResult.resultText=="Victory"?"#FFF400":"red"
-        }
-    });
-    useEffect(()=>{
-      if(gameResult.resultText=="Victory") {
-        playVictorySound();
-      }
-    },[])
+const GameResultCard = ({ gameResult, navigation }) => {
+  const { playWinSound, playLoseSound } = useSoundEffect();
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+  const resText = gameResult.resultText === "Victory" ? t.win_text : t.lose_text
+  const resTextStyle = StyleSheet.create({
+    title: {
+      fontSize: 30,
+      fontWeight: 'bold',
+      color: gameResult.resultText === "Victory" ? "#FFF400" : "red"
+    }
+  });
+  useEffect(() => {
+    if (gameResult.resultText === "Victory") {
+      playWinSound();
+    }
+  }, [])
   return (
     <View style={styles.overlay}>
-    <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={resTextStyle.title}>{resText}</Text>
-        
-      </View>
+      <View style={styles.container}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={resTextStyle.title}>{resText}</Text>
 
-      {/* Players */}
-      <View style={styles.body}>
-      <View style={styles.playersRow}>
-        {/* Player 1 */}
-        <View style={styles.player}>
-          <Image
-            source={{ uri: gameResult.playerWhite.userAvatarURL.uri }}
-            style={styles.avatar}
-          />
-          <Text style={styles.playerName}>{gameResult.playerWhite.userName}</Text>
         </View>
 
-        {/* Score */}
-        <Text style={styles.score}>{gameResult.blackScore} - {gameResult.whiteScore}</Text>
+        {/* Players */}
+        <View style={styles.body}>
+          <View style={styles.playersRow}>
+            {/* Player 1 */}
+            <View style={styles.player}>
+              <Image
+                source={{ uri: gameResult.playerWhite.userAvatarURL.uri }}
+                style={styles.avatar}
+              />
+              <Text style={styles.playerName}>{gameResult.playerWhite.userName}</Text>
+            </View>
 
-        {/* Player 2 */}
-        <View style={styles.player}>
-          <Image
-            source={{ uri: gameResult.playerBlack.userAvatarURL.uri }}
-            style={styles.avatar}
-          />
-          <Text style={styles.playerName}>{gameResult.playerBlack.userName}</Text>
+            {/* Score */}
+            <Text style={styles.score}>{gameResult.blackScore} - {gameResult.whiteScore}</Text>
+
+            {/* Player 2 */}
+            <View style={styles.player}>
+              <Image
+                source={{ uri: gameResult.playerBlack.userAvatarURL.uri }}
+                style={styles.avatar}
+              />
+              <Text style={styles.playerName}>{gameResult.playerBlack.userName}</Text>
+            </View>
+          </View>
+
+          {/* Ratings */}
+          <View style={styles.ratings}>
+            <Text style={styles.ratingTitle}>{t.rank_text}</Text>
+            <Text style={styles.ratingValue}>
+              {Result.currentRank} <Text style={styles.ratingChange}>{Result.rankRising}</Text>
+            </Text>
+            <Text style={styles.leagueTitle}>{t.elo_text}</Text>
+            <Text style={styles.ratingValue}>
+              {Result.currentElo} <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
+            </Text>
+          </View>
+
+          {/* Buttons */}
+          <TouchableOpacity style={styles.primaryButton}>
+            <Text style={styles.primaryButtonText}>{t.report_text}</Text>
+          </TouchableOpacity>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.secondaryButton} onPress={(e) => {
+              e.preventDefault();
+              navigation.replace("RankingMatch");
+            }}>
+              <Text>{t.rematch_text}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.secondaryButton} onPress={(e) => {
+              e.preventDefault();
+              navigation.replace("RankingMatch");
+            }}>
+              <Text style={styles.button_text}>{t.new_text}</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-
-      {/* Ratings */}
-      <View style={styles.ratings}>
-        <Text style={styles.ratingTitle}>{t.rank_text}</Text>
-        <Text style={styles.ratingValue}>
-          {Result.currentRank} <Text style={styles.ratingChange}>{Result.rankRising}</Text>
-        </Text>
-        <Text style={styles.leagueTitle}>{t.elo_text}</Text>
-        <Text style={styles.ratingValue}>
-          {Result.currentElo} <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
-        </Text>
-      </View>
-
-      {/* Buttons */}
-      <TouchableOpacity style={styles.primaryButton}>
-        <Text style={styles.primaryButtonText}>{t.report_text}</Text>
-      </TouchableOpacity>
-
-      <View style={styles.buttonRow}>
-        <TouchableOpacity style={styles.secondaryButton} onPress={(e)=>{
-          e.preventDefault();
-          navigation.replace("RankingMatch");
-        }}>
-          <Text>{t.rematch_text}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryButton} onPress={(e)=>{
-          e.preventDefault();
-          navigation.replace("RankingMatch");
-        }}>
-          <Text>{t.new_text}</Text>
-        </TouchableOpacity>
-      </View>
-    </View> 
-    </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-overlay:{
+  button_text: {
+    textAlign: 'center'
+  },
+  overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    width:'100%',
-    height:'100%',
-    position:'absolute',
-    top:0,
-    left:0,
-    zIndex:2
-},
+    width: '100%',
+    height: '100%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 2
+  },
   container: {
     backgroundColor: '#f9f9f9',
     borderRadius: 12,
-    
+
     width: 300,
     alignSelf: 'center',
     shadowColor: '#000',
@@ -118,22 +123,22 @@ overlay:{
     shadowRadius: 8,
     elevation: 5,
   },
-  body:{
-    width:"100%",
-    padding:16
+  body: {
+    width: "100%",
+    padding: 16
   },
   header: {
     alignItems: 'center',
     marginBottom: 12,
-    backgroundColor:'gray',
-    borderRadius:10,
-    paddingVertical:10 
+    backgroundColor: 'gray',
+    borderRadius: 10,
+    paddingVertical: 10
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
   },
-  
+
   playersRow: {
     flexDirection: 'row',
     alignItems: 'center',

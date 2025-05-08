@@ -43,7 +43,7 @@ const AppNavigator = () => {
     <NavigationContainer>
       <StatusBar hidden={true}></StatusBar>
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="ChatDetail"
         screenOptions={{headerShown: false}}>
         {/* <Stack.Screen
           name="TestThemeAndLanguage"

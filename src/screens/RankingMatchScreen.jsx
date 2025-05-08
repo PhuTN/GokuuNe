@@ -224,7 +224,7 @@ const RankingMatchScreen = ({ navigation }) => {
       {RenderSearchPopup(playerBlack.userName)}
       {RenderResultPopup(timeWhite, timeBlack, navigation, isCurrentPlayerWhite, isEnd, whiteScore, blackScore, surrender, playerBlack, playeWhite, currentIntervalId)}
       <ScrollView>
-        <View style={[styles.mainView, { height: (height > 800) ? height : height + 200 }]}>
+        <View style={[styles.mainView, { height: height + 200 }]}>
 
           <Player user={playerBlack} isWhite={false} time={timeBlack} score={blackScore}></Player>
           <ChessBoard handleEvent={handleEvent} flag={flag} handleIsEnd={handleIsEnd} handleSurrender={handleSurrender} isCurrentPlayerWhite={isCurrentPlayerWhite} isStart={isStart}></ChessBoard>
@@ -290,7 +290,7 @@ const darkStyles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'center',
     gap: 50,
-    padding: 50,
+    padding: 10,
     marginBottom: 100
   },
   linearGradient: {
