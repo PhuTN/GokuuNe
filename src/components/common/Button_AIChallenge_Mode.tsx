@@ -17,7 +17,7 @@ const Button_AIChallenge_Mode: React.FC<ButtonProps> = ({ title, subtitle, Icon1
     <TouchableOpacity
     style={[
       styles.button,
-      isSelected && { borderColor: "#FFCF26", borderWidth: 3 } // nếu isSelected = true, thêm style viền vào
+      isSelected && { borderColor: "#FFCF26", borderWidth: 5 ,borderRadius: 15 } // nếu isSelected = true, thêm style viền vào
     ]}
     onPress={onPress}
     >

@@ -9,9 +9,9 @@ import { useNotification } from '../asycnc_store/NotificationContext';
 import { StyleSheet, Text, View } from "react-native";
 import Header from '../components/common/Header';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'AIMatch'>;
+type Props = NativeStackScreenProps<RootStackParamList, 'HostMatch'>;
 
-const AIMatchScreen = ({ route, navigation }: Props) => {
+const HostMatchScreen = ({ route, navigation }: Props) => {
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
 
@@ -25,7 +25,7 @@ const AIMatchScreen = ({ route, navigation }: Props) => {
 
     return (
         <View>
-            <Header title="AI MATCH" />
+            <Header title="HOST MATCH" />
         </View>
     );
 };
@@ -38,4 +38,4 @@ const darkStyles = StyleSheet.create({
 
 });
 
-export default AIMatchScreen;
+export default HostMatchScreen;

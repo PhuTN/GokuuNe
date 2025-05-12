@@ -9,7 +9,7 @@ interface ButtonProps {
   isSelected?: boolean;
 }
 
-const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, color, colors, isSelected }) => {
+const Button_Host_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, color, colors, isSelected }) => {
   const isSplit = colors && colors.length === 2;
   const singleColor = color ?? "#6B50F6";
 
@@ -17,7 +17,7 @@ const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, 
     <TouchableOpacity
       style={[
         styles.button,
-        isSelected && { borderColor: "#FFCF26", borderWidth: 5 ,borderRadius: 10} // nếu isSelected = true, thêm style viền vào
+        isSelected && { borderColor: "#FFCF26", borderWidth: 3 } // nếu isSelected = true, thêm style viền vào
       ]}
       onPress={onPress}
     >
@@ -26,12 +26,12 @@ const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, 
           <View style={[styles.half, { backgroundColor: colors[0] }]} />
           <View style={[styles.half, { backgroundColor: colors[1] }]} />
           <View style={styles.iconContainer}>
-            <Icon width={40} height={40} />
+            <Icon width={35} height={35} />
           </View>
         </View>
       ) : (
         <View style={[styles.gradientButton, { backgroundColor: singleColor }]}>
-          <Icon width={30} height={30} />
+          <Icon width={25} height={25} />
         </View>
       )}
     </TouchableOpacity>
@@ -40,12 +40,11 @@ const Button_AIChallenge_Chess_Piece: React.FC<ButtonProps> = ({ Icon, onPress, 
 
 const styles = StyleSheet.create({
   button: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 5,
     overflow: "hidden",
-    margin: 5,
-    marginHorizontal: "6%",
+    marginLeft: "12%",
     // Thêm hiệu ứng đổ bóng
     shadowColor: "#000", // Màu bóng (đen)
     shadowOffset: { width: 0, height: 4 }, // Độ lệch của bóng
@@ -79,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Button_AIChallenge_Chess_Piece;
+export default Button_Host_Chess_Piece;

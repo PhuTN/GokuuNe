@@ -25,7 +25,7 @@ import ToggleButtonSoundMusic from "../components/common/ToggleButton_Sound_Musi
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import { useSoundEffect, useBackgroundMusic } from "../asycnc_store/SoundAndMusicContext";
 
@@ -59,18 +59,15 @@ const SettingScreen = ({ route, navigation }: Props) => {
     setAccountLogin(route.params?.accountLogin ?? null);
   }, [route.params]);
 
-  // Lấy mã ISO từ tên quốc gia
-  const countryCode = accountLogin?.country ? countryMap[accountLogin.country] || 'VN' : 'VN'; // Default là 'VN' nếu không tìm thấy
-
   const handleProfile = () => {
     if (accountLogin) {
-      notify({
-        message: t.noti_info,
-        description: t.noti_profile,
-        type: 'info',
-        systemNotification: true,
-        pushState: notification,
-      });
+      // notify({
+      //   message: t.noti_info,
+      //   description: t.noti_profile,
+      //   type: 'info',
+      //   systemNotification: true,
+      //   pushState: notification,
+      // });
       navigation.navigate('Profile', { accountLogin });
     } else {
       notify({
@@ -85,13 +82,13 @@ const SettingScreen = ({ route, navigation }: Props) => {
 
   const handleAchievement = () => {
     if (accountLogin) {
-      notify({
-        message: t.noti_info,
-        description: t.noti_achive,
-        type: 'info',
-        systemNotification: true,
-        pushState: notification,
-      });
+      // notify({
+      //   message: t.noti_info,
+      //   description: t.noti_achive,
+      //   type: 'info',
+      //   systemNotification: true,
+      //   pushState: notification,
+      // });
       //navigation.navigate('Profile', { accountLogin });
     } else {
       notify({
@@ -106,13 +103,13 @@ const SettingScreen = ({ route, navigation }: Props) => {
 
   const handleHistory = () => {
     if (accountLogin) {
-      notify({
-        message: t.noti_info,
-        description: t.noti_history,
-        type: 'info',
-        systemNotification: true,
-        pushState: notification,
-      });
+      // notify({
+      //   message: t.noti_info,
+      //   description: t.noti_history,
+      //   type: 'info',
+      //   systemNotification: true,
+      //   pushState: notification,
+      // });
       //navigation.navigate('Profile', { accountLogin });
     } else {
       notify({
@@ -126,24 +123,25 @@ const SettingScreen = ({ route, navigation }: Props) => {
   };
 
   const handleContact = () => {
-    notify({
-      message: t.noti_info,
-      description: t.noti_contact,
-      type: 'info',
-      systemNotification: true,
-      pushState: notification,
-    });
+    // notify({
+    //   message: t.noti_info,
+    //   description: t.noti_contact,
+    //   type: 'info',
+    //   systemNotification: true,
+    //   pushState: notification,
+    // });
 
   };
 
   const handlePrivacy = () => {
-    notify({
-      message: t.noti_info,
-      description: t.noti_privacy,
-      type: 'info',
-      systemNotification: true,
-      pushState: notification,
-    });
+    // notify({
+    //   message: t.noti_info,
+    //   description: t.noti_privacy,
+    //   type: 'info',
+    //   systemNotification: true,
+    //   pushState: notification,
+    // });
+  
   };
 
   return (
@@ -160,7 +158,7 @@ const SettingScreen = ({ route, navigation }: Props) => {
         <View style={styles.usernameContainer}>
           <Text style={styles.username}>{accountLogin?.username || t.setting_guest}</Text>
           {accountLogin?.country && (
-            <CountryFlag isoCode={countryCode} size={30} style={styles.flag} />
+            <CountryFlag isoCode={countryMap[accountLogin.country]} size={30} style={styles.flag} />
           )}
         </View>
       </View>

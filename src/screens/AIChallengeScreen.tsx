@@ -17,7 +17,7 @@ import RandomIcon from '../assets/icons/random_icon.svg';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
 import Button_Save from "../components/common/Button_Save";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AIChallenge'>;
@@ -44,77 +44,74 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
 
     const [selectedMode, setSelectedMode] = useState<string | null>(null);
 
-    // Lấy mã ISO từ tên quốc gia
-    const countryCode = t.ai_country ? countryMap[t.ai_country] || 'VN' : 'VN'; // Default là 'VN' nếu không tìm thấy
-
     useEffect(() => {
         setAccountLogin(route.params?.accountLogin ?? null);
     }, [route.params]);
 
     const handleWhiteArmy = () => {
         setSelectedPiece("white");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_white_army,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_white_army,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handleBlackArmy = () => {
         setSelectedPiece("black");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_black_army,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_black_army,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handleRandomArmy = () => {
         setSelectedPiece("random");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_random_army,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_random_army,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handleHardMode = () => {
         setSelectedMode("hard");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_hard_mode,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_hard_mode,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handleMediumMode = () => {
         setSelectedMode("medium");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_medium_mode,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_medium_mode,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handleEasyMode = () => {
         setSelectedMode("easy");
-        notify({
-            message: t.noti_info,
-            description: t.noti_ai_easy_mode,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_ai_easy_mode,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
     };
 
     const handlePlay = () => {
@@ -156,7 +153,7 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
                 />
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{t.ai_name}</Text>
-                    {/* <CountryFlag isoCode={countryCode} size={30} style={styles.flag} /> */}
+                    <CountryFlag isoCode={countryMap[t.ai_country]} size={30} style={styles.flag} />
                 </View>
             </View>
 
