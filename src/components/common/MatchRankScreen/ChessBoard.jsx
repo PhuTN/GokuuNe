@@ -26,7 +26,45 @@ let pieceArray = [];
 for (let i = 0; i < 19 * 19; i++) {
   pieceArray.push(null);
 }
+const arrayNum = new Array(19 * 4).fill(0);
+function fromIndexToView(index) {
+  const positionData = {
+    top: 0,
+    left: 0,
+    character: ''
+  }
+  if (index >= 0 && index <= 18) {
 
+    positionData.left = 18 * index + 9;
+    positionData.character = index + 1;
+  }
+  if (index >= 19 && index <= 37) {
+    positionData.left = 19 * 18;
+    positionData.top = 18 * (38 - index) - 9;
+    positionData.character = String.fromCharCode(65 + (index - 19));
+  }
+  if (index >= 38 && index <= 56) {
+    positionData.top = 19 * 18;
+    positionData.left = 18 * (index - 38) + 9;
+    positionData.character = index - 37;
+  }
+  if (index >= 57 && index <= 75) {
+    positionData.top = 18 * (76 - index) - 9;
+    positionData.character = String.fromCharCode(65 + (index - 57));
+  }
+  return <View key={index} style={
+    {
+      position: 'absolute',
+      top: positionData.top,
+      left: positionData.left,
+      width: 18,
+      height: 18
+    }
+  }><Text style={{
+    textAlign: 'center',
+    fontSize: 12
+  }}>{positionData.character}</Text></View>
+}
 export default function ChessBoard({
   handleEvent,
   flag,
@@ -147,7 +185,69 @@ export default function ChessBoard({
   }
 
   const { playMoveSound, playCaptureSound, playWinSound, playLoseSound } = useSoundEffect();
+  function displayMoveToUI(index, i) {
+    const tempParray = [...pArr];
 
+    if (tempParray[index * 19 + i] != null) {
+      return;
+    }
+    const moveResult = {
+      mover: '',
+      movePosition: ''
+    }
+    const currentSide = flag ? 'W' : 'B'
+    setGameState(gameState => {
+      const moveData = gameState.move(index, i, currentSide);
+      if (moveData.canMove) {
+        moveResult.mover = currentSide;
+        const charAsciiCode = 83 - index;
+        moveResult.movePosition = String.fromCharCode(charAsciiCode) + (i + 1);
+        if (moveData.deathPosition.length > 0) {
+          playCaptureSound(); // Có ăn quân
+        } else {
+          playMoveSound(); // Chỉ đánh bình thường
+        }
+
+
+        const tempPAnimationArr = [...animatedParr];
+        for (let j = 0; j < moveData.deathPosition.length; j++) {
+          const id =
+            moveData.deathPosition[j][0] * 19 +
+            moveData.deathPosition[j][1];
+
+          //setAnimatedParr(tempPAnimationArr);
+          Animated.timing(fadeAnimArr[id], {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: true,
+          }).start();
+          tempPAnimationArr[id] = flag ? blackPiece : whitePiece;
+        }
+
+        setAnimatedParr(tempPAnimationArr);
+
+        loadBoardFromGameState(gameState);
+        setBlackSkip(false);
+        setWhiteSkip(false);
+        handleEvent(gameState);
+      }
+      return gameState;
+    });
+    return moveResult;
+
+  }
+  function onMove(index, i) {
+    return displayMoveToUI(index, i); /*Trả vể {
+      mover:'' nếu đánh ko đc, 'B' nếu là black, 'W' nếu là white,
+      movePosition:'' nếu đánh ko đc, ví dụ 'A15' nếu đánh được
+      } */
+  }
+  function onReceiveMove(moveString, mover/*Tham số này là người đánh 'W' là white, 'B' là black */) {
+
+    const row = moveString.substring(0, 1);
+    const col = moveString.substring(1, moveString.length);
+    displayMoveToUI(row, col);
+  }
   function renderTouchableCell(index) {
     let res = [];
 
@@ -159,96 +259,7 @@ export default function ChessBoard({
           onPress={e => {
             e.preventDefault();
 
-            const tempParray = [...pArr];
-
-            if (tempParray[index * 19 + i] != null) {
-              return;
-            }
-
-            if (flag) {
-              setGameState(gameState => {
-                const moveData = gameState.move(index, i, 'W');
-                if (moveData.canMove) {
-                  if (moveData.deathPosition.length > 0) {
-                    playCaptureSound(); // Có ăn quân
-                  } else {
-                    playMoveSound(); // Chỉ đánh bình thường
-                  }
-
-
-                  const tempPAnimationArr = [...animatedParr];
-                  for (let j = 0; j < moveData.deathPosition.length; j++) {
-                    const id =
-                      moveData.deathPosition[j][0] * 19 +
-                      moveData.deathPosition[j][1];
-
-                    //setAnimatedParr(tempPAnimationArr);
-                    Animated.timing(fadeAnimArr[id], {
-                      toValue: 0,
-                      duration: 2000,
-                      useNativeDriver: true,
-                    }).start();
-                    tempPAnimationArr[id] = blackPiece;
-                  }
-
-                  setAnimatedParr(tempPAnimationArr);
-
-                  loadBoardFromGameState(gameState);
-                  setBlackSkip(false);
-                  setWhiteSkip(false);
-                  handleEvent(gameState);
-                }
-                return gameState;
-              });
-            } else {
-              /*if(gameState.isEnd()) {
-                            gameState.calculateScore();
-                            
-                        }*/
-              setGameState(gameState => {
-                const moveData = gameState.move(index, i, 'B');
-                if (moveData.canMove) {
-                  if (moveData.deathPosition.length > 0) {
-                    playCaptureSound(); // Có ăn quân
-                  } else {
-                    playMoveSound(); // Chỉ đánh bình thường
-                  }
-                  const animatedSequence = [];
-
-                  const tempPAnimationArr = [...animatedParr];
-                  for (let j = 0; j < moveData.deathPosition.length; j++) {
-                    const id =
-                      moveData.deathPosition[j][0] * 19 +
-                      moveData.deathPosition[j][1];
-
-                    //setAnimatedParr(tempPAnimationArr);
-                    Animated.timing(fadeAnimArr[id], {
-                      toValue: 0,
-                      duration: 2000,
-                      useNativeDriver: true,
-                    }).start();
-                    tempPAnimationArr[id] = whitePiece;
-                  }
-
-                  setAnimatedParr(tempPAnimationArr);
-
-                  loadBoardFromGameState(gameState);
-                  setBlackSkip(false);
-                  setWhiteSkip(false);
-                  handleEvent(gameState);
-                }
-                return gameState;
-              });
-            }
-
-            /*else {
-                    const opponentMove = OnOpponentMove(gameState,isCurrentPlayerWhite);
-                    const nextMove = isCurrentPlayerWhite?'B':'W';
-                    setGameState((gameState)=>{
-                        gameState.move(opponentMove[0],opponentMove[1],nextMove);
-                        return gameState;
-                    })
-                }*/
+            console.log(onMove(index, i));//Gọi hàm onMove
           }}>
           <Dot index={index * 19 + i}></Dot>
           <Animated.Image
@@ -325,6 +336,12 @@ export default function ChessBoard({
             })}
           </View>
         </View>
+        {
+          arrayNum.map((item, index) => {
+            return fromIndexToView(index);
+          })
+        }
+
       </View>
       {renderSkipSurrenderButtons(true)}
     </View>

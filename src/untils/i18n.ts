@@ -9,6 +9,7 @@ export const translations = {
     surrender_text: "Surrender",
 
     //Binh
+    ranking: 'Ranking',
     play_button_text: 'PLAY',
     match_text: 'Matches',
     search_match_text: 'Searching.....',
@@ -36,7 +37,7 @@ export const translations = {
     home_AI: "AI",
     home_friends: "FRIENDS",
     home_host: "HOST",
-
+    host:"Host",
     login: "LOGIN",
     login_title: "Login",
     login_username: "Username",
@@ -68,7 +69,7 @@ export const translations = {
     friends_unfriend: "Unfriend",
     friends_no_user_found:"No user found",
 
-    setting: "SETTING",
+    setting: "Setting",
     setting_guest: "Guest",
     setting_account: "Acount",
     setting_profile: "Profile",
@@ -86,7 +87,7 @@ export const translations = {
     setting_notification_sound: "Notification",
     setting_background_music:"Background Music",
 
-    profile: "PROFILE",
+    profile: "Profile",
     profile_name: "Name",
     profile_email: "Email",
     profile_password: "Password",
@@ -159,6 +160,7 @@ export const translations = {
     toggle_theme: "Chuyển giao diện",
     toggle_language: "Chuyển ngôn ngữ",
     //Binh
+    ranking: 'Xếp Hạng',
     skip_text: "Bỏ qua lượt",
     surrender_text: "Đầu hàng",
     play_button_text: 'CHƠI',
@@ -188,7 +190,7 @@ export const translations = {
     home_AI: "ĐẤU MÁY",
     home_friends: "BẠN BÈ",
     home_host: "TẠO PHÒNG",
-
+    host:"Tạo Phòng",
     login: "ĐĂNG NHẬP",
     login_title: "Đăng nhập",
     login_username: "Tên đăng nhập",
@@ -202,7 +204,7 @@ export const translations = {
     login_error: "Lỗi",
     login_error_message: "Tên đăng nhập hoặc mật khẩu không hợp lệ!",
 
-    ai: "ĐẤU MÁY",
+    ai: "Đấu Máy",
     ai_name: "Siêu Tân Tinh",
     ai_country: "Vietnam",
     ai_chess_army_title: "CHỌN PHE BẮT ĐẦU",
@@ -225,7 +227,7 @@ export const translations = {
     friends_unfriend: "Hủy kết bạn",
     friends_no_user_found: "Không tìm thấy người dùng nào",
 
-    setting: "CÀI ĐẶT",
+    setting: "Cài đặt",
     setting_guest: "Khách",
     setting_account: "Tài khoản",
     setting_profile: "Hồ sơ",
@@ -245,7 +247,7 @@ export const translations = {
     setting_notification_sound: "Thông báo",
     setting_background_music:"Nhạc nền",
 
-    profile: "HỒ SƠ",
+    profile: "Hồ Sơ",
     profile_name: "Tên",
     profile_email: "Email",
     profile_password: "Mật khẩu",

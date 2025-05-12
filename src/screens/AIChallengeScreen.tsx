@@ -156,7 +156,7 @@ const AIChallengeScreen = ({ route, navigation }: Props) => {
                 />
                 <View style={styles.titleContainer}>
                     <Text style={styles.title}>{t.ai_name}</Text>
-                    <CountryFlag isoCode={countryCode} size={30} style={styles.flag} />
+                    {/* <CountryFlag isoCode={countryCode} size={30} style={styles.flag} /> */}
                 </View>
             </View>
 
