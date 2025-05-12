@@ -13,7 +13,7 @@ import { translations } from "../untils/i18n";
 import Button_Save from '../components/common/Button_Save';
 import SearchBlackIcon from '../assets/icons/search_black_icon.svg';
 import SearchWhiteIcon from '../assets/icons/search_white_icon.svg';
-import { notify } from '../untils/Notify';
+import { notify } from '../untils/notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import DatePicker from 'react-native-date-picker';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ChatScreen from '../screens/ChatScreen';
@@ -15,25 +15,25 @@ import AIChallengeScreen from '../screens/AIChallengeScreen';
 import AIMatchScreen from '../screens/AIMatchScreen';
 import ChatTabScreen from '../screens/ChatTabScreen';
 import HostScreen from '../screens/HostScreen';
-import {StatusBar} from 'react-native';
+import { StatusBar } from 'react-native';
 
 export type RootStackParamList = {
   Login: undefined;
-  Home: {accountLogin: any} | undefined;
-  Chat: {accountLogin: any} | undefined;
-  ChatDetail: {accountLogin: any; friend: any} | undefined;
-  ChatTab: {accountLogin: any} | undefined;
-  Profile: {accountLogin: any} | undefined;
-  Ranking: {accountLogin: any} | undefined;
-  RankingMatch: {accountLogin: any} | undefined;
-  Setting: {accountLogin: any} | undefined;
-  Friends: {accountLogin: any} | undefined;
-  FriendLeaderBoard: {accountLogin: any} | undefined;
-  AIChallenge: {accountLogin: any} | undefined;
+  Home: { accountLogin: any } | undefined;
+  Chat: { accountLogin: any } | undefined;
+  ChatDetail: { accountLogin: any; friend: any } | undefined;
+  ChatTab: { accountLogin: any } | undefined;
+  Profile: { accountLogin: any } | undefined;
+  Ranking: { accountLogin: any } | undefined;
+  RankingMatch: { accountLogin: any } | undefined;
+  Setting: { accountLogin: any } | undefined;
+  Friends: { accountLogin: any } | undefined;
+  FriendLeaderBoard: { accountLogin: any } | undefined;
+  AIChallenge: { accountLogin: any } | undefined;
   AIMatch:
-    | {accountLogin: any; selectedPiece: any; selectedMode: any}
-    | undefined;
-  Host: {accountLogin: any; friend: any} | undefined;
+  | { accountLogin: any; selectedPiece: any; selectedMode: any }
+  | undefined;
+  Host: { accountLogin: any; friend: any } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -43,8 +43,8 @@ const AppNavigator = () => {
     <NavigationContainer>
       <StatusBar hidden={true}></StatusBar>
       <Stack.Navigator
-        initialRouteName="ChatDetail"
-        screenOptions={{headerShown: false}}>
+        initialRouteName="Home"
+        screenOptions={{ headerShown: false }}>
         {/* <Stack.Screen
           name="TestThemeAndLanguage"
           component={ThemeLanguageTester}

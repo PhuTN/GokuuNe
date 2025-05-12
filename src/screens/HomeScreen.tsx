@@ -21,7 +21,7 @@ import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
 import { Dimensions } from "react-native";
-import { notify } from '../untils/Notify';
+import { notify } from '../untils/notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -132,7 +132,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
       systemNotification: true,
       pushState: notification,
     });
-    navigation.navigate('Host', { accountLogin, friend});
+    navigation.navigate('Host', { accountLogin, friend });
   };
 
   const handleChat = () => {
@@ -224,7 +224,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         <Button_Home title={t.home_ranking} Icon={RankingIcon} onPress={handleRanking} />
         <Button_Home title={t.home_AI} Icon={AIChallengeIcon} onPress={handleAIChallenge} />
         <Button_Home title={t.home_friends} Icon={FriendsIcon} onPress={handleFriends} />
-        <Button_Home title={t.home_host} Icon={HostIcon} onPress={()=>handleHost(null)} />
+        <Button_Home title={t.home_host} Icon={HostIcon} onPress={() => handleHost(null)} />
       </View>
 
       {/* Bottom Navigation */}

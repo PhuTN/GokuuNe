@@ -5,9 +5,9 @@ import { ThemeProvider } from './src/asycnc_store/ThemeContext';
 import { NotificationProvider } from './src/asycnc_store/NotificationContext';
 import { SoundEffectProvider, BackgroundMusicProvider } from './src/asycnc_store/SoundAndMusicContext';
 import PushNotification from 'react-native-push-notification';
-// import { playBackgroundMusic } from './src/untils/BackgroundMusic';
-// import  { loadSoundEffects }  from './src/untils/SoundEffects';
-// import { loadVictorySound } from './src/untils/VictorySound';
+import { playBackgroundMusic } from './src/untils/BackgroundMusic.ts';
+import { loadSoundEffects } from './src/untils/SoundEffects';
+import { loadVictorySound } from './src/untils/VictorySound';
 import { checkAndRequestNotificationPermission } from './src/untils/NotificationPermission';
 import NotificationPermissionCustom from './src/components/common/Notification_Permission_Custom';
 
@@ -34,15 +34,9 @@ export default function App() {
     };
 
     init();
-<<<<<<< HEAD
-   playBackgroundMusic();
+    playBackgroundMusic();
     loadSoundEffects();
     loadVictorySound();
-=======
-    // playBackgroundMusic();
-    // loadSoundEffects();
-    // loadVictorySound();
->>>>>>> 50dba58ba2b3d94e23234ab437d95decd91dc538
   }, []);
 
   return (
