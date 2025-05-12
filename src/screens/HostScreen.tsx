@@ -26,7 +26,7 @@ const HostScreen = ({ route, navigation }: Props) => {
 
     return (
         <View>
-            <Header title="HOST" />
+            <Header title={t.host} />
         </View>
     );
 };

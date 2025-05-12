@@ -5,7 +5,7 @@ export  const  User= {
     matches:25,
     elo:2200,
     userCountryImageURL:"https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg",
-    userAvatarURL:"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png",
+    userAvatarURL:"https://sohanews.sohacdn.com/2020/5/30/photo-1-15908074492991346125301.jpg",
     rank:4
 }
 export const Top10= [

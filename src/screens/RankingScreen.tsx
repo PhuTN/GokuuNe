@@ -14,6 +14,8 @@ import { User, Top10 } from '../fake_data/Binh/fake_data';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import Header from '../components/common/Header';
 import { he } from 'date-fns/locale';
+import { useLanguage } from '../asycnc_store/LanguageContext';
+import { translations } from '../untils/i18n';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Ranking'>;
 const listLeaderBoard = [
@@ -32,9 +34,12 @@ const RankingScreen = ({ navigation }: Props) => {
   const isDark = theme === 'dark';
   const style = isDark ? darkStyle : whiteStyle;
   const { height } = useWindowDimensions();
+
+  const {language,toggleLanguage} = useLanguage();
+      const t = translations[language];
   return (
     <View style={style.container}>
-      <Header title='Ranking'></Header>
+      <Header title={t.ranking}></Header>
 
       <ScrollView style={{ paddingBottom: 30, height: height }} >
 
