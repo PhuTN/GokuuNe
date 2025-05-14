@@ -8,9 +8,12 @@ import Header from '../components/common/Header';
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
-
+import {login} from '../api/userApi'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { socket } from '../untils/socket';
+ 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 const LoginScreen = ({ navigation }: Props) => {
@@ -28,28 +31,47 @@ const LoginScreen = ({ navigation }: Props) => {
 
     const passwordInputRef = useRef<TextInput>(null);
 
-    const handleLogin = () => {
-        const accountExist = accounts.find(account => account.username === username && account.password === password);
+    const handleLogin = async () => {
+    try {
+        const data = await login(username, password);
+        console.log("User login success:", data.user);
 
-        if (accountExist) {
-            notify({
-                message: t.noti_success,
-                description: t.noti_login_success,
-                type: 'success',
-                systemNotification: true,
-                pushState: notification,
-            });
-            navigation.navigate('Home', { accountLogin: accountExist })
-        } else {
-            notify({
-                message: t.noti_danger,
-                description: t.noti_login_faile,
-                type: 'danger',
-                systemNotification: true,
-                pushState: notification,
-            });
+        // ✅ Lưu thông tin user vào AsyncStorage
+        await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
+
+        // ✅ NEW: kết nối socket + emit user:online
+        if (!socket.connected) {
+            socket.connect();                               // nếu chưa connect thì connect
         }
-    };
+        socket.emit("user:online", data.user._id);         // emit user online với userId
+
+        notify({
+            message: t.noti_success,
+            description: t.noti_login_success,
+            type: 'success',
+            systemNotification: true,
+            pushState: notification,
+        });
+
+        // ✅ Navigate qua Home và truyền kèm user đã login
+        navigation.navigate('Home', { accountLogin: data.user });
+
+    } catch (err) {
+        const error = err as any;
+        console.log(err);
+
+        notify({
+            message: t.noti_danger,
+            description: error.response?.data?.error || t.noti_login_faile,
+            type: 'danger',
+            systemNotification: true,
+            pushState: notification,
+        });
+    }
+};
+
+
+
 
     return (
         <ScrollView

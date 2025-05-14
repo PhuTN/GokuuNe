@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet, Text, ImageBackground} from 'react-native';
 import ChatHeader from '../components/common/ChatScreen/ChatHeader';
 import SearchBar from '../components/common/ChatScreen/SearchBar';
@@ -11,24 +11,133 @@ import {useLanguage} from '../asycnc_store/LanguageContext';
 import {translations} from '../untils/i18n';
 import ScreenHeader from '../components/common/ScreenHeader';
 import Header from '../components/common/Header';
+import { getUserById } from '../api/userApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserConversations } from '../api/messageApi';
+import { useFocusEffect } from '@react-navigation/native';
+import { socket } from '../untils/socket';
 
 export default function ChatScreen({navigation}) {
-  const {theme} = useTheme();
-  const isDark = theme === 'dark';
-  const {language} = useLanguage();
-  const t = translations[language];
+  const { theme } = useTheme();
+const isDark = theme === 'dark';
+const { language } = useLanguage();
+const t = translations[language];
+const [chats, setChats] = useState([]);  
+const [searchQuery, setSearchQuery] = useState('');
+const [currentUser, setCurrentUser] = useState(null);
+const [currentUserDetail, setCurrentUserDetail] = useState(null);
 
-  const [searchQuery, setSearchQuery] = useState('');
+// 🟢 Lấy currentUser từ AsyncStorage khi vào màn
+useEffect(() => {
+  const loadCurrentUser = async () => {
+    try {
+      const userJson = await AsyncStorage.getItem('currentUser');
+     
+      const user = userJson ? JSON.parse(userJson) : null;
 
-  const filteredUsers = activeUsers.filter(
-    user =>
-      user.name &&
-      user.name.trim().toLowerCase().includes(searchQuery.trim().toLowerCase()),
-  );
+       console.log(user,2)
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Lỗi khi load current user:", error);
+    }
+  };
 
-  const filteredChats = recentChats.filter(chat =>
-    chat.user.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  loadCurrentUser();
+}, []);
+
+// 🟢 Khi có currentUser → gọi API lấy chi tiết + friends
+useEffect(() => {
+  const fetchFriends = async () => {
+    try {
+      if (currentUser?._id) {
+        const userDetail = await getUserById(currentUser._id);
+        setCurrentUserDetail(userDetail);   // có luôn friends
+      }
+    } catch (error) {
+      console.error("Lỗi khi lấy friends:", error);
+    }
+  };
+
+  fetchFriends();
+}, [currentUser]);
+
+// 🟢 Lọc danh sách bạn bè đã là friend + search theo displayName
+const filteredUsers = (currentUserDetail?.friends ?? [])
+    .filter(f => f.status === 'friend' && f.friendId && f.friendId.onlineStatus === 'online') // ✅ thêm check online
+    .map(f => f.friendId)
+    .filter(user =>
+        user?.displayName &&
+        user.displayName.trim().toLowerCase().includes(searchQuery.trim().toLowerCase())
+    );
+
+
+
+// 🟢 Giữ nguyên nếu bạn vẫn dùng recentChats (hoặc thay sau)
+useFocusEffect(
+  useCallback(() => {
+    const fetchChats = async () => {
+      try {
+        const currentUser = await AsyncStorage.getItem('currentUser');
+        const user = currentUser ? JSON.parse(currentUser) : null;
+        if (user && user._id) {
+          const conversations = await getUserConversations(user._id);
+          setChats(conversations);
+        }
+      } catch (err) {
+        console.error('Lỗi khi load conversations:', err);
+      }
+    };
+
+    fetchChats();
+  }, [])
+);
+
+// ✅ filteredChats dùng để lọc theo search
+const filteredChats = chats.filter(chat =>
+    chat.friend?.displayName?.toLowerCase().includes(searchQuery.toLowerCase())
+);
+console.log("HEE", chats)
+console.log(filteredChats)
+useEffect(() => {
+    const handleChatUpdate = () => {
+        console.log("📥 [ChatScreen] Có chat mới, reload conversations");
+        // Gọi lại fetchChats
+        if (currentUser?._id) {
+            getUserConversations(currentUser._id).then(setChats).catch(err => {
+                console.error('Lỗi khi reload conversations:', err);
+            });
+        }
+    };
+
+    socket.on("chat:list:refresh", handleChatUpdate);
+
+    return () => {
+        socket.off("chat:list:refresh", handleChatUpdate);
+    };
+}, [currentUser]);
+
+
+useEffect(() => {
+    const reloadFriends = async () => {
+        try {
+            if (currentUser?._id) {
+                console.log("📥 [ChatScreen] Có user online/offline, reload friends");
+                const userDetail = await getUserById(currentUser._id);
+                setCurrentUserDetail(userDetail);
+            }
+        } catch (error) {
+            console.error("Lỗi khi reload friends:", error);
+        }
+    };
+
+    socket.on("user:online", reloadFriends);
+    socket.on("user:offline", reloadFriends);
+
+    return () => {
+        socket.off("user:online", reloadFriends);
+        socket.off("user:offline", reloadFriends);
+    };
+}, [currentUser]);
 
   const renderContent = () => (
     <>
@@ -52,7 +161,7 @@ export default function ChatScreen({navigation}) {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.activeList}
-            keyExtractor={item => item.id}
+            keyExtractor={(item) => item.id ?? item.friend?._id ?? Math.random().toString()}
             renderItem={({item}) => <ActiveUserItem user={item} />}
           />
         )}
@@ -64,7 +173,7 @@ export default function ChatScreen({navigation}) {
         <FlatList
           data={filteredChats}
           keyExtractor={item => item.id}
-          renderItem={({item}) => <ChatCardItem chat={item} />}
+          renderItem={({item}) =>  <ChatCardItem chat={item} currentUserId={currentUser._id} />}
           contentContainerStyle={styles.chatList}
           showsVerticalScrollIndicator={false}
         />

@@ -21,8 +21,9 @@ import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
 import { Dimensions } from "react-native";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
+import { socket } from "../untils/socket";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -100,18 +101,26 @@ const HomeScreen = ({ route, navigation }: Props) => {
   };
 
   const handleLogout = () => {
+    // ✅ Ngắt kết nối socket nếu còn kết nối
+    if (socket && socket.connected) {
+        socket.disconnect();
+        console.log("✅ Socket disconnected on logout");
+    }
+
+    // ✅ Tiếp tục logout như cũ
     notify({
-      message: t.noti_success,
-      description: t.noti_logout,
-      type: 'success',
-      systemNotification: true,
-      pushState: notification,
+        message: t.noti_success,
+        description: t.noti_logout,
+        type: 'success',
+        systemNotification: true,
+        pushState: notification,
     });
+
     navigation.reset({
-      index: 0,
-      routes: [{ name: 'Home', params: { accountLogin: null } }],
+        index: 0,
+        routes: [{ name: 'Home', params: { accountLogin: null } }],
     });
-  };
+};
 
   const handleRanking = () => {
     notify({
@@ -210,8 +219,16 @@ const HomeScreen = ({ route, navigation }: Props) => {
           style={styles.profileGradient}
         >
           <View style={styles.profileContainer}>
-            <Image source={accountLogin?.avatar || require('../images/user.png')} style={styles.avatar} />
-            <Text style={styles.username}>{accountLogin?.username || t.home_guest}</Text>
+            <Image
+  source={
+    accountLogin?.avatarUrl
+      ? { uri: accountLogin.avatarUrl }
+      : require('../images/user.png')
+  }
+  style={styles.avatar}
+/>
+
+            <Text style={styles.username}>{accountLogin?.displayName || t.home_guest}</Text>
           </View>
         </LinearGradient>
       </View>

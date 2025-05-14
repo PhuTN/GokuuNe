@@ -25,9 +25,11 @@ import ToggleButtonSoundMusic from "../components/common/ToggleButton_Sound_Musi
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import { useSoundEffect, useBackgroundMusic } from "../asycnc_store/SoundAndMusicContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { getUserById } from "../api/userApi";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Setting'>;
 
@@ -145,7 +147,24 @@ const SettingScreen = ({ route, navigation }: Props) => {
       pushState: notification,
     });
   };
+useFocusEffect(
+    React.useCallback(() => {
+      const fetchUser = async () => {
+        try {
+          if (accountLogin?._id) {
+            const freshUser = await getUserById(accountLogin._id);
+            setAccountLogin(freshUser);
+          }
+        } catch (error) {
+          console.error('Lỗi khi tải lại user:', error);
+        }
+      };
 
+      fetchUser();
+    }, [accountLogin?._id])
+  );
+
+  console.log(accountLogin?.avatarUrl)
   return (
     <ScrollView
       style={styles.scrollView}
@@ -156,9 +175,17 @@ const SettingScreen = ({ route, navigation }: Props) => {
 
       {/* Avatar */}
       <View style={styles.profileContainer}>
-        <Image source={accountLogin?.avatar || require('../images/user.png')} style={styles.avatar} />
+       <Image
+    source={
+      accountLogin?.avatarUrl
+        ? { uri: accountLogin.avatarUrl }
+        : require('../images/user.png')
+    }
+    style={styles.avatar}
+  />
         <View style={styles.usernameContainer}>
-          <Text style={styles.username}>{accountLogin?.username || t.setting_guest}</Text>
+          <Text style={styles.username}>{accountLogin?.displayName
+ || t.setting_guest}</Text>
           {accountLogin?.country && (
             <CountryFlag isoCode={countryCode} size={30} style={styles.flag} />
           )}

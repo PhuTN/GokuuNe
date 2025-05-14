@@ -34,9 +34,7 @@ export default function App() {
     };
 
     init();
-    playBackgroundMusic();
-    loadSoundEffects();
-    loadVictorySound();
+ 
   }, []);
 
   return (

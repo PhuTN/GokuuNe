@@ -13,44 +13,64 @@ import { translations } from "../untils/i18n";
 import Button_Save from '../components/common/Button_Save';
 import SearchBlackIcon from '../assets/icons/search_black_icon.svg';
 import SearchWhiteIcon from '../assets/icons/search_white_icon.svg';
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import DatePicker from 'react-native-date-picker';
+import { getUserById, updateUser } from '../api/userApi';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
 const ProfileScreen = ({ route, navigation }: Props) => {
   const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
-  const [name, setName] = useState(accountLogin?.name ?? '');
-  const [avatar, setAvatar] = useState(accountLogin?.avatar ?? null);
+  const [displayName, setDisplayName] = useState(accountLogin?.displayName ?? '');
+  const [avatarUrl, setAvatarUrl] = useState(accountLogin?.avatarUrl ?? null);
   const [email, setEmail] = useState(accountLogin?.email ?? '');
   const [password, setPassword] = useState(accountLogin?.password ?? '');
-  const [birth, setBirth] = useState(() => {
-    const birthStr = accountLogin?.birth;
-    if (!birthStr) return new Date(); // Không có ngày sinh => default
-
-    // Parse chuỗi dd/MM/yyyy thành đối tượng Date
-    const parsed = parse(birthStr, 'dd/MM/yyyy', new Date());
-
-    // Nếu parse lỗi, trả về ngày hiện tại
+  const [dateOfBirth, setDateOfBirth] = useState(() => {
+    const dobStr = accountLogin?.dateOfBirth;
+    if (!dobStr) return new Date();
+    const parsed = new Date(dobStr);
     return isNaN(parsed.getTime()) ? new Date() : parsed;
   });
-  const [country, setCountry] = useState(accountLogin?.country ?? 'Vietnam');
+  const [nationality, setNationality] = useState(accountLogin?.nationality ?? 'Vietnam');
 
-  const [openDatePicker, setOpenDatePicker] = useState(false);
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUser = async () => {
+        try {
+          if (accountLogin?._id) {
+            const freshUser = await getUserById(accountLogin._id);
+            setAccountLogin(freshUser);
+            setDisplayName(freshUser.displayName ?? '');
+            setAvatarUrl(freshUser.avatarUrl ?? null);
+            setEmail(freshUser.email ?? '');
+            setPassword(freshUser.password ?? '');
+            setDateOfBirth(freshUser.dateOfBirth ? new Date(freshUser.dateOfBirth) : new Date());
+            setNationality(freshUser.nationality ?? 'Vietnam');
+          }
+        } catch (error) {
+          console.error('Lỗi khi tải lại user:', error);
+        }
+      };
+
+      fetchUser();
+    }, [accountLogin?._id])
+  );
+
   const countryList = countries.map((c) => ({
     label: c.name.common,
     value: c.name.common,
   }));
 
-  const { language, toggleLanguage } = useLanguage();
+  const { language } = useLanguage();
   const t = translations[language];
 
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const { notification, toggleNotification } = useNotification();
+  const { notification } = useNotification();
 
   const [isCountryModalVisible, setCountryModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -59,51 +79,71 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   );
   const [isBirthModalVisible, setBirthModalVisible] = useState(false);
 
-  const handleSave = () => {
-    const updatedAccount = {
-      ...accountLogin,
-      name,
-      email,
-      password,
-      birth: format(birth, 'dd/MM/yyyy'),
-      country,
-      avatar,
-    };
-    setAccountLogin(updatedAccount);
-    notify({
-      message: t.noti_success,
-      description: t.noti_save_changes,
-      type: 'success',
-      systemNotification: true,
-      pushState: notification,
-    });
-  };
+  const handleSave = async () => {
+    try {
+
+      console.log("[DEBUG] accountLogin._id =", accountLogin._id);
+console.log("[DEBUG] update data =", {
+    displayName,
+    email,
+    password,
+    dateOfBirth: dateOfBirth.toISOString(),
+    nationality,
+    avatarUrl
+});
+        // ✅ Gọi API update
+        const updatedUser = await updateUser(accountLogin._id, {
+            displayName,
+            email,
+            password,
+            dateOfBirth: dateOfBirth.toISOString(),
+            nationality,
+            avatarUrl,
+        });
+
+        // ✅ Cập nhật lại state sau khi backend update thành công
+        setAccountLogin(updatedUser);
+
+        notify({
+            message: t.noti_success,
+            description: t.noti_save_changes,
+            type: 'success',
+            systemNotification: true,
+            pushState: notification,
+        });
+
+    } catch (error) {
+        console.log(error);
+        notify({
+            message: t.noti_danger,
+            type: 'danger',
+            systemNotification: true,
+            pushState: notification,
+        });
+    }
+};
+
 
   const handleAvatar = async () => {
-    const options: ImageLibraryOptions = {
-      mediaType: 'photo',
-      quality: 1,
-    };
-
+    const options: ImageLibraryOptions = { mediaType: 'photo', quality: 1 };
     launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        Alert.alert('User cancelled image picker');
-      } else if (response.errorMessage) {
+      if (response.didCancel) return;
+      if (response.errorMessage) {
         Alert.alert('Image picker error: ', response.errorMessage);
       } else if (response.assets && response.assets.length > 0) {
-        setAvatar({ uri: response.assets[0].uri });
+        setAvatarUrl(response.assets[0].uri);
       }
     });
   };
 
+  console.log(accountLogin)
   return (
     <ScrollView style={styles.scrollView} contentContainerStyle={{ alignItems: "center" }}>
-      {/* Header */}
       <Header title={t.profile} />
 
-      {/* Profile Avatar */}
+      {/* Avatar */}
       <View style={styles.avatarContainer}>
-        <Image source={avatar || require('../images/user.png')} style={styles.avatar} />
+        <Image source={avatarUrl ? { uri: avatarUrl } : require('../images/user.png')} style={styles.avatar} />
         <TouchableOpacity style={styles.cameraIcon} onPress={handleAvatar}>
           <CameraIcon width={40} height={40} />
         </TouchableOpacity>
@@ -112,7 +152,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
       {/* Form */}
       <View style={styles.form}>
         <Text style={styles.label}>{t.profile_name}</Text>
-        <TextInput style={styles.input} value={name} onChangeText={setName} />
+        <TextInput style={styles.input} value={displayName} onChangeText={setDisplayName} />
 
         <Text style={styles.label}>{t.profile_email}</Text>
         <TextInput style={styles.input} value={email} onChangeText={setEmail} keyboardType="email-address" />
@@ -123,30 +163,17 @@ const ProfileScreen = ({ route, navigation }: Props) => {
         {/* Birthdate Picker */}
         <Text style={styles.label}>{t.profile_birth}</Text>
         <TouchableOpacity style={styles.input} onPress={() => setBirthModalVisible(true)}>
-          <Text style={styles.birthPicker}>{format(birth, 'dd/MM/yyyy')}</Text>
+          <Text style={styles.birthPicker}>{format(dateOfBirth, 'dd/MM/yyyy')}</Text>
         </TouchableOpacity>
 
-        <Modal
-          visible={isBirthModalVisible}
-          animationType="slide"
-          transparent
-          onRequestClose={() => setBirthModalVisible(false)}
-        >
+        <Modal visible={isBirthModalVisible} animationType="slide" transparent onRequestClose={() => setBirthModalVisible(false)}>
           <TouchableWithoutFeedback onPress={() => setBirthModalVisible(false)}>
             <View style={styles.modalOverlay}>
-              <TouchableWithoutFeedback onPress={() => { }}>
+              <TouchableWithoutFeedback>
                 <View style={styles.modalContainer}>
                   <Text style={styles.modalTitle}>{t.profile_birth}</Text>
-
-                  <DatePicker
-                    date={birth}
-                    mode="date"
-                    onDateChange={setBirth}
-                    style={styles.calendar}
-                    theme={isDark ? "dark" : "light"}
-                    locale={language === 'vi' ? 'vi' : 'en'}
-                  />
-
+                  <DatePicker date={dateOfBirth} mode="date" onDateChange={setDateOfBirth} style={styles.calendar}
+                    theme={isDark ? "dark" : "light"} locale={language === 'vi' ? 'vi' : 'en'} />
                   <Button_Save text={t.profile_birth_confirm} onPress={() => setBirthModalVisible(false)} />
                 </View>
               </TouchableWithoutFeedback>
@@ -157,49 +184,27 @@ const ProfileScreen = ({ route, navigation }: Props) => {
         {/* Country Picker */}
         <Text style={styles.label}>{t.profile_country}</Text>
         <TouchableOpacity style={styles.input} onPress={() => setCountryModalVisible(true)}>
-          <Text style={styles.countryText}>{country}</Text>
+          <Text style={styles.countryText}>{nationality}</Text>
         </TouchableOpacity>
 
-        <Modal
-          visible={isCountryModalVisible}
-          animationType="slide"
-          transparent
-          onRequestClose={() => setCountryModalVisible(false)}
-        >
+        <Modal visible={isCountryModalVisible} animationType="slide" transparent onRequestClose={() => setCountryModalVisible(false)}>
           <TouchableWithoutFeedback onPress={() => { setCountryModalVisible(false); setSearchText('') }}>
             <View style={styles.modalOverlay}>
-              <TouchableWithoutFeedback onPress={() => { }}>
+              <TouchableWithoutFeedback>
                 <View style={styles.modalContainer}>
                   <Text style={styles.modalTitle}>{t.profile_country}</Text>
-
                   <View style={styles.searchBox}>
-                    <TextInput
-                      style={styles.inputSearch}
-                      value={searchText}
-                      onChangeText={setSearchText}
-                      placeholder={t.friends_searchbox_placeholder}
-                      placeholderTextColor={isDark ? '#888' : '#666'}
-                    />
-                    {!isDark ? (
-                      <SearchBlackIcon width={22} height={22} />
-                    ) : (
-                      <SearchWhiteIcon width={22} height={22} />
-                    )}
+                    <TextInput style={styles.inputSearch} value={searchText} onChangeText={setSearchText}
+                      placeholder={t.friends_searchbox_placeholder} placeholderTextColor={isDark ? '#888' : '#666'} />
+                    {isDark ? <SearchWhiteIcon width={22} height={22} /> : <SearchBlackIcon width={22} height={22} />}
                   </View>
-
-                  <FlatList
-                    data={filteredCountries}
-                    keyExtractor={(item) => item.value}
-                    keyboardShouldPersistTaps="handled"
+                  <FlatList data={filteredCountries} keyExtractor={(item) => item.value} keyboardShouldPersistTaps="handled"
                     renderItem={({ item }) => (
-                      <TouchableOpacity
-                        style={styles.listItem}
-                        onPress={() => {
-                          setCountry(item.value);
-                          setCountryModalVisible(false);
-                          setSearchText('');
-                        }}
-                      >
+                      <TouchableOpacity style={styles.listItem} onPress={() => {
+                        setNationality(item.value);
+                        setCountryModalVisible(false);
+                        setSearchText('');
+                      }}>
                         <Text style={styles.listItemText}>{item.label}</Text>
                       </TouchableOpacity>
                     )}
@@ -210,12 +215,12 @@ const ProfileScreen = ({ route, navigation }: Props) => {
           </TouchableWithoutFeedback>
         </Modal>
 
-        {/* Save Button */}
         <Button_Save text={t.profile_button} onPress={handleSave} />
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
+
 
 const lightStyles = StyleSheet.create({
   scrollView: {

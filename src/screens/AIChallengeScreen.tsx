@@ -17,7 +17,7 @@ import RandomIcon from '../assets/icons/random_icon.svg';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
 import Button_Save from "../components/common/Button_Save";
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AIChallenge'>;

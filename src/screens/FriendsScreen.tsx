@@ -18,7 +18,7 @@ import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';
 import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Friends'>;

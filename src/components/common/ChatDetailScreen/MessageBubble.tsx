@@ -13,11 +13,12 @@ const MessageBubble = ({message, sender, avatar}) => {
           ? styles.meBubble
           : [styles.otherBubble, isDark && styles.darkOtherBubble],
       ]}>
-      {sender === 'other' && avatar && (
-        <View style={styles.avatarContainer}>
-          <Image source={avatar} style={styles.avatar} />
-        </View>
-      )}
+      {sender !== 'me' && avatar && (
+    <View style={styles.avatarContainer}>
+        <Image source={avatar} style={styles.avatar} />
+    </View>
+)}
+
       <Text
         style={[
           styles.message,
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
   message: {
     fontSize: 16,
     color: '#fff',
-    marginLeft: 12, // Khoảng cách giữa avatar và tin nhắn
-    marginRight: 26,
+    marginLeft: 5, // Khoảng cách giữa avatar và tin nhắn
+    marginRight: 5,
   },
   meMessage: {
     color: '#fff',

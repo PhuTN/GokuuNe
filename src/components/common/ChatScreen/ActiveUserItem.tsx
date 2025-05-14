@@ -1,30 +1,27 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 
 type Props = {
   user: {
-    id: string | number;
-    name: string;
-    avatar: any;
-    bgColor?: string;
+    _id: string;
+    username: string;
+    avatarUrl?: string;
   };
 };
 
-export default function ActiveUserItem({user}: Props) {
+export default function ActiveUserItem({ user }: Props) {
   return (
     <View style={styles.userItem}>
-      <View
-        style={[
-          styles.avatarWrapper,
-          {backgroundColor: user.bgColor || '#00A3FF'},
-        ]}>
-        <Image
-          source={user.avatar}
-          style={styles.avatar}
-          resizeMode="contain"
-        />
-      </View>
-      <Text style={styles.name}>{user.name}</Text>
+      <Image
+        source={
+          user.avatarUrl
+            ? { uri: user.avatarUrl }
+            : require('../../../images/user.png')
+        }
+        style={styles.avatar}
+        resizeMode="cover"
+      />
+      <Text style={styles.name}>{user.displayName}</Text>
     </View>
   );
 }
@@ -34,21 +31,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginRight: 16,
   },
-  avatarWrapper: {
-    width: 80,
-    height: 100,
-    borderRadius: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
   avatar: {
     width: 60,
     height: 60,
+    borderRadius: 30,                       // 🟢 Bo tròn hoàn hảo
+    borderWidth: 3,                         // 🟢 Viền dày
+    borderColor: '#8B2CFF',                 // 🟣 Viền màu tím
   },
   name: {
     marginTop: 6,
     fontSize: 12,
     color: '#999',
+    textAlign: 'center',
   },
 });

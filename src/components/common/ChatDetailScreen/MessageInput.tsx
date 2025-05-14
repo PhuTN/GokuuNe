@@ -165,20 +165,18 @@ export default function MessageInput({
 
   return (
     <>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={80}>
+    
         <View
           style={[
             styles.container,
             isDark && {backgroundColor: '#1E1E1E', borderTopColor: '#333'},
           ]}>
-          <TouchableOpacity style={styles.iconButton}>
+          {/* <TouchableOpacity style={styles.iconButton}>
             <Image
               source={require('../../../assets/images/ChatDetailScreen/attach.png')}
               style={styles.icon}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View
             style={[
@@ -212,7 +210,7 @@ export default function MessageInput({
             />
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
+    
 
       {showEmojiPicker && (
         <View style={styles.emojiPickerContainer}>
@@ -239,9 +237,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
+    minHeight:100,
   },
   iconButton: {
-    marginRight: 12,
+    marginRight: 0,
   },
   icon: {
     width: 36,
