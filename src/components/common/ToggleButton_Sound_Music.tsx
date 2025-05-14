@@ -138,6 +138,7 @@ const styles = StyleSheet.create({
     },
     slider: {
         marginTop: 10,
+        height: 8
     },
 });
 

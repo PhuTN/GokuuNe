@@ -15,6 +15,9 @@ import AIChallengeScreen from '../screens/AIChallengeScreen';
 import AIMatchScreen from '../screens/AIMatchScreen';
 import ChatTabScreen from '../screens/ChatTabScreen';
 import HostScreen from '../screens/HostScreen';
+import HostTimeSettingScreen from '../screens/HostTimeSettingScreen';
+import HostFriendScreen from '../screens/HostFriendScreen';
+import HostMatchScreen from '../screens/HostMatchScreen';
 import { StatusBar } from 'react-native';
 
 export type RootStackParamList = {
@@ -30,10 +33,11 @@ export type RootStackParamList = {
   Friends: { accountLogin: any } | undefined;
   FriendLeaderBoard: { accountLogin: any } | undefined;
   AIChallenge: { accountLogin: any } | undefined;
-  AIMatch:
-  | { accountLogin: any; selectedPiece: any; selectedMode: any }
-  | undefined;
-  Host: { accountLogin: any; friend: any } | undefined;
+  AIMatch: { accountLogin: any; selectedPiece: any; selectedMode: any } | undefined;
+  Host: { accountLogin: any; friend: any ; selectedTime: any} | undefined;
+  HostTimeSetting: { accountLogin: any; friend: any ; selectedTime: any} | undefined;
+  HostFriend: { accountLogin: any; selectedTime: any} | undefined;
+  HostMatch: { accountLogin: any; selectedTime: any; friend: any; isRankingMode: any; selectedPiece: any } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -42,13 +46,8 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <StatusBar hidden={true}></StatusBar>
-      <Stack.Navigator
-        initialRouteName="Home"
-        screenOptions={{ headerShown: false }}>
-        {/* <Stack.Screen
-          name="TestThemeAndLanguage"
-          component={ThemeLanguageTester}
-        /> */}
+      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+        {/* <Stack.Screen name="TestThemeAndLanguage" component={ThemeLanguageTester} /> */}
         <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
@@ -59,13 +58,13 @@ const AppNavigator = () => {
         <Stack.Screen name="RankingMatch" component={RankingMatchScreen} />
         <Stack.Screen name="Setting" component={SettingScreen} />
         <Stack.Screen name="Friends" component={FriendsScreen} />
-        <Stack.Screen
-          name="FriendLeaderBoard"
-          component={FriendLeaderBoardScreen}
-        />
+        <Stack.Screen name="FriendLeaderBoard" component={FriendLeaderBoardScreen} />
         <Stack.Screen name="AIChallenge" component={AIChallengeScreen} />
         <Stack.Screen name="AIMatch" component={AIMatchScreen} />
         <Stack.Screen name="Host" component={HostScreen} />
+        <Stack.Screen name="HostTimeSetting" component={HostTimeSettingScreen} />
+        <Stack.Screen name="HostFriend" component={HostFriendScreen} />
+        <Stack.Screen name="HostMatch" component={HostMatchScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

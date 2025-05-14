@@ -58,11 +58,10 @@ const FriendsScreen = ({ route, navigation }: Props) => {
 
     const { notification, toggleNotification } = useNotification();
 
-    // Lấy mã ISO từ tên quốc gia
-    const countryCode = accountLogin?.country ? countryMap[accountLogin.country] || 'VN' : 'VN'; // Default là 'VN' nếu không tìm thấy
-
     const [isMoreModalVisible, setMoreModalVisible] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
+
+    const [selectedTime, setSelectedTime] = useState<string>(`${t.host_time_default} ${t.host_time_min}`);
 
     const openMoreModal = (friend: any) => {
         setSelectedFriend(friend);
@@ -89,60 +88,60 @@ const FriendsScreen = ({ route, navigation }: Props) => {
     };
 
     const handleMoreFunctionChallenge = () => {
-        notify({
-            message: t.noti_info,
-            description: t.noti_go_friends_challenge,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
-        navigation.navigate('Host', { accountLogin, friend: selectedFriend });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_go_friends_challenge,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
+        navigation.navigate('Host', { accountLogin, friend: selectedFriend , selectedTime});
         closeMoreModal();
     };
 
     const handleMoreFunctionSendMessage = () => {
-        notify({
-            message: t.noti_info,
-            description: t.noti_go_friends_message,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_go_friends_message,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
         navigation.navigate('ChatDetail', { accountLogin, friend: selectedFriend });
         closeMoreModal();
     };
 
     const handleMoreFunctionUnfriend = (friend: any) => {
-        notify({
-            message: t.noti_success,
-            description: t.noti_friends_remove_success,
-            type: 'success',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_success,
+        //     description: t.noti_friends_remove_success,
+        //     type: 'success',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
         closeMoreModal();
         // hàm xóa friend
     };
 
     const handleChallenge = (friend: any) => {
-        notify({
-            message: t.noti_info,
-            description: t.noti_go_friends_challenge,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
-        navigation.navigate('Host', { accountLogin, friend });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_go_friends_challenge,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
+        navigation.navigate('Host', { accountLogin, selectedTime ,friend });
     };
 
     const handleLeaderBoard = () => {
-        notify({
-            message: t.noti_info,
-            description: t.noti_go_leader_board,
-            type: 'info',
-            systemNotification: true,
-            pushState: notification,
-        });
+        // notify({
+        //     message: t.noti_info,
+        //     description: t.noti_go_leader_board,
+        //     type: 'info',
+        //     systemNotification: true,
+        //     pushState: notification,
+        // });
         navigation.navigate('FriendLeaderBoard', { accountLogin });
     };
 
@@ -190,6 +189,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                     data={filteredFriends}
                     keyExtractor={(item) => item.idFriend.toString()}
                     style={styles.list}
+                    contentContainerStyle={{ paddingBottom: 10 }}
                     renderItem={({ item }) => (
                         <Card style={styles.friendItem}>
                             <View style={styles.friendItemContent}>
@@ -200,7 +200,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                                 <View style={styles.friendInfo}>
                                     <View style={styles.friendUsernameContainer}>
                                         <Text style={styles.friendUsername}>{item.usernameFriend}</Text>
-                                        <CountryFlag isoCode={countryCode} size={15} style={styles.flag} />
+                                        <CountryFlag isoCode={countryMap[item.countryFriend]} size={15} style={styles.flag} />
                                     </View>
                                     <Text style={styles.friendName}>{item.nameFriend}</Text>
                                     <View style={styles.friendPoint}>
@@ -223,6 +223,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                         data={filteredAccounts}
                         keyExtractor={(item) => item.id.toString()}
                         style={styles.list}
+                        contentContainerStyle={{ paddingBottom: 10 }}
                         renderItem={({ item }) => (
                             <Card style={styles.friendItem}>
                                 <View style={styles.friendItemContent}>
@@ -233,7 +234,7 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                                     <View style={styles.friendInfo}>
                                         <View style={styles.friendUsernameContainer}>
                                             <Text style={styles.friendUsername}>{item.username}</Text>
-                                            <CountryFlag isoCode={countryCode} size={15} style={styles.flag} />
+                                            <CountryFlag isoCode={countryMap[item.country]} size={15} style={styles.flag} />
                                         </View>
                                         <Text style={styles.friendName}>{item.name}</Text>
                                         <View style={styles.friendPoint}>
@@ -282,13 +283,13 @@ const FriendsScreen = ({ route, navigation }: Props) => {
 const lightStyles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        flexGrow: 1,
         alignItems: 'center',
         backgroundColor: '#F5F5F5',
     },
     searchBox: {
         flexDirection: 'row',
-        alignItems: 'center',
+        alignSelf: 'center',
+        alignItems: "center",
         justifyContent: 'space-between',
         borderRadius: 10,
         borderWidth: 2,
@@ -327,6 +328,7 @@ const lightStyles = StyleSheet.create({
     },
     list: {
         width: '90%',
+        marginBottom: 20
     },
     friendItem: {
         backgroundColor: '#fff',
@@ -359,6 +361,7 @@ const lightStyles = StyleSheet.create({
     },
     friendUsernameContainer: {
         flexDirection: "row",
+        alignItems: "center",
     },
     friendUsername: {
         fontSize: 16,
@@ -410,13 +413,13 @@ const lightStyles = StyleSheet.create({
 const darkStyles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        flexGrow: 1,
         alignItems: 'center',
         backgroundColor: "#535353",
     },
     searchBox: {
         flexDirection: 'row',
         alignItems: 'center',
+        alignSelf: "center",
         justifyContent: 'space-between',
         borderRadius: 10,
         borderWidth: 2,
@@ -455,6 +458,7 @@ const darkStyles = StyleSheet.create({
     },
     list: {
         width: '90%',
+        marginBottom: 20
     },
     friendItem: {
         backgroundColor: "#535353",
