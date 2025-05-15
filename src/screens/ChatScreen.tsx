@@ -161,7 +161,7 @@ useEffect(() => {
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.activeList}
-            keyExtractor={(item) => item.id ?? item.friend?._id ?? Math.random().toString()}
+            keyExtractor={(item) =>  Math.random().toString()}
             renderItem={({item}) => <ActiveUserItem user={item} />}
           />
         )}

@@ -78,3 +78,21 @@ export const cancelChallenge = async (receiverId, challengeId) => {
     const response = await api.patch(`/${receiverId}/challenges/${challengeId}/cancel`);
     return response.data;
 };
+
+
+export const registerUser = async (userData) => {
+    const response = await api.post('/register', userData);
+    return response.data;
+};
+
+// 🟢 Request change password (Step 1)
+export const requestChangePassword = async (email) => {
+    const response = await api.post('/request-change-password', { email });
+    return response.data;
+};
+
+// 🟢 Confirm change password (Step 2)
+export const confirmChangePassword = async (email, code, newPassword) => {
+    const response = await api.post('/confirm-change-password', { email, code, newPassword });
+    return response.data;
+};

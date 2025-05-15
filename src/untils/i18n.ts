@@ -7,7 +7,29 @@ export const translations = {
     toggle_language: "Toggle Language",
     skip_text: "Skip",
     surrender_text: "Surrender",
+// ✨ Dùng cho màn hình Signin
+register_title: "Register",            // "Đăng ký"
+create_account: "Create an account",    // "Tạo tài khoản"
+login_email: "Email",                   // "Email"
+login_email_placeholder: "Enter email", // "Nhập email"
+login_confirm_password: "Confirm Password", // "Xác nhận mật khẩu"
+login_confirm_password_placeholder: "Re-enter password", // "Nhập lại mật khẩu"
+register_button: "REGISTER",            // "Đăng ký"
+notice: "Notification",                 // "Thông báo"
+notice_fill_all: "Please fill all fields",  // "Vui lòng nhập đầy đủ thông tin"
+notice_password_not_match: "Passwords do not match", // "Mật khẩu không khớp"
+success: "Success",                     // "Thành công"
+register_success: "Registration successful!", // "Đăng ký thành công!"
+// 📥 Thêm vào en:
+forgot_password_title: "FORGOT PASSWORD",
+forgot_password_heading: "Reset your password",
+send_code_button: "SEND CODE",
+enter_code_label: "Verification Code",
+enter_code_placeholder: "Enter verification code",
+resend_code_button: "RESEND CODE",
+reset_password_button: "RESET PASSWORD",
 
+forgot_password: "Forgot password?",
     //Binh
     ranking: 'Ranking',
     play_button_text: 'PLAY',
@@ -32,6 +54,7 @@ export const translations = {
     rematch_text: "Rematch",
     new_text: "New 10 min",
     //dien
+    signin_button:"Register",
     home_guest: "Guest",
     home_ranking: "RANKING",
     home_AI: "AI",
@@ -185,9 +208,32 @@ export const translations = {
     no_user_found: 'No active user found'
   },
   vi: {
+    register_title: "ĐĂNG KÝ",
+create_account: "Tạo tài khoản",
+login_email: "Email",
+login_email_placeholder: "Nhập email",
+login_confirm_password: "Xác nhận mật khẩu",
+login_confirm_password_placeholder: "Nhập lại mật khẩu",
+register_button: "Đăng ký",
+notice: "Thông báo",
+notice_fill_all: "Vui lòng nhập đầy đủ thông tin",
+notice_password_not_match: "Mật khẩu không khớp",
+success: "Thành công",
+register_success: "Đăng ký thành công!",
+
     greeting: "Xin chào",
     toggle_theme: "Chuyển giao diện",
     toggle_language: "Chuyển ngôn ngữ",
+
+    // 📥 Thêm vào vi:
+forgot_password_title: "QUÊN MẬT KHẨU",
+forgot_password_heading: "Đặt lại mật khẩu",
+send_code_button: "GỬI MÃ",
+enter_code_label: "Mã xác thực",
+enter_code_placeholder: "Nhập mã xác thực",
+resend_code_button: "GỬI LẠI MÃ",
+reset_password_button: "ĐỔI MẬT KHẨU",
+forgot_password: "Quên mật khẩu?",
     //Binh
     ranking: 'Xếp Hạng',
     skip_text: "Bỏ qua lượt",
@@ -214,6 +260,7 @@ export const translations = {
     rematch_text: "Đấu lại",
     new_text: "Trận 10 phút mới",
     //dien
+    signin_button: "Đăng ký",
     home_guest: "Khách",
     home_ranking: "ĐẤU XẾP HẠNG",
     home_AI: "ĐẤU MÁY",

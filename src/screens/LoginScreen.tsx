@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Image, KeyboardAvoidingView, Platform } from 'react-native';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { accounts } from '../fake_data/Dien/fake_data';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -10,9 +10,11 @@ import { useTheme } from "../asycnc_store/ThemeContext";
 import { translations } from "../untils/i18n";
 import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
-import {login} from '../api/userApi'
+import {login, registerUser} from '../api/userApi'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { socket } from '../untils/socket';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
  
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -36,14 +38,28 @@ const LoginScreen = ({ navigation }: Props) => {
         const data = await login(username, password);
         console.log("User login success:", data.user);
 
+        // ✅ Kiểm tra trạng thái online
+        if (data.user.onlineStatus === 'online') {
+            notify({
+                message: t.noti_info,
+                description: "Tài khoản này đang online trên thiết bị khác!",
+                type: 'info',
+                systemNotification: true,
+                pushState: notification,
+            });
+
+            // 👉 Bạn có thể chọn return hoặc tiếp tục login tùy logic
+         return;   // nếu bạn muốn chặn luôn login
+        }
+
         // ✅ Lưu thông tin user vào AsyncStorage
         await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
 
-        // ✅ NEW: kết nối socket + emit user:online
+        // ✅ Kết nối socket + emit user online
         if (!socket.connected) {
-            socket.connect();                               // nếu chưa connect thì connect
+            socket.connect();
         }
-        socket.emit("user:online", data.user._id);         // emit user online với userId
+        socket.emit("user:online", data.user._id);
 
         notify({
             message: t.noti_success,
@@ -53,7 +69,7 @@ const LoginScreen = ({ navigation }: Props) => {
             pushState: notification,
         });
 
-        // ✅ Navigate qua Home và truyền kèm user đã login
+        // ✅ Navigate qua Home
         navigation.navigate('Home', { accountLogin: data.user });
 
     } catch (err) {
@@ -71,9 +87,70 @@ const LoginScreen = ({ navigation }: Props) => {
 };
 
 
+ const handleRegister = () => {
+        // Xử lý đăng ký
+        navigation.navigate('Signin');
+    };
+
+    
+useEffect(() => {
+  GoogleSignin.configure({
+    webClientId: '315838703306-o1kfpna3n1om3idvbdga99hae57kveul.apps.googleusercontent.com', // Thay bằng Client ID của bạn
+  });
+}, []);
+const handleGoogleLogin = async () => {
+    try {
+        await GoogleSignin.signOut();
+        await GoogleSignin.hasPlayServices();
+        const userInfo = await GoogleSignin.signIn();
+        console.log("Google User Info:", userInfo);
+
+        const googleUser = userInfo.data.user;
+
+        const data = await registerUser({
+            username: googleUser.name || `google_${googleUser.id}`,
+            email: googleUser.email,
+            password: "-1",
+            googleId: googleUser.id,
+            photo: googleUser.photo
+        });
+
+        await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
+
+        if (!socket.connected) {
+            socket.connect();
+        }
+        socket.emit("user:online", data.user._id);
+
+        notify({
+            message: t.noti_success,
+            description: t.noti_login_success,
+            type: 'success',
+            systemNotification: true,
+            pushState: notification,
+        });
+
+        navigation.navigate('Home', { accountLogin: data.user });
+
+    } catch (error) {
+       
+        notify({
+            message: t.noti_danger,
+            
+            type: 'danger',
+            systemNotification: true,
+            pushState: notification,
+        });
+    }
+};
+
 
 
     return (
+        <KeyboardAvoidingView
+    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    style={{ flex: 1 }}
+>
         <ScrollView
             style={styles.scrollView}
             contentContainerStyle={{ flexGrow: 1 }}
@@ -108,7 +185,9 @@ const LoginScreen = ({ navigation }: Props) => {
                     returnKeyType="done"
                     onSubmitEditing={handleLogin}
                 />
-
+<TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+    <Text style={[styles.forgotPasswordText]}>{t.forgot_password}</Text>
+</TouchableOpacity>
                 <TouchableOpacity style={styles.button} onPress={handleLogin}>
                     <LinearGradient
                         colors={["#6B50F6", "#CC8FED"]}
@@ -119,8 +198,43 @@ const LoginScreen = ({ navigation }: Props) => {
                         <Text style={styles.buttonText}>{t.login_button}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
+
+                <View style={styles.bottomButtonsContainer}>
+    <TouchableOpacity style={{ width: '48%' }} onPress={handleRegister}>
+        <LinearGradient
+            colors={["#6B50F6", "#CC8FED"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}
+        >
+            <Text style={styles.buttonText}>{t.signin_button}</Text>
+        </LinearGradient>
+    </TouchableOpacity>
+
+    <TouchableOpacity style={{ width: '48%' }} onPress={handleGoogleLogin}>
+        <LinearGradient
+            colors={["#6B50F6", "#CC8FED"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.button}
+        >
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+               
+                <Image
+    source={require('../images/google.png')}  // hoặc uri: { uri: '...' }
+    style={{ width: 20, height: 20, marginRight: 8 }}
+/>
+
+                <Text style={styles.buttonText}>Google</Text>
+            </View>
+        </LinearGradient>
+    </TouchableOpacity>
+</View>
+
             </View>
         </ScrollView>
+
+        </KeyboardAvoidingView>
     );
 }
 
@@ -170,6 +284,34 @@ const lightStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+
+    bottomButtonsContainer: {
+        flexDirection: 'row',
+        marginTop: 15,
+        width: '100%',
+        justifyContent: 'space-between',
+    },
+    bottomButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '48%',
+        height: 45,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 10,
+        backgroundColor: '#fff',
+    },
+    bottomButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    forgotPasswordText: {
+    color: '#f65066',        // Màu tím bạn đang dùng
+    alignSelf: 'flex-end',
+    marginBottom: 10,
+    fontWeight: 'bold'
+},
 });
 
 const darkStyles = StyleSheet.create({
@@ -222,6 +364,33 @@ const darkStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
     },
+    bottomButtonsContainer: {
+        flexDirection: 'row',
+        marginTop: 15,
+        width: '100%',
+        justifyContent: 'space-between',
+    },
+    bottomButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '48%',
+        height: 45,
+        borderWidth: 1,
+        borderColor: 'gray',
+        borderRadius: 10,
+        backgroundColor: '#fff',
+    },
+    bottomButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    forgotPasswordText: {
+    color: '#f65066',       // Màu tím bạn đang dùng
+    alignSelf: 'flex-end',
+    marginBottom: 20,
+    fontWeight: 'bold'
+},
 });
 
 export default LoginScreen;

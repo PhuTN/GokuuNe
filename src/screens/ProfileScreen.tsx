@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Alert, Modal, FlatList, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, TextInput, Alert, Modal, FlatList, TouchableWithoutFeedback, KeyboardAvoidingView, Platform } from 'react-native';
 import { format, parse } from 'date-fns';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
@@ -18,6 +18,9 @@ import { useNotification } from '../asycnc_store/NotificationContext';
 import DatePicker from 'react-native-date-picker';
 import { getUserById, updateUser } from '../api/userApi';
 import { useFocusEffect } from '@react-navigation/native';
+import axios from 'axios';
+import config from '../api/config';
+import { ActivityIndicator } from 'react-native-paper';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Profile'>;
 
@@ -27,6 +30,7 @@ const ProfileScreen = ({ route, navigation }: Props) => {
   const [avatarUrl, setAvatarUrl] = useState(accountLogin?.avatarUrl ?? null);
   const [email, setEmail] = useState(accountLogin?.email ?? '');
   const [password, setPassword] = useState(accountLogin?.password ?? '');
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [dateOfBirth, setDateOfBirth] = useState(() => {
     const dobStr = accountLogin?.dateOfBirth;
     if (!dobStr) return new Date();
@@ -81,16 +85,16 @@ const ProfileScreen = ({ route, navigation }: Props) => {
 
   const handleSave = async () => {
     try {
+        console.log("[DEBUG] accountLogin._id =", accountLogin._id);
+        console.log("[DEBUG] update data =", {
+            displayName,
+            email,
+            password,
+            dateOfBirth: dateOfBirth.toISOString(),
+            nationality,
+            avatarUrl
+        });
 
-      console.log("[DEBUG] accountLogin._id =", accountLogin._id);
-console.log("[DEBUG] update data =", {
-    displayName,
-    email,
-    password,
-    dateOfBirth: dateOfBirth.toISOString(),
-    nationality,
-    avatarUrl
-});
         // ✅ Gọi API update
         const updatedUser = await updateUser(accountLogin._id, {
             displayName,
@@ -104,6 +108,7 @@ console.log("[DEBUG] update data =", {
         // ✅ Cập nhật lại state sau khi backend update thành công
         setAccountLogin(updatedUser);
 
+        // ✅ Thông báo sau khi mọi thứ đã xong
         notify({
             message: t.noti_success,
             description: t.noti_save_changes,
@@ -124,30 +129,75 @@ console.log("[DEBUG] update data =", {
 };
 
 
-  const handleAvatar = async () => {
-    const options: ImageLibraryOptions = { mediaType: 'photo', quality: 1 };
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) return;
-      if (response.errorMessage) {
-        Alert.alert('Image picker error: ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        setAvatarUrl(response.assets[0].uri);
+
+
+
+const handleAvatar = async () => {
+  const options: ImageLibraryOptions = { mediaType: 'photo', quality: 1 };
+  launchImageLibrary(options, async (response) => {
+    if (response.didCancel) return;
+    if (response.errorMessage) {
+      Alert.alert('Image picker error: ', response.errorMessage);
+    } else if (response.assets && response.assets.length > 0) {
+      try {
+        setIsUploadingAvatar(true);    // 👉 Bắt đầu hiện vòng xoay
+
+        const asset: Asset = response.assets[0];
+        if (!asset.uri) return;
+
+        const formData = new FormData();
+        formData.append('image', {
+          uri: asset.uri,
+          type: asset.type ?? 'image/jpeg',
+          name: asset.fileName ?? `upload_${Date.now()}.jpg`,
+        });
+
+        const res = await axios.post(
+          `${config.API_URL}/api/upload`,
+          formData,
+          { headers: { 'Content-Type': 'multipart/form-data' } }
+        );
+
+        setAvatarUrl(res.data.url);
+
+      } catch (err) {
+        console.error(err);
+        Alert.alert('Upload Error', 'Không thể upload ảnh lên server.');
+      } finally {
+        setIsUploadingAvatar(false);   // 👉 Dừng vòng xoay
       }
-    });
-  };
+    }
+  });
+};
+
+
 
   console.log(accountLogin)
   return (
+     <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+        >
     <ScrollView style={styles.scrollView} contentContainerStyle={{ alignItems: "center" }}>
       <Header title={t.profile} />
 
       {/* Avatar */}
       <View style={styles.avatarContainer}>
-        <Image source={avatarUrl ? { uri: avatarUrl } : require('../images/user.png')} style={styles.avatar} />
-        <TouchableOpacity style={styles.cameraIcon} onPress={handleAvatar}>
-          <CameraIcon width={40} height={40} />
-        </TouchableOpacity>
-      </View>
+  {isUploadingAvatar ? (
+    <ActivityIndicator size="large" color="#6B50F6" />   // 👉 hiện vòng xoay thay ảnh
+  ) : (
+    <View>
+    <Image
+      source={avatarUrl ? { uri: avatarUrl } : require('../images/user.png')}
+      style={styles.avatar}
+    />
+    <TouchableOpacity style={styles.cameraIcon} onPress={handleAvatar}>
+    <CameraIcon width={40} height={40} />
+  </TouchableOpacity>
+  </View>
+  )}
+  
+</View>
 
       {/* Form */}
       <View style={styles.form}>
@@ -218,6 +268,7 @@ console.log("[DEBUG] update data =", {
         <Button_Save text={t.profile_button} onPress={handleSave} />
       </View>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

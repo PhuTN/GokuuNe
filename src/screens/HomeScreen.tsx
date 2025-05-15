@@ -24,6 +24,8 @@ import { Dimensions } from "react-native";
 import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import { socket } from "../untils/socket";
+import { useFocusEffect } from "@react-navigation/native";
+import { getUserById } from "../api/userApi";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -46,6 +48,24 @@ const HomeScreen = ({ route, navigation }: Props) => {
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
   }, [route.params]);
+
+useFocusEffect(
+  React.useCallback(() => {
+    const fetchUser = async () => {
+      try {
+        if (accountLogin?._id) {
+          const freshUser = await getUserById(accountLogin._id);
+          setAccountLogin(freshUser);   // 👉 cập nhật avatar + thông tin mới
+        }
+      } catch (error) {
+        console.error('Lỗi khi tải lại user:', error);
+      }
+    };
+
+    fetchUser();
+  }, [accountLogin?._id])
+);
+
 
   const handleSetting = () => {
     // notify({

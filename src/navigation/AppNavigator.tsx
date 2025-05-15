@@ -19,9 +19,13 @@ import HostTimeSettingScreen from '../screens/HostTimeSettingScreen';
 import HostFriendScreen from '../screens/HostFriendScreen';
 import HostMatchScreen from '../screens/HostMatchScreen';
 import { StatusBar } from 'react-native';
+import SigninScreen from '../screens/Signin';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 
 export type RootStackParamList = {
   Login: undefined;
+   Signin: undefined; 
+   ForgotPassword: undefined;
   Home: { accountLogin: any } | undefined;
   Chat: { accountLogin: any } | undefined;
   ChatDetail: { accountLogin: any; friend: any } | undefined;
@@ -51,6 +55,7 @@ const AppNavigator = () => {
         <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Signin" component={SigninScreen} />
         <Stack.Screen name="ChatDetail" component={ChatDetailScreen} />
         <Stack.Screen name="Chat" component={ChatScreen} />
         <Stack.Screen name="Profile" component={ProfileScreen} />
@@ -65,6 +70,7 @@ const AppNavigator = () => {
         <Stack.Screen name="HostTimeSetting" component={HostTimeSettingScreen} />
         <Stack.Screen name="HostFriend" component={HostFriendScreen} />
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
+        <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
