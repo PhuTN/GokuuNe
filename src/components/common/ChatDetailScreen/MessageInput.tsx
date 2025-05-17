@@ -165,50 +165,52 @@ export default function MessageInput({
 
   return (
     <>
-      <View
-        style={[
-          styles.container,
-          isDark && {backgroundColor: '#1E1E1E', borderTopColor: '#333'},
-        ]}>
-        {/* <TouchableOpacity style={styles.iconButton}>
+    
+        <View
+          style={[
+            styles.container,
+            isDark && {backgroundColor: '#1E1E1E', borderTopColor: '#333'},
+          ]}>
+          {/* <TouchableOpacity style={styles.iconButton}>
             <Image
               source={require('../../../assets/images/ChatDetailScreen/attach.png')}
               style={styles.icon}
             />
           </TouchableOpacity> */}
 
-        <View
-          style={[
-            styles.inputContainer,
-            isDark && {
-              backgroundColor: '#2A2A2A',
-              borderColor: '#444',
-            },
-          ]}>
-          <TextInput
-            style={[styles.textInput, isDark && {color: '#fff'}]}
-            placeholder={t.type_message}
-            placeholderTextColor={isDark ? '#999' : '#9B8F8F'}
-            value={message}
-            onChangeText={setMessage}
-          />
-          <TouchableOpacity
-            style={styles.reactIconButton}
-            onPress={() => setShowEmojiPicker(prev => !prev)}>
+          <View
+            style={[
+              styles.inputContainer,
+              isDark && {
+                backgroundColor: '#2A2A2A',
+                borderColor: '#444',
+              },
+            ]}>
+            <TextInput
+              style={[styles.textInput, isDark && {color: '#fff'}]}
+              placeholder={t.type_message}
+              placeholderTextColor={isDark ? '#999' : '#9B8F8F'}
+              value={message}
+              onChangeText={setMessage}
+            />
+            <TouchableOpacity
+              style={styles.reactIconButton}
+              onPress={() => setShowEmojiPicker(prev => !prev)}>
+              <Image
+                source={require('../../../assets/images/ChatDetailScreen/reactIcon.png')}
+                style={styles.iconReact}
+              />
+            </TouchableOpacity>
+          </View>
+
+          <TouchableOpacity style={styles.iconButton} onPress={handleSend}>
             <Image
-              source={require('../../../assets/images/ChatDetailScreen/reactIcon.png')}
-              style={styles.iconReact}
+              source={require('../../../assets/images/ChatDetailScreen/sendIcon.png')}
+              style={styles.icon}
             />
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity style={styles.iconButton} onPress={handleSend}>
-          <Image
-            source={require('../../../assets/images/ChatDetailScreen/sendIcon.png')}
-            style={styles.icon}
-          />
-        </TouchableOpacity>
-      </View>
+    
 
       {showEmojiPicker && (
         <View style={styles.emojiPickerContainer}>
@@ -235,7 +237,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderTopWidth: 1,
     borderTopColor: '#E0E0E0',
-    minHeight: 100,
+    minHeight:100,
   },
   iconButton: {
     marginRight: 0,

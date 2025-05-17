@@ -1,36 +1,36 @@
 // GameResultCard.tsx
-import React, {useEffect} from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
-import {useLanguage} from '../../../asycnc_store/LanguageContext';
-import {translations} from '../../../untils/i18n';
-import {Result} from '../../../fake_data/Binh/fake_data';
+import React, { useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { translations } from '../../../untils/i18n';
+import { Result } from '../../../fake_data/Binh/fake_data';
 // import { playVictorySound } from '../../../untils/VictorySound';
-import {useSoundEffect} from '../../../asycnc_store/SoundAndMusicContext';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
 
-const GameResultCard = ({gameResult, navigation}) => {
-  const {playWinSound, playLoseSound} = useSoundEffect();
-  const {language, toggleLanguage} = useLanguage();
+const GameResultCard = ({ gameResult, navigation }) => {
+  const { playWinSound, playLoseSound } = useSoundEffect();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
-  const resText =
-    gameResult.resultText === 'Victory' ? t.win_text : t.lose_text;
+  const resText = gameResult.resultText === "Victory" ? t.win_text : t.lose_text
   const resTextStyle = StyleSheet.create({
     title: {
       fontSize: 30,
       fontWeight: 'bold',
-      color: gameResult.resultText === 'Victory' ? '#FFF400' : 'red',
-    },
+      color: gameResult.resultText === "Victory" ? "#FFF400" : "red"
+    }
   });
   useEffect(() => {
-    if (gameResult.resultText === 'Victory') {
+    if (gameResult.resultText === "Victory") {
       playWinSound();
     }
-  }, []);
+  }, [])
   return (
     <View style={styles.overlay}>
       <View style={styles.container}>
         {/* Header */}
         <View style={styles.header}>
           <Text style={resTextStyle.title}>{resText}</Text>
+
         </View>
 
         {/* Players */}
@@ -39,28 +39,22 @@ const GameResultCard = ({gameResult, navigation}) => {
             {/* Player 1 */}
             <View style={styles.player}>
               <Image
-                source={{uri: gameResult.playerWhite.userAvatarURL.uri}}
+                source={{ uri: gameResult.playerWhite.userAvatarURL.uri }}
                 style={styles.avatar}
               />
-              <Text style={styles.playerName}>
-                {gameResult.playerWhite.userName}
-              </Text>
+              <Text style={styles.playerName}>{gameResult.playerWhite.userName}</Text>
             </View>
 
             {/* Score */}
-            <Text style={styles.score}>
-              {gameResult.blackScore} - {gameResult.whiteScore}
-            </Text>
+            <Text style={styles.score}>{gameResult.blackScore} - {gameResult.whiteScore}</Text>
 
             {/* Player 2 */}
             <View style={styles.player}>
               <Image
-                source={{uri: gameResult.playerBlack.userAvatarURL.uri}}
+                source={{ uri: gameResult.playerBlack.userAvatarURL.uri }}
                 style={styles.avatar}
               />
-              <Text style={styles.playerName}>
-                {gameResult.playerBlack.userName}
-              </Text>
+              <Text style={styles.playerName}>{gameResult.playerBlack.userName}</Text>
             </View>
           </View>
 
@@ -68,13 +62,11 @@ const GameResultCard = ({gameResult, navigation}) => {
           <View style={styles.ratings}>
             <Text style={styles.ratingTitle}>{t.rank_text}</Text>
             <Text style={styles.ratingValue}>
-              {Result.currentRank}{' '}
-              <Text style={styles.ratingChange}>{Result.rankRising}</Text>
+              {Result.currentRank} <Text style={styles.ratingChange}>{Result.rankRising}</Text>
             </Text>
             <Text style={styles.leagueTitle}>{t.elo_text}</Text>
             <Text style={styles.ratingValue}>
-              {Result.currentElo}{' '}
-              <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
+              {Result.currentElo} <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
             </Text>
           </View>
 
@@ -84,20 +76,16 @@ const GameResultCard = ({gameResult, navigation}) => {
           </TouchableOpacity>
 
           <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={e => {
-                e.preventDefault();
-                navigation.replace('RankingMatch');
-              }}>
+            <TouchableOpacity style={styles.secondaryButton} onPress={(e) => {
+              e.preventDefault();
+              navigation.replace("RankingMatch");
+            }}>
               <Text>{t.rematch_text}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.secondaryButton}
-              onPress={e => {
-                e.preventDefault();
-                navigation.replace('RankingMatch');
-              }}>
+            <TouchableOpacity style={styles.secondaryButton} onPress={(e) => {
+              e.preventDefault();
+              navigation.replace("RankingMatch");
+            }}>
               <Text style={styles.button_text}>{t.new_text}</Text>
             </TouchableOpacity>
           </View>
@@ -109,7 +97,7 @@ const GameResultCard = ({gameResult, navigation}) => {
 
 const styles = StyleSheet.create({
   button_text: {
-    textAlign: 'center',
+    textAlign: 'center'
   },
   overlay: {
     flex: 1,
@@ -121,7 +109,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     left: 0,
-    zIndex: 2,
+    zIndex: 2
   },
   container: {
     backgroundColor: '#f9f9f9',
@@ -131,20 +119,20 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     shadowColor: '#000',
     shadowOpacity: 0.1,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 5,
   },
   body: {
-    width: '100%',
-    padding: 16,
+    width: "100%",
+    padding: 16
   },
   header: {
     alignItems: 'center',
     marginBottom: 12,
     backgroundColor: 'gray',
     borderRadius: 10,
-    paddingVertical: 10,
+    paddingVertical: 10
   },
   title: {
     fontSize: 30,

@@ -1,17 +1,8 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  Image,
-  Switch,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from 'react-native';
-import {Card} from 'react-native-paper';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AppNavigator';
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, Switch, StyleSheet, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { Card } from "react-native-paper";
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
 import ProfileIcon from '../assets/icons/profile_icon.svg';
 import AchievementIcon from '../assets/icons/achievement_icon.svg';
 import MatchHistoryIcon from '../assets/icons/history_icon.svg';
@@ -23,25 +14,22 @@ import PrivacyIcon from '../assets/icons/privacy_icon.svg';
 import BackgroundMusicIcon from '../assets/icons/background_music_icon.svg';
 import SoundEffectIcon from '../assets/icons/sound_effect_icon.svg';
 import NotificationSoundIcon from '../assets/icons/notification_sound_icon.svg';
-import Button_Setting from '../components/common/Button_Setting';
+import Button_Setting from "../components/common/Button_Setting";
 import Header from '../components/common/Header';
 import CountryFlag from 'react-native-country-flag';
 import countries from 'world-countries';
-import ToggleButtonLanguage from '../components/common/ToggleButton_Language';
-import ToggleButtonTheme from '../components/common/ToggleButton_Theme';
-import ToggleButtonNotification from '../components/common/ToggleButton_Notification';
-import ToggleButtonSoundMusic from '../components/common/ToggleButton_Sound_Music';
-import {useLanguage} from '../asycnc_store/LanguageContext';
-import {useTheme} from '../asycnc_store/ThemeContext';
-import {translations} from '../untils/i18n';
-import {notify} from '../untils/Notify';
-import {useNotification} from '../asycnc_store/NotificationContext';
-import {
-  useSoundEffect,
-  useBackgroundMusic,
-} from '../asycnc_store/SoundAndMusicContext';
-import {useFocusEffect} from '@react-navigation/native';
-import {getUserById} from '../api/userApi';
+import ToggleButtonLanguage from "../components/common/ToggleButton_Language";
+import ToggleButtonTheme from "../components/common/ToggleButton_Theme";
+import ToggleButtonNotification from "../components/common/ToggleButton_Notification";
+import ToggleButtonSoundMusic from "../components/common/ToggleButton_Sound_Music";
+import { useLanguage } from "../asycnc_store/LanguageContext";
+import { useTheme } from "../asycnc_store/ThemeContext";
+import { translations } from "../untils/i18n";
+import { notify } from '../untils/Notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
+import { useSoundEffect, useBackgroundMusic } from "../asycnc_store/SoundAndMusicContext";
+import { useFocusEffect } from "@react-navigation/native";
+import { getUserById } from "../api/userApi";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Setting'>;
 
@@ -51,36 +39,23 @@ const countryMap: Record<string, string> = countries.reduce((map, country) => {
   return map;
 }, {} as Record<string, string>);
 
-const SettingScreen = ({route, navigation}: Props) => {
-  const [accountLogin, setAccountLogin] = useState(
-    route.params?.accountLogin ?? null,
-  );
-  const {language, toggleLanguage} = useLanguage();
+const SettingScreen = ({ route, navigation }: Props) => {
+  const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
-  const {theme, toggleTheme} = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const {notification, toggleNotification} = useNotification();
+  const { notification, toggleNotification } = useNotification();
 
-  const handleVolumeChange =
-    (setter: (volume: number) => void) => (value: number) => {
-      const normalizedVolume = value / 100; // Normalize to 0.0 - 1.0
-      setter(normalizedVolume);
-    };
-  const {
-    soundEffectEnabled,
-    toggleSoundEffect,
-    soundEffectVolume,
-    setSoundEffectVolume,
-  } = useSoundEffect();
-  const {
-    backgroundMusicEnabled,
-    toggleBackgroundMusic,
-    backgroundMusicVolume,
-    setBackgroundMusicVolume,
-  } = useBackgroundMusic();
+  const handleVolumeChange = (setter: (volume: number) => void) => (value: number) => {
+    const normalizedVolume = value / 100; // Normalize to 0.0 - 1.0
+    setter(normalizedVolume);
+  };
+  const { soundEffectEnabled, toggleSoundEffect, soundEffectVolume, setSoundEffectVolume } = useSoundEffect();
+  const { backgroundMusicEnabled, toggleBackgroundMusic, backgroundMusicVolume, setBackgroundMusicVolume } = useBackgroundMusic();
 
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
@@ -95,7 +70,7 @@ const SettingScreen = ({route, navigation}: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      navigation.navigate('Profile', {accountLogin});
+      navigation.navigate('Profile', { accountLogin });
     } else {
       notify({
         message: t.noti_warning,
@@ -157,6 +132,7 @@ const SettingScreen = ({route, navigation}: Props) => {
     //   systemNotification: true,
     //   pushState: notification,
     // });
+
   };
 
   const handlePrivacy = () => {
@@ -167,8 +143,9 @@ const SettingScreen = ({route, navigation}: Props) => {
     //   systemNotification: true,
     //   pushState: notification,
     // });
+  
   };
-  useFocusEffect(
+useFocusEffect(
     React.useCallback(() => {
       const fetchUser = async () => {
         try {
@@ -182,58 +159,47 @@ const SettingScreen = ({route, navigation}: Props) => {
       };
 
       fetchUser();
-    }, [accountLogin?._id]),
+    }, [accountLogin?._id])
   );
 
-  console.log(accountLogin?.avatarUrl);
+  console.log(accountLogin?.avatarUrl)
   return (
     <ScrollView
       style={styles.scrollView}
-      contentContainerStyle={{flexGrow: 1, alignItems: 'center'}}>
+      contentContainerStyle={{ flexGrow: 1, alignItems: "center" }}
+    >
       {/* Header */}
       <Header title={t.setting} />
 
       {/* Avatar */}
       <View style={styles.profileContainer}>
-        <Image
-          source={
-            accountLogin?.avatarUrl
-              ? {uri: accountLogin.avatarUrl}
-              : require('../images/user.png')
-          }
-          style={styles.avatar}
-        />
+       <Image
+    source={
+      accountLogin?.avatarUrl
+        ? { uri: accountLogin.avatarUrl }
+        : require('../images/user.png')
+    }
+    style={styles.avatar}
+  />
         <View style={styles.usernameContainer}>
-          <Text style={styles.username}>
-            {accountLogin?.displayName || t.setting_guest}
-          </Text>
+          <Text style={styles.username}>{accountLogin?.displayName
+ || t.setting_guest}</Text>
           {accountLogin?.country && (
-            <CountryFlag
-              isoCode={countryMap[accountLogin.country]}
-              size={30}
-              style={styles.flag}
-            />
+            <CountryFlag isoCode={countryMap[accountLogin.country]} size={30} style={styles.flag} />
           )}
         </View>
       </View>
 
-      {/* Account Card - chỉ hiển thị nếu đã đăng nhập */}
-      {accountLogin && (
-        <Card style={styles.card}>
-          <Text style={styles.cardTitle}>{t.setting_account}</Text>
-          <Button_Setting
-            icon={ProfileIcon}
-            title={t.setting_profile}
-            onPress={handleProfile}
-          />
-          {/* <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={handleAchievement} /> */}
-          <Button_Setting
-            icon={MatchHistoryIcon}
-            title={t.setting_match_history}
-            onPress={handleHistory}
-          />
-        </Card>
-      )}
+     {/* Account Card - chỉ hiển thị nếu đã đăng nhập */}
+{accountLogin && (
+  <Card style={styles.card}>
+    <Text style={styles.cardTitle}>{t.setting_account}</Text>
+    <Button_Setting icon={ProfileIcon} title={t.setting_profile} onPress={handleProfile} />
+    {/* <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={handleAchievement} /> */}
+    <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={handleHistory} />
+  </Card>
+)}
+
 
       {/* App Card*/}
       <Card style={styles.card}>
@@ -256,7 +222,10 @@ const SettingScreen = ({route, navigation}: Props) => {
             <ThemeIcon width={30} height={30} />
             <Text style={styles.cardItem}>{t.setting_theme}</Text>
           </View>
-          <ToggleButtonTheme value={isDark} onToggle={toggleTheme} />
+          <ToggleButtonTheme
+            value={isDark}
+            onToggle={toggleTheme}
+          />
         </View>
 
         <View style={styles.rowItem}>
@@ -266,9 +235,9 @@ const SettingScreen = ({route, navigation}: Props) => {
           </View>
           <ToggleButtonNotification
             value={notification === 'on'}
-            onToggle={toggleNotification}
-          />
+            onToggle={toggleNotification} />
         </View>
+
       </Card>
 
       {/* Sound and Music Card*/}
@@ -297,16 +266,8 @@ const SettingScreen = ({route, navigation}: Props) => {
       {/* Other Card */}
       <Card style={styles.card}>
         <Text style={styles.cardTitle}>{t.setting_other}</Text>
-        <Button_Setting
-          icon={ContactIcon}
-          title={t.setting_contact}
-          onPress={handleContact}
-        />
-        <Button_Setting
-          icon={PrivacyIcon}
-          title={t.setting_privacy}
-          onPress={handlePrivacy}
-        />
+        <Button_Setting icon={ContactIcon} title={t.setting_contact} onPress={handleContact} />
+        <Button_Setting icon={PrivacyIcon} title={t.setting_privacy} onPress={handlePrivacy} />
       </Card>
     </ScrollView>
   );
@@ -314,119 +275,119 @@ const SettingScreen = ({route, navigation}: Props) => {
 
 const lightStyles = StyleSheet.create({
   scrollView: {
-    flex: 1,
+    flex: 1
   },
   profileContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 50,
-    marginBottom: 20,
+    marginBottom: 20
   },
   avatar: {
     width: 100,
     height: 100,
-    borderRadius: 150,
+    borderRadius: 150
   },
   usernameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 15,
   },
   username: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   flag: {
     marginLeft: 10,
-    borderRadius: 5,
+    borderRadius: 5
   },
   card: {
     width: '90%',
     padding: 15,
     marginBottom: 20,
-    borderRadius: 10,
+    borderRadius: 10
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
+    fontWeight: "bold",
+    marginBottom: 10
   },
   cardItem: {
     fontSize: 16,
-    marginLeft: 10,
+    marginLeft: 10
   },
   rowItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10
   },
   rowContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+    flexDirection: "row",
+    alignItems: "center"
+  }
 });
 
 const darkStyles = StyleSheet.create({
   scrollView: {
     flex: 1,
-    backgroundColor: '#535353',
+    backgroundColor: "#535353"
   },
   profileContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 50,
     marginBottom: 20,
-    backgroundColor: '#535353',
+    backgroundColor: "#535353"
   },
   avatar: {
     width: 100,
     height: 100,
-    borderRadius: 150,
+    borderRadius: 150
   },
   usernameContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginTop: 15,
-    backgroundColor: '#535353',
+    backgroundColor: "#535353"
   },
   username: {
     fontSize: 30,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
+    fontWeight: "bold",
+    color: "#FFFFFF"
   },
   flag: {
     marginLeft: 10,
-    borderRadius: 5,
+    borderRadius: 5
   },
   card: {
     width: '90%',
     padding: 15,
     marginBottom: 20,
     borderRadius: 10,
-    borderColor: '#FFFFFF',
+    borderColor: "#FFFFFF",
     borderWidth: 1,
-    backgroundColor: '#535353',
+    backgroundColor: "#535353"
   },
   cardTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
-    color: '#FFFFFF',
+    color: "#FFFFFF"
   },
   cardItem: {
     fontSize: 16,
     marginLeft: 10,
-    color: '#FFFFFF',
+    color: "#FFFFFF"
   },
   rowItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingVertical: 10
   },
   rowContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+    flexDirection: "row",
+    alignItems: "center",
+  }
 });
 
 export default SettingScreen;

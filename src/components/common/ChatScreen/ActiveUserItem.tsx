@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,8 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import {unfriendUser} from '../../../api/userApi';
-import {socket} from '../../../untils/socket';
+import { unfriendUser } from '../../../api/userApi';
+import { socket } from '../../../untils/socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
@@ -23,7 +23,7 @@ type Props = {
   };
 };
 
-export default function ActiveUserItem({user}: Props) {
+export default function ActiveUserItem({ user }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
@@ -48,7 +48,7 @@ export default function ActiveUserItem({user}: Props) {
       'Xác nhận',
       `Bạn có chắc chắn muốn hủy kết bạn với ${user.displayName}?`,
       [
-        {text: 'Hủy', style: 'cancel'},
+        { text: 'Hủy', style: 'cancel' },
         {
           text: 'Xác nhận',
           style: 'destructive',
@@ -59,15 +59,15 @@ export default function ActiveUserItem({user}: Props) {
               ToastAndroid.show('✅ Đã hủy kết bạn', ToastAndroid.SHORT);
 
               // Emit reload cho cả hai
-              socket.emit('friend:update', {userId: currentUserId});
-              socket.emit('friend:update', {userId: user._id});
+              socket.emit('friend:update', { userId: currentUserId });
+              socket.emit('friend:update', { userId: user._id });
             } catch (err) {
               console.error('❌ Lỗi khi hủy kết bạn:', err);
               ToastAndroid.show('❌ Lỗi khi hủy kết bạn', ToastAndroid.SHORT);
             }
           },
         },
-      ],
+      ]
     );
   };
 
@@ -75,11 +75,12 @@ export default function ActiveUserItem({user}: Props) {
     <>
       <TouchableOpacity
         onLongPress={() => setModalVisible(true)}
-        style={styles.userItem}>
+        style={styles.userItem}
+      >
         <Image
           source={
             user.avatarUrl
-              ? {uri: user.avatarUrl}
+              ? { uri: user.avatarUrl }
               : require('../../../images/user.png')
           }
           style={styles.avatar}
@@ -92,10 +93,9 @@ export default function ActiveUserItem({user}: Props) {
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}>
-        <Pressable
-          style={styles.modalOverlay}
-          onPress={() => setModalVisible(false)}>
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <Pressable style={styles.modalOverlay} onPress={() => setModalVisible(false)}>
           <View style={styles.modalContent}>
             <Pressable style={styles.modalButton} onPress={handleChallenge}>
               <Text style={styles.modalText}>Thách đấu</Text>
@@ -104,9 +104,7 @@ export default function ActiveUserItem({user}: Props) {
             <View style={styles.separator} />
 
             <Pressable style={styles.modalButton} onPress={handleUnfriend}>
-              <Text style={[styles.modalText, {color: 'red'}]}>
-                Hủy kết bạn
-              </Text>
+              <Text style={[styles.modalText, { color: 'red' }]}>Hủy kết bạn</Text>
             </Pressable>
           </View>
         </Pressable>

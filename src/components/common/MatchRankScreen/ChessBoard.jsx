@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Text,
   View,
@@ -10,15 +10,15 @@ import {
 } from 'react-native';
 import Dot from './Dot';
 //import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
-import {useSoundEffect} from '../../../asycnc_store/SoundAndMusicContext';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
 //import {playVictorySound} from '../../../untils/VictorySound';
-import {useIsFocused} from '@react-navigation/native';
-import {useLanguage} from '../../../asycnc_store/LanguageContext';
-import {translations} from '../../../untils/i18n';
-import {GameState} from '../../../logic/GameLogic';
-import {Animated} from 'react-native';
-import {opacity} from 'react-native-reanimated/lib/typescript/Colors';
-import {AnimatedImage} from 'react-native-reanimated/lib/typescript/component/Image';
+import { useIsFocused } from '@react-navigation/native';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { translations } from '../../../untils/i18n';
+import { GameState } from '../../../logic/GameLogic';
+import { Animated } from 'react-native';
+import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
+import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -31,9 +31,10 @@ function fromIndexToView(index) {
   const positionData = {
     top: 0,
     left: 0,
-    character: '',
-  };
+    character: ''
+  }
   if (index >= 0 && index <= 18) {
+
     positionData.left = 18 * index + 9;
     positionData.character = index + 1;
   }
@@ -51,25 +52,18 @@ function fromIndexToView(index) {
     positionData.top = 18 * (76 - index) - 9;
     positionData.character = String.fromCharCode(65 + (index - 57));
   }
-  return (
-    <View
-      key={index}
-      style={{
-        position: 'absolute',
-        top: positionData.top,
-        left: positionData.left,
-        width: 18,
-        height: 18,
-      }}>
-      <Text
-        style={{
-          textAlign: 'center',
-          fontSize: 12,
-        }}>
-        {positionData.character}
-      </Text>
-    </View>
-  );
+  return <View key={index} style={
+    {
+      position: 'absolute',
+      top: positionData.top,
+      left: positionData.left,
+      width: 18,
+      height: 18
+    }
+  }><Text style={{
+    textAlign: 'center',
+    fontSize: 12
+  }}>{positionData.character}</Text></View>
 }
 export default function ChessBoard({
   handleEvent,
@@ -82,14 +76,14 @@ export default function ChessBoard({
   const isFocuse = useIsFocused();
   const [pArr, setPArr] = useState(pieceArray);
   const [animatedParr, setAnimatedParr] = useState(pieceArray);
-  const {language, toggleLanguage} = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
   const [gameState, setGameState] = useState(new GameState());
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const fadeAnimArr = useRef(
-    Array.from({length: 19 * 19}, () => new Animated.Value(1)),
+    Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
   ).current;
   useEffect(() => {
     setGameState(new GameState());
@@ -190,8 +184,7 @@ export default function ChessBoard({
     }
   }
 
-  const {playMoveSound, playCaptureSound, playWinSound, playLoseSound} =
-    useSoundEffect();
+  const { playMoveSound, playCaptureSound, playWinSound, playLoseSound } = useSoundEffect();
   function displayMoveToUI(index, i) {
     const tempParray = [...pArr];
 
@@ -200,9 +193,9 @@ export default function ChessBoard({
     }
     const moveResult = {
       mover: '',
-      movePosition: '',
-    };
-    const currentSide = flag ? 'W' : 'B';
+      movePosition: ''
+    }
+    const currentSide = flag ? 'W' : 'B'
     setGameState(gameState => {
       const moveData = gameState.move(index, i, currentSide);
       if (moveData.canMove) {
@@ -215,10 +208,12 @@ export default function ChessBoard({
           playMoveSound(); // Chỉ đánh bình thường
         }
 
+
         const tempPAnimationArr = [...animatedParr];
         for (let j = 0; j < moveData.deathPosition.length; j++) {
           const id =
-            moveData.deathPosition[j][0] * 19 + moveData.deathPosition[j][1];
+            moveData.deathPosition[j][0] * 19 +
+            moveData.deathPosition[j][1];
 
           //setAnimatedParr(tempPAnimationArr);
           Animated.timing(fadeAnimArr[id], {
@@ -239,6 +234,7 @@ export default function ChessBoard({
       return gameState;
     });
     return moveResult;
+
   }
   function onMove(index, i) {
     return displayMoveToUI(index, i); /*Trả vể {
@@ -246,10 +242,8 @@ export default function ChessBoard({
       movePosition:'' nếu đánh ko đc, ví dụ 'A15' nếu đánh được
       } */
   }
-  function onReceiveMove(
-    moveString,
-    mover /*Tham số này là người đánh 'W' là white, 'B' là black */,
-  ) {
+  function onReceiveMove(moveString, mover/*Tham số này là người đánh 'W' là white, 'B' là black */) {
+
     const row = moveString.substring(0, 1);
     const col = moveString.substring(1, moveString.length);
     displayMoveToUI(row, col);
@@ -265,13 +259,13 @@ export default function ChessBoard({
           onPress={e => {
             e.preventDefault();
 
-            console.log(onMove(index, i)); //Gọi hàm onMove
+            console.log(onMove(index, i));//Gọi hàm onMove
           }}>
           <Dot index={index * 19 + i}></Dot>
           <Animated.Image
             style={[
               style.pieceImageEnable,
-              {opacity: fadeAnimArr[index * 19 + i]},
+              { opacity: fadeAnimArr[index * 19 + i] },
             ]}
             source={animatedParr[index * 19 + i]}></Animated.Image>
           <Animated.Image
@@ -342,9 +336,12 @@ export default function ChessBoard({
             })}
           </View>
         </View>
-        {arrayNum.map((item, index) => {
-          return fromIndexToView(index);
-        })}
+        {
+          arrayNum.map((item, index) => {
+            return fromIndexToView(index);
+          })
+        }
+
       </View>
       {renderSkipSurrenderButtons(true)}
     </View>
@@ -392,6 +389,7 @@ const style = StyleSheet.create({
   touchable: {
     width: 18,
     height: 18,
+
   },
   pieceImageDisable: {
     display: 'none',
@@ -399,21 +397,23 @@ const style = StyleSheet.create({
     top: 0,
     left: 0,
     width: 18,
-    height: 18,
+    height: 18
   },
   pieceImageFade: {
     top: 0,
     left: 0,
     position: 'absolute',
     width: 18,
-    height: 18,
+    height: 18
+
   },
   pieceImageEnable: {
     position: 'absolute',
     top: 0,
     left: 0,
     width: 18,
-    height: 18,
+    height: 18
+
   },
   container: {
     flexDirection: 'row', // Sắp xếp ngang
