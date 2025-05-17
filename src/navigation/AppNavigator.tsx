@@ -20,6 +20,7 @@ import HostFriendScreen from '../screens/HostFriendScreen';
 import HostMatchScreen from '../screens/HostMatchScreen';
 import { StatusBar } from 'react-native';
 import HistoryScreen from '../screens/HistoryScreen';
+import HistoryDetail from '../screens/HistoryDetail';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -67,6 +68,7 @@ const AppNavigator = () => {
         <Stack.Screen name="HostFriend" component={HostFriendScreen} />
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
         <Stack.Screen name="History" component={HistoryScreen} />
+        <Stack.Screen name="HistoryDetail" component={HistoryDetail} />
       </Stack.Navigator>
     </NavigationContainer>
   );
