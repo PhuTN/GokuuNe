@@ -104,7 +104,7 @@ const handleGoogleLogin = async () => {
         await GoogleSignin.hasPlayServices();
         const userInfo = await GoogleSignin.signIn();
         console.log("Google User Info:", userInfo);
-
+        if(userInfo.type === 'cancelled') return;
         const googleUser = userInfo.data.user;
 
         const data = await registerUser({
@@ -114,7 +114,18 @@ const handleGoogleLogin = async () => {
             googleId: googleUser.id,
             photo: googleUser.photo
         });
-
+        console.log(data)
+ // ✅ Check trạng thái online (do server xử lý)
+    if (data.error) {
+      notify({
+        message: t.noti_danger,
+        description:  "Tài khoản đang hoạt động trên thiết bị khác.",
+        type: 'danger',
+        systemNotification: true,
+        pushState: notification,
+      });
+      return;
+    }
         await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
 
         if (!socket.connected) {
@@ -133,10 +144,11 @@ const handleGoogleLogin = async () => {
         navigation.navigate('Home', { accountLogin: data.user });
 
     } catch (error) {
-       
+       console.log(error)
+
         notify({
             message: t.noti_danger,
-            
+              description:  "Tài khoản đang hoạt động trên thiết bị khác.",
             type: 'danger',
             systemNotification: true,
             pushState: notification,

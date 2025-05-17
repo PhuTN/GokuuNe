@@ -96,3 +96,38 @@ export const confirmChangePassword = async (email, code, newPassword) => {
     const response = await api.post('/confirm-change-password', { email, code, newPassword });
     return response.data;
 };
+
+// 🟢 Search users not yet friends or requested
+export const searchUsers = async (query, userId) => {
+    const response = await api.get(`/search?query=${encodeURIComponent(query)}&userId=${userId}`);
+    return response.data;
+};
+
+// 🟢 Send friend request
+export const sendFriendRequest = async (fromUserId, toUserId) => {
+    const response = await api.post(`/friends/request`, { fromUserId, toUserId });
+    return response.data;
+};
+
+
+
+
+// 🟢 Respond to friend request (accept or reject)
+export const respondToFriendRequest = async (fromUserId, toUserId, accepted) => {
+    const response = await api.post(`/friends/respond`, { fromUserId, toUserId, accepted });
+    return response.data;
+};
+
+
+// 🟢 Get friend requests received by user
+export const getFriendRequests = async (userId) => {
+    const response = await api.get(`/${userId}/friends/requests`);
+    return response.data;
+};
+
+
+export const unfriendUser = async (userId, friendId) => {
+  const response = await api.delete(`/${userId}/unfriend/${friendId}`);
+  return response.data;
+};
+

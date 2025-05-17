@@ -190,13 +190,16 @@ useFocusEffect(
         </View>
       </View>
 
-      {/* Account Card */}
-      <Card style={styles.card}>
-        <Text style={styles.cardTitle}>{t.setting_account}</Text>
-        <Button_Setting icon={ProfileIcon} title={t.setting_profile} onPress={handleProfile} />
-        {/* <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={handleAchievement} /> */}
-        <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={handleHistory} />
-      </Card>
+     {/* Account Card - chỉ hiển thị nếu đã đăng nhập */}
+{accountLogin && (
+  <Card style={styles.card}>
+    <Text style={styles.cardTitle}>{t.setting_account}</Text>
+    <Button_Setting icon={ProfileIcon} title={t.setting_profile} onPress={handleProfile} />
+    {/* <Button_Setting icon={AchievementIcon} title={t.setting_achievement} onPress={handleAchievement} /> */}
+    <Button_Setting icon={MatchHistoryIcon} title={t.setting_match_history} onPress={handleHistory} />
+  </Card>
+)}
+
 
       {/* App Card*/}
       <Card style={styles.card}>

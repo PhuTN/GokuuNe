@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     },
     nameContainer: {
         alignItems: 'center',
+        marginRight:15
     },
     username: {
         color: 'white',

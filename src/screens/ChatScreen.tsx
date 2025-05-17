@@ -98,24 +98,104 @@ const filteredChats = chats.filter(chat =>
 );
 console.log("HEE", chats)
 console.log(filteredChats)
+// useEffect(() => {
+//     const handleChatUpdate = () => {
+//         console.log("📥 [ChatScreen] Có chat mới, reload conversations");
+//         // Gọi lại fetchChats
+//         if (currentUser?._id) {
+//             getUserConversations(currentUser._id).then(setChats).catch(err => {
+//                 console.error('Lỗi khi reload conversations:', err);
+//             });
+//         }
+//     };
+
+//     socket.on("chat:list:refresh", handleChatUpdate);
+
+//     return () => {
+//         socket.off("chat:list:refresh", handleChatUpdate);
+//     };
+// }, [currentUser]);
+
+
+// useEffect(() => {
+//   if (!currentUser?._id) return;
+
+//   const refreshConversations = async () => {
+//     try {
+//       const conversations = await getUserConversations(currentUser._id);
+//       setChats(conversations);
+//       console.log("📥 Đã reload lại danh sách chat");
+//     } catch (err) {
+//       console.error("Lỗi khi reload conversations:", err);
+//     }
+//   };
+
+//   const refreshFriends = async () => {
+//     try {
+//       const userDetail = await getUserById(currentUser._id);
+//       setCurrentUserDetail(userDetail);
+//       console.log("📥 Đã reload lại danh sách bạn bè");
+//     } catch (err) {
+//       console.error("Lỗi khi reload friends:", err);
+//     }
+//   };
+
+//   socket.on("chat:list:refresh", refreshConversations);
+//   socket.on("user:online", refreshFriends);
+//   socket.on("user:offline", refreshFriends);
+
+//   return () => {
+//     socket.off("chat:list:refresh", refreshConversations);
+//     socket.off("user:online", refreshFriends);
+//     socket.off("user:offline", refreshFriends);
+//   };
+// }, [currentUser]);
 useEffect(() => {
-    const handleChatUpdate = () => {
-        console.log("📥 [ChatScreen] Có chat mới, reload conversations");
-        // Gọi lại fetchChats
-        if (currentUser?._id) {
-            getUserConversations(currentUser._id).then(setChats).catch(err => {
-                console.error('Lỗi khi reload conversations:', err);
-            });
-        }
-    };
+  if (!currentUser?._id) return;
 
-    socket.on("chat:list:refresh", handleChatUpdate);
+  const refreshConversations = async () => {
+    try {
+      const conversations = await getUserConversations(currentUser._id);
+      setChats(conversations);
+      console.log("📥 Đã reload lại danh sách chat");
+    } catch (err) {
+      console.error("Lỗi khi reload conversations:", err);
+    }
+  };
 
-    return () => {
-        socket.off("chat:list:refresh", handleChatUpdate);
-    };
+  const refreshFriends = async () => {
+    try {
+      const userDetail = await getUserById(currentUser._id);
+      setCurrentUserDetail(userDetail);
+      console.log("📥 Đã reload lại danh sách bạn bè");
+    } catch (err) {
+      console.error("Lỗi khi reload friends:", err);
+    }
+  };
+
+const handleFriendUpdate = ({ userId }) => {
+  console.log("📨 Nhận sự kiện friend:refresh từ server với userId:", userId);
+  if (userId === currentUser._id) {
+    console.log("🔁 Đây là user hiện tại → đang reload friends và chats");
+    refreshFriends();
+    refreshConversations();
+  } else {
+    console.log("ℹ️ Không phải user hiện tại, bỏ qua");
+  }
+};
+
+  socket.on("friend:refresh", handleFriendUpdate);
+  socket.on("chat:list:refresh", refreshConversations);
+  socket.on("user:online", refreshFriends);
+  socket.on("user:offline", refreshFriends);
+
+  return () => {
+    socket.off("friend:refresh", handleFriendUpdate);
+    socket.off("chat:list:refresh", refreshConversations);
+    socket.off("user:online", refreshFriends);
+    socket.off("user:offline", refreshFriends);
+  };
 }, [currentUser]);
-
 
 useEffect(() => {
     const reloadFriends = async () => {
@@ -139,9 +219,32 @@ useEffect(() => {
     };
 }, [currentUser]);
 
+
+useFocusEffect(
+  useCallback(() => {
+    const reloadOnFocus = async () => {
+      if (!currentUser?._id) return;
+
+      try {
+        const [userDetail, conversations] = await Promise.all([
+          getUserById(currentUser._id),
+          getUserConversations(currentUser._id)
+        ]);
+        setCurrentUserDetail(userDetail);
+        setChats(conversations);
+        console.log("🔁 [useFocusEffect] Reload bạn bè + chat khi quay lại màn hình");
+      } catch (err) {
+        console.error("❌ Lỗi khi reload dữ liệu focus:", err);
+      }
+    };
+
+    reloadOnFocus();
+  }, [currentUser])
+);
+
   const renderContent = () => (
     <>
-      <Header title="Chat"></Header>
+  <ChatHeader />
       {/* <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader> */}
       {/* <ChatHeader /> */}
       <SearchBar onSearch={setSearchQuery} value={searchQuery} />
@@ -243,4 +346,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginVertical: 12,
   },
-});
+});  

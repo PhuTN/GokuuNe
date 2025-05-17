@@ -35,3 +35,7 @@ export const markAllMessagesRead = async (conversationId, userId) => {
     const response = await chatApi.put(`/conversations/${conversationId}/mark-read/${userId}`);
     return response.data;
 };
+export const getUnreadConversationCount = async (userId) => {
+    const response = await chatApi.get(`/conversations/unread-count/${userId}`);
+    return response.data;
+};

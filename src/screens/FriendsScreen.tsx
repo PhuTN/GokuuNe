@@ -1,7 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Image, Modal, TouchableWithoutFeedback } from 'react-native';
 import { RootStackParamList } from '../navigation/AppNavigator';
-import { accounts, friends } from '../fake_data/Dien/fake_data';
+import { friends } from '../fake_data/Dien/fake_data';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { useTheme } from "../asycnc_store/ThemeContext";
@@ -20,48 +20,82 @@ import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
 import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';                                                                                                                                                                                                                  
+import { useFocusEffect } from '@react-navigation/native';
+import { searchUsers, sendFriendRequest } from '../api/userApi';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Friends'>;
 
-// Ánh xạ từ tên quốc gia sang mã ISO
 const countryMap: Record<string, string> = countries.reduce((map, country) => {
     map[country.name.common] = country.cca2;
     return map;
 }, {} as Record<string, string>);
 
-const FriendsScreen = ({ route, navigation }: Props) => {
-    const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
-
-    const accountFriends = friends.filter(friend => friend.idAccount === accountLogin.id);
+const FriendsScreen = ({ navigation }: Props) => {
+    const [accountLogin, setAccountLogin] = useState<any>(null);
     const [searchText, setSearchText] = useState('');
-    const filteredFriends = searchText.trim() === ''
-        ? accountFriends
-        : accountFriends.filter(friend =>
-            friend.idFriend.toString() === searchText || // Kiểm tra ID
-            friend.usernameFriend.toLowerCase().includes(searchText.toLowerCase()) // Tìm kiếm theo username
-        );
-    const filteredAccounts = searchText.trim() === ''
-        ? []
-        : accounts.filter(account =>
-            (account.id.toString() === searchText || // Kiểm tra ID
-                account.username.toLowerCase().includes(searchText.toLowerCase())) && // Tìm kiếm theo username
-            !accountFriends.some(friend => friend.idFriend === account.id) && // Chỉ hiển thị những account chưa là bạn bè
-            account.id !== accountLogin.id // Loại bỏ accountLogin
-        );
-
-    const { language, toggleLanguage } = useLanguage();
-    const t = translations[language];
-
-    const { theme, toggleTheme } = useTheme();
-    const isDark = theme === 'dark';
-    const styles = isDark ? darkStyles : lightStyles;
-
-    const { notification, toggleNotification } = useNotification();
-
+    const [filteredAccounts, setFilteredAccounts] = useState([]);
     const [isMoreModalVisible, setMoreModalVisible] = useState(false);
     const [selectedFriend, setSelectedFriend] = useState(null);
 
+    const { language } = useLanguage();
+    const t = translations[language];
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
+    const styles = isDark ? darkStyles : lightStyles;
+    const { notification } = useNotification();
     const [selectedTime, setSelectedTime] = useState<string>(`${t.host_time_default} ${t.host_time_min}`);
+
+    useFocusEffect(
+        useCallback(() => {
+            const fetchUser = async () => {
+                const userStr = await AsyncStorage.getItem('currentUser');
+                if (userStr) {
+                    const user = JSON.parse(userStr);
+                    setAccountLogin(user);
+                }
+            };
+            fetchUser();
+        }, [])
+    );
+
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            if (searchText.trim() !== '' && accountLogin?._id) {
+                try {
+                    const results = await searchUsers(searchText, accountLogin._id);
+                    const mapped = results.map((u: any) => ({
+                        id: u._id ?? '',
+                        username: u._id ?? 'unknown', // Hiển thị _id làm username
+                        name: u.displayName || 'Chưa cập nhật',
+                        point: u.elo ?? 0,
+                        avatar: u.avatarUrl ? { uri: u.avatarUrl } : require('../images/user.png'),
+                    //    country: countryMap[u.nationality ?? ''] ?? 'US',
+
+                    }));
+                    setFilteredAccounts(mapped);
+                } catch (err) {
+                    console.error("Lỗi khi tìm kiếm bạn bè:", err);
+                    setFilteredAccounts([]);
+                }
+            } else {
+                setFilteredAccounts([]);
+            }
+        };
+
+        fetchSearchResults();
+    }, [searchText, accountLogin]);
+
+    if (!accountLogin) {
+        return (
+            <Text style={{ marginTop: 50, textAlign: 'center', color: isDark ? 'white' : 'black' }}>
+                Đang tải thông tin người dùng...
+            </Text>
+        );
+    }
+
+    const accountFriends = friends.filter(friend => friend.idAccount === accountLogin.id);
+    const filteredFriends = searchText.trim() === '' ? accountFriends : [];
 
     const openMoreModal = (friend: any) => {
         setSelectedFriend(friend);
@@ -73,7 +107,11 @@ const FriendsScreen = ({ route, navigation }: Props) => {
         setMoreModalVisible(false);
     };
 
-    const handleAddFriend = () => {
+    const handleAddFriend = async (toUserId: string) => {
+    try {
+        console.log("HELLO")
+        await sendFriendRequest(accountLogin._id, toUserId);
+
         notify({
             message: t.noti_success,
             description: t.noti_friends_add_new,
@@ -81,76 +119,51 @@ const FriendsScreen = ({ route, navigation }: Props) => {
             systemNotification: true,
             pushState: notification,
         });
-    };
 
-    const handleMoreFunction = (friend: any) => {
-        openMoreModal(friend);
-    };
+        // 🔁 Gọi lại tìm kiếm sau khi gửi lời mời
+        const result = await searchUsers(searchText, accountLogin._id);
+        const mapped = result.map((u: any) => ({
+            id: u._id ?? '',
+            username: u._id ?? 'unknown',
+            name: u.displayName || 'Chưa cập nhật',
+            point: u.elo ?? 0,
+            avatar: u.avatarUrl ? { uri: u.avatarUrl } : require('../images/user.png'),
+            country: countryMap[u.nationality || 'Vietnam'] || 'VN',
+        }));
+        setFilteredAccounts(mapped);
+
+    } catch (err: any) {
+
+    }
+};
 
     const handleMoreFunctionChallenge = () => {
-        // notify({
-        //     message: t.noti_info,
-        //     description: t.noti_go_friends_challenge,
-        //     type: 'info',
-        //     systemNotification: true,
-        //     pushState: notification,
-        // });
-        navigation.navigate('Host', { accountLogin, friend: selectedFriend , selectedTime});
+        navigation.navigate('Host', { accountLogin, friend: selectedFriend, selectedTime });
         closeMoreModal();
     };
 
     const handleMoreFunctionSendMessage = () => {
-        // notify({
-        //     message: t.noti_info,
-        //     description: t.noti_go_friends_message,
-        //     type: 'info',
-        //     systemNotification: true,
-        //     pushState: notification,
-        // });
         navigation.navigate('ChatDetail', { accountLogin, friend: selectedFriend });
         closeMoreModal();
     };
 
-    const handleMoreFunctionUnfriend = (friend: any) => {
-        // notify({
-        //     message: t.noti_success,
-        //     description: t.noti_friends_remove_success,
-        //     type: 'success',
-        //     systemNotification: true,
-        //     pushState: notification,
-        // });
+    const handleMoreFunctionUnfriend = () => {
         closeMoreModal();
-        // hàm xóa friend
     };
 
     const handleChallenge = (friend: any) => {
-        // notify({
-        //     message: t.noti_info,
-        //     description: t.noti_go_friends_challenge,
-        //     type: 'info',
-        //     systemNotification: true,
-        //     pushState: notification,
-        // });
-        navigation.navigate('Host', { accountLogin, selectedTime ,friend });
+        navigation.navigate('Host', { accountLogin, selectedTime, friend });
     };
 
     const handleLeaderBoard = () => {
-        // notify({
-        //     message: t.noti_info,
-        //     description: t.noti_go_leader_board,
-        //     type: 'info',
-        //     systemNotification: true,
-        //     pushState: notification,
-        // });
         navigation.navigate('FriendLeaderBoard', { accountLogin });
     };
 
+
     return (
         <View style={styles.scrollView}>
-            {/* Header */}
             <Header title={t.friends} />
 
-            {/* Search Box */}
             <View style={styles.searchBox}>
                 <TextInput
                     style={styles.input}
@@ -166,98 +179,79 @@ const FriendsScreen = ({ route, navigation }: Props) => {
                 )}
             </View>
 
-            {/* No users found */}
-            {searchText.trim() !== '' && filteredFriends.length === 0 && filteredAccounts.length === 0 && (
-                <Text style={styles.noUserFound}>{t.friends_no_user_found}</Text>
-            )}
-
-            <View style={{ width: '100%', alignItems: 'center' }}>
-                {searchText.trim() === '' && (
+            {/* Nếu searchText rỗng, hiển thị danh sách bạn bè hiện có */}
+            {searchText.trim() === '' && (
+                <View style={{ width: '100%', alignItems: 'center' }}>
                     <View style={styles.friendsHeader}>
-                        <Text style={styles.friendsTitle}>
-                            {`${t.friends_title} (${filteredFriends.length})`}
-                        </Text>
-                        <TouchableOpacity style={styles.leaderboardBtn} onPress={handleLeaderBoard}>
+                        {/* <Text style={styles.friendsTitle}>{`${t.friends_title} (${filteredFriends.length})`}</Text> */}
+                        {/* <TouchableOpacity style={styles.leaderboardBtn} onPress={handleLeaderBoard}>
                             <LeaderBoardIcon width={30} height={30} />
                             <Text style={styles.leaderboardText}>{t.friends_leaderboard}</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
-                )}
-
-                {/* Friends List */}
-                <FlatList
-                    data={filteredFriends}
-                    keyExtractor={(item) => item.idFriend.toString()}
-                    style={styles.list}
-                    contentContainerStyle={{ paddingBottom: 10 }}
-                    renderItem={({ item }) => (
-                        <Card style={styles.friendItem}>
-                            <View style={styles.friendItemContent}>
-                                <Image
-                                    source={item.avatarFriend}
-                                    style={styles.avatar}
-                                />
-                                <View style={styles.friendInfo}>
-                                    <View style={styles.friendUsernameContainer}>
-                                        <Text style={styles.friendUsername}>{item.usernameFriend}</Text>
-                                        <CountryFlag isoCode={countryMap[item.countryFriend]} size={15} style={styles.flag} />
-                                    </View>
-                                    <Text style={styles.friendName}>{item.nameFriend}</Text>
-                                    <View style={styles.friendPoint}>
-                                        <PointIcon width={15} height={15} />
-                                        <Text style={styles.friendPointText}>{item.pointFriend}</Text>
-                                    </View>
-                                </View>
-                                <View style={styles.buttonContainer}>
-                                    <Button_AddFriend Icon={MoreFunctionIcon} onPress={() => handleMoreFunction(item)} />
-                                    <Button_AddFriend Icon={ChallengeIcon} onPress={() => handleChallenge(item)} />
-                                </View>
-                            </View>
-                        </Card>
-                    )}
-                />
-
-                {/* Find Accounts List */}
-                {searchText.trim() !== '' && (
                     <FlatList
-                        data={filteredAccounts}
-                        keyExtractor={(item) => item.id.toString()}
+                        data={filteredFriends}
+                        keyExtractor={(item) => item.idFriend.toString()}
                         style={styles.list}
                         contentContainerStyle={{ paddingBottom: 10 }}
                         renderItem={({ item }) => (
                             <Card style={styles.friendItem}>
                                 <View style={styles.friendItemContent}>
-                                    <Image
-                                        source={item.avatar}
-                                        style={styles.avatar}
-                                    />
+                                    <Image source={item.avatarFriend} style={styles.avatar} />
                                     <View style={styles.friendInfo}>
                                         <View style={styles.friendUsernameContainer}>
-                                            <Text style={styles.friendUsername}>{item.username}</Text>
-                                            <CountryFlag isoCode={countryMap[item.country]} size={15} style={styles.flag} />
+                                            <Text style={styles.friendUsername}>{item.usernameFriend}</Text>
+                                            {/* <CountryFlag isoCode={countryMap[item.countryFriend]} size={15} style={styles.flag} /> */}
                                         </View>
-                                        <Text style={styles.friendName}>{item.name}</Text>
+                                        <Text style={styles.friendName}>{item.nameFriend}</Text>
                                         <View style={styles.friendPoint}>
                                             <PointIcon width={15} height={15} />
-                                            <Text style={styles.friendPointText}>{item.point}</Text>
+                                            <Text style={styles.friendPointText}>{item.pointFriend}</Text>
                                         </View>
                                     </View>
                                     <View style={styles.buttonContainer}>
-                                        <Button_AddFriend Icon={AddFriendIcon} onPress={handleAddFriend} />
+                                       <Button_AddFriend Icon={AddFriendIcon} onPress={() => handleAddFriend(item.id)} />
+                                        <Button_AddFriend Icon={ChallengeIcon} onPress={() => handleChallenge(item)} />
                                     </View>
                                 </View>
                             </Card>
                         )}
                     />
-                )}
-            </View>
+                </View>
+            )}
 
-            <Modal
-                visible={isMoreModalVisible}
-                transparent
-                animationType="fade"
-                onRequestClose={closeMoreModal}
-            >
+            {/* Khi có searchText, chỉ hiển thị danh sách user (filteredAccounts) */}
+            {searchText.trim() !== '' && (
+                <FlatList
+                    data={filteredAccounts}
+                    keyExtractor={(item) => item.id.toString()}
+                    style={styles.list}
+                    contentContainerStyle={{ paddingBottom: 10 }}
+                    renderItem={({ item }) => (
+                        <Card style={styles.friendItem}>
+                            <View style={styles.friendItemContent}>
+                                <Image source={item.avatar} style={styles.avatar} />
+                                <View style={styles.friendInfo}>
+                                    <View style={styles.friendUsernameContainer}>
+                                        <Text style={styles.friendUsername}>ID: {item.username}</Text>
+                                        {/* <CountryFlag isoCode={countryMap[item.country]} size={15} style={styles.flag} /> */}
+                                    </View>
+                                    <Text style={styles.friendName}>{item.name}</Text>
+                                    <View style={styles.friendPoint}>
+                                        <PointIcon width={15} height={15} />
+                                        <Text style={styles.friendPointText}>{item.point}</Text>
+                                    </View>
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                     <Button_AddFriend Icon={AddFriendIcon} onPress={() => handleAddFriend(item.id)} />
+                                </View>
+                            </View>
+                        </Card>
+                    )}
+                />
+            )}
+
+            <Modal visible={isMoreModalVisible} transparent animationType="fade" onRequestClose={closeMoreModal}>
                 <TouchableWithoutFeedback onPress={closeMoreModal}>
                     <View style={styles.modalOverlay}>
                         <TouchableWithoutFeedback onPress={() => { }}>
@@ -279,6 +273,9 @@ const FriendsScreen = ({ route, navigation }: Props) => {
         </View>
     );
 };
+
+export default FriendsScreen;
+
 
 const lightStyles = StyleSheet.create({
     scrollView: {
@@ -364,7 +361,7 @@ const lightStyles = StyleSheet.create({
         alignItems: "center",
     },
     friendUsername: {
-        fontSize: 16,
+        fontSize: 10,
         fontWeight: "bold",
     },
     flag: {

@@ -21,10 +21,12 @@ import HostMatchScreen from '../screens/HostMatchScreen';
 import { StatusBar } from 'react-native';
 import SigninScreen from '../screens/Signin';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import FriendRequestScreen from '../screens/FriendRequestScreen';
 
 export type RootStackParamList = {
   Login: undefined;
    Signin: undefined; 
+   FriendRequests: { accountLogin: any } | undefined;
    ForgotPassword: undefined;
   Home: { accountLogin: any } | undefined;
   Chat: { accountLogin: any } | undefined;
@@ -71,6 +73,8 @@ const AppNavigator = () => {
         <Stack.Screen name="HostFriend" component={HostFriendScreen} />
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        <Stack.Screen name="FriendRequests" component={FriendRequestScreen} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );

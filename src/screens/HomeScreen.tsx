@@ -26,6 +26,8 @@ import { useNotification } from '../asycnc_store/NotificationContext';
 import { socket } from "../untils/socket";
 import { useFocusEffect } from "@react-navigation/native";
 import { getUserById } from "../api/userApi";
+import { getUnreadConversationCount } from "../api/messageApi";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -121,31 +123,45 @@ useFocusEffect(
     navigation.navigate('Login');
   };
 
-  const handleLogout = () => {
-
+ const handleLogout = async () => {
+  try {
     // ✅ Ngắt kết nối socket nếu còn kết nối
     if (socket && socket.connected) {
-        socket.disconnect();
-        console.log("✅ Socket disconnected on logout");
+      socket.disconnect();
+      console.log("✅ Socket disconnected on logout");
     }
 
-    // ✅ Tiếp tục logout như cũ
+    // ✅ Xóa user khỏi AsyncStorage
+    await AsyncStorage.removeItem('currentUser');
+    console.log("✅ currentUser removed from AsyncStorage");
+
+    // ✅ Hiển thị thông báo
     notify({
-        message: t.noti_success,
-        description: t.noti_logout,
-        type: 'success',
-        systemNotification: true,
-        pushState: notification,
+      message: t.noti_success,
+      description: t.noti_logout,
+      type: 'success',
+      systemNotification: true,
+      pushState: notification,
     });
 
-
+    // ✅ Quay về trang Home (hoặc Login nếu cần)
     navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home', params: { accountLogin: null } }],
+      index: 0,
+      routes: [{ name: 'Home', params: { accountLogin: null } }],
     });
+  } catch (error) {
+    console.error("❌ Lỗi khi logout:", error);
+    notify({
+      message: t.noti_danger,
+      description: "Có lỗi xảy ra khi đăng xuất.",
+      type: 'danger',
+      systemNotification: true,
+      pushState: notification,
+    });
+  }
 };
-
-  const handleRanking = () => {
+const handleRanking = () => {
+  if (accountLogin) {
     // notify({
     //   message: t.noti_success,
     //   description: t.noti_go_rank,
@@ -154,7 +170,17 @@ useFocusEffect(
     //   pushState: notification,
     // });
     navigation.navigate('Ranking', { accountLogin });
-  };
+  } else {
+    notify({
+      message: t.noti_warning,
+      description: t.noti_login_require,
+      type: 'warning',
+      systemNotification: true,
+      pushState: notification,
+    });
+  }
+};
+
 
   const handleHost = (friend: any) => {
     if (accountLogin) {
@@ -178,6 +204,7 @@ useFocusEffect(
   };
 
   const handleChat = () => {
+  if (accountLogin) {
     // notify({
     //   message: t.noti_info,
     //   description: t.noti_go_chat,
@@ -186,7 +213,55 @@ useFocusEffect(
     //   pushState: notification,
     // });
     navigation.navigate('Chat', { accountLogin });
+  } else {
+    notify({
+      message: t.noti_warning,
+      description: t.noti_login_require,
+      type: 'warning',
+      systemNotification: true,
+      pushState: notification,
+    });
+  }
+};
+
+  const [unreadCount, setUnreadCount] = useState(0);
+useFocusEffect(
+  React.useCallback(() => {
+    const fetchUserAndUnread = async () => {
+      try {
+        if (accountLogin?._id) {
+          const freshUser = await getUserById(accountLogin._id);
+          setAccountLogin(freshUser);
+
+          // 🟣 Gọi API đếm tin nhắn chưa đọc
+          const unreadRes = await getUnreadConversationCount(accountLogin._id);
+          setUnreadCount(unreadRes.count || 0);
+        }
+      } catch (error) {
+        console.error("Lỗi khi tải lại user hoặc unread count:", error);
+      }
+    };
+
+    fetchUserAndUnread();
+  }, [accountLogin?._id])
+);
+
+
+useEffect(() => {
+  const handleChatUpdate = () => {
+    if (accountLogin?._id) {
+      getUnreadConversationCount(accountLogin._id)
+        .then(res => setUnreadCount(res.count || 0))
+        .catch(console.error);
+    }
   };
+
+  socket.on("chat:list:refresh", handleChatUpdate);
+
+  return () => {
+    socket.off("chat:list:refresh", handleChatUpdate);
+  };
+}, [accountLogin?._id]);
 
   return (
     <ScrollView
@@ -272,14 +347,21 @@ useFocusEffect(
       {/* Menu Buttons */}
       <View style={styles.buttonGroup}>
         <Button_Home title={t.home_ranking} Icon={RankingIcon} onPress={handleRanking} />
+        <Button_Home title={t.home_host} Icon={HostIcon} onPress={() => handleHost(null)} />
         <Button_Home title={t.home_AI} Icon={AIChallengeIcon} onPress={handleAIChallenge} />
         <Button_Home title={t.home_friends} Icon={FriendsIcon} onPress={handleFriends} />
-        <Button_Home title={t.home_host} Icon={HostIcon} onPress={() => handleHost(null)} />
+        
       </View>
 
       {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
-        <Button_Home Icon={ChatIcon} onPress={handleChat} isIconOnly />
+       <Button_Home
+  Icon={ChatIcon}
+  onPress={handleChat}
+  isIconOnly
+  badgeCount={unreadCount}
+/>
+
         <Button_Home Icon={SettingIcon} onPress={handleSetting} isIconOnly />
         {accountLogin ? (
           <Button_Home Icon={LogoutIcon} onPress={handleLogout} isIconOnly />
@@ -323,7 +405,7 @@ const lightStyles = StyleSheet.create({
   },
   profileGradient: {
     borderRadius: 10,
-    padding: 30,
+    padding: 20,
   },
   profileContainer: {
     flexDirection: "column",
