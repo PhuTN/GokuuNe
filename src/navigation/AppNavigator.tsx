@@ -19,6 +19,7 @@ import HostTimeSettingScreen from '../screens/HostTimeSettingScreen';
 import HostFriendScreen from '../screens/HostFriendScreen';
 import HostMatchScreen from '../screens/HostMatchScreen';
 import { StatusBar } from 'react-native';
+import HistoryScreen from '../screens/HistoryScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -34,9 +35,9 @@ export type RootStackParamList = {
   FriendLeaderBoard: { accountLogin: any } | undefined;
   AIChallenge: { accountLogin: any } | undefined;
   AIMatch: { accountLogin: any; selectedPiece: any; selectedMode: any } | undefined;
-  Host: { accountLogin: any; friend: any ; selectedTime: any} | undefined;
-  HostTimeSetting: { accountLogin: any; friend: any ; selectedTime: any} | undefined;
-  HostFriend: { accountLogin: any; selectedTime: any} | undefined;
+  Host: { accountLogin: any; friend: any; selectedTime: any } | undefined;
+  HostTimeSetting: { accountLogin: any; friend: any; selectedTime: any } | undefined;
+  HostFriend: { accountLogin: any; selectedTime: any } | undefined;
   HostMatch: { accountLogin: any; selectedTime: any; friend: any; isRankingMode: any; selectedPiece: any } | undefined;
 };
 
@@ -46,7 +47,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <StatusBar hidden={true}></StatusBar>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="History" screenOptions={{ headerShown: false }}>
         {/* <Stack.Screen name="TestThemeAndLanguage" component={ThemeLanguageTester} /> */}
         <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
@@ -65,6 +66,7 @@ const AppNavigator = () => {
         <Stack.Screen name="HostTimeSetting" component={HostTimeSettingScreen} />
         <Stack.Screen name="HostFriend" component={HostFriendScreen} />
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
+        <Stack.Screen name="History" component={HistoryScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -9,9 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import Dot from './Dot';
-//import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
+import { playAttackSound, playCaptureSound } from '../../../untils/SoundEffects';
 import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
-//import {playVictorySound} from '../../../untils/VictorySound';
+import { playVictorySound } from '../../../untils/VictorySound';
 import { useIsFocused } from '@react-navigation/native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
@@ -19,6 +19,8 @@ import { GameState } from '../../../logic/GameLogic';
 import { Animated } from 'react-native';
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
+
+
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -81,7 +83,7 @@ export default function ChessBoard({
   const [gameState, setGameState] = useState(new GameState());
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
-  const fadeAnim = useRef(new Animated.Value(1)).current;
+
   const fadeAnimArr = useRef(
     Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
   ).current;
@@ -113,6 +115,7 @@ export default function ChessBoard({
     },[isStart,flag])*/
   function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
     return (
+
       <View style={style.container}>
         <TouchableOpacity
           style={style.button}
@@ -132,6 +135,7 @@ export default function ChessBoard({
           <Text style={style.text}>{t.surrender_text}</Text>
         </TouchableOpacity>
       </View>
+
     );
   }
   function renderCellInRow(index) {
@@ -313,6 +317,7 @@ export default function ChessBoard({
   return (
     <View>
       {renderSkipSurrenderButtons(false)}
+
       <View style={style.chessBoardBackGround}>
         <View style={style.chessBoard}>
           {board.map((item, index) => {
@@ -336,6 +341,7 @@ export default function ChessBoard({
             })}
           </View>
         </View>
+
         {
           arrayNum.map((item, index) => {
             return fromIndexToView(index);
@@ -343,8 +349,10 @@ export default function ChessBoard({
         }
 
       </View>
+
+
       {renderSkipSurrenderButtons(true)}
-    </View>
+    </View >
   );
 }
 export const currentPlayerMove = {
