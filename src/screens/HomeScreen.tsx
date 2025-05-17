@@ -1,8 +1,8 @@
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
-import {View, Text, Image, StyleSheet, ScrollView, Alert} from 'react-native';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AppNavigator';
+import { View, Text, Image, StyleSheet, ScrollView, Alert } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
 import LinearGradient from 'react-native-linear-gradient';
 import Button_Home from '../components/common/Button_Home';
 import RankingIcon from '../assets/icons/ranking_icon.svg';
@@ -17,29 +17,29 @@ import ChessPieceBlackIcon from '../assets/icons/chess_piece_black.svg';
 import ChessPieceWhiteIcon from '../assets/icons/chess_piece_white.svg';
 import ChessRowIcon from '../assets/icons/chess_row_icon.svg';
 import ChessColumnIcon from '../assets/icons/chess_column_icon.svg';
-import {useLanguage} from '../asycnc_store/LanguageContext';
-import {useTheme} from '../asycnc_store/ThemeContext';
-import {translations} from '../untils/i18n';
-import {Dimensions} from 'react-native';
-import {notify} from '../untils/Notify';
-import {useNotification} from '../asycnc_store/NotificationContext';
-import {socket} from '../untils/socket';
-import {useFocusEffect} from '@react-navigation/native';
-import {getUserById} from '../api/userApi';
-import {getUnreadConversationCount} from '../api/messageApi';
+import { useLanguage } from '../asycnc_store/LanguageContext';
+import { useTheme } from '../asycnc_store/ThemeContext';
+import { translations } from '../untils/i18n';
+import { Dimensions } from 'react-native';
+import { notify } from '../untils/Notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
+import { socket } from '../untils/socket';
+import { useFocusEffect } from '@react-navigation/native';
+import { getUserById } from '../api/userApi';
+import { getUnreadConversationCount } from '../api/messageApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
-const HomeScreen = ({route, navigation}: Props) => {
-  const {language, toggleLanguage} = useLanguage();
+const HomeScreen = ({ route, navigation }: Props) => {
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
 
-  const {theme, toggleTheme} = useTheme();
+  const { theme, toggleTheme } = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const {notification, toggleNotification} = useNotification();
+  const { notification, toggleNotification } = useNotification();
 
   const [accountLogin, setAccountLogin] = useState(
     route.params?.accountLogin ?? null,
@@ -80,7 +80,7 @@ const HomeScreen = ({route, navigation}: Props) => {
     //   systemNotification: true,
     //   pushState: notification,
     // });
-    navigation.navigate('Setting', {accountLogin});
+    navigation.navigate('Setting', { accountLogin });
   };
 
   const handleFriends = () => {
@@ -92,7 +92,7 @@ const HomeScreen = ({route, navigation}: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      navigation.navigate('Friends', {accountLogin});
+      navigation.navigate('Friends', { accountLogin });
     } else {
       notify({
         message: t.noti_warning,
@@ -112,7 +112,7 @@ const HomeScreen = ({route, navigation}: Props) => {
     //   systemNotification: true,
     //   pushState: notification,
     // });
-    navigation.navigate('AIChallenge', {accountLogin});
+    navigation.navigate('AIChallenge', { accountLogin });
   };
 
   const handleLogin = () => {
@@ -150,7 +150,7 @@ const HomeScreen = ({route, navigation}: Props) => {
       // ✅ Quay về trang Home (hoặc Login nếu cần)
       navigation.reset({
         index: 0,
-        routes: [{name: 'Home', params: {accountLogin: null}}],
+        routes: [{ name: 'Home', params: { accountLogin: null } }],
       });
     } catch (error) {
       console.error('❌ Lỗi khi logout:', error);
@@ -164,7 +164,8 @@ const HomeScreen = ({route, navigation}: Props) => {
     }
   };
   const handleRanking = () => {
-    if (accountLogin) {
+    navigation.navigate('Ranking', { accountLogin });
+    /*if (accountLogin) {
       // notify({
       //   message: t.noti_success,
       //   description: t.noti_go_rank,
@@ -181,7 +182,7 @@ const HomeScreen = ({route, navigation}: Props) => {
         systemNotification: true,
         pushState: notification,
       });
-    }
+    }*/
   };
 
   const handleHost = (friend: any) => {
@@ -193,7 +194,7 @@ const HomeScreen = ({route, navigation}: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      navigation.navigate('Host', {accountLogin, selectedTime, friend});
+      navigation.navigate('Host', { accountLogin, selectedTime, friend });
     } else {
       notify({
         message: t.noti_warning,
@@ -214,7 +215,7 @@ const HomeScreen = ({route, navigation}: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      navigation.navigate('Chat', {accountLogin});
+      navigation.navigate('Chat', { accountLogin });
     } else {
       notify({
         message: t.noti_warning,
@@ -269,7 +270,7 @@ const HomeScreen = ({route, navigation}: Props) => {
   return (
     <ScrollView
       style={styles.scrollView}
-      contentContainerStyle={{alignItems: 'center'}}>
+      contentContainerStyle={{ alignItems: 'center' }}>
       {/* Header - Chess */}
       <View style={styles.chessBoard}>
         {/* Cột */}
@@ -278,7 +279,7 @@ const HomeScreen = ({route, navigation}: Props) => {
             key={`col-${i}`}
             width={40}
             height={150}
-            style={{position: 'absolute', left: i * 60}}
+            style={{ position: 'absolute', left: i * 60 }}
           />
         ))}
 
@@ -288,23 +289,23 @@ const HomeScreen = ({route, navigation}: Props) => {
             key={`row-${i}`}
             width={360}
             height={40}
-            style={{position: 'absolute', top: i * 60}}
+            style={{ position: 'absolute', top: i * 60 }}
           />
         ))}
 
         {/* Quân cờ */}
         {[
-          {row: 0, col: 1, color: 'white'},
-          {row: 0, col: 2, color: 'white'},
-          {row: 0, col: 3, color: 'black'},
-          {row: 0, col: 4, color: 'black'},
-          {row: 1, col: 1, color: 'black'},
-          {row: 1, col: 2, color: 'black'},
-          {row: 1, col: 3, color: 'white'},
-          {row: 1, col: 4, color: 'white'},
-          {row: 2, col: 2, color: 'white'},
-          {row: 2, col: 3, color: 'black'},
-          {row: 2, col: 4, color: 'black'},
+          { row: 0, col: 1, color: 'white' },
+          { row: 0, col: 2, color: 'white' },
+          { row: 0, col: 3, color: 'black' },
+          { row: 0, col: 4, color: 'black' },
+          { row: 1, col: 1, color: 'black' },
+          { row: 1, col: 2, color: 'black' },
+          { row: 1, col: 3, color: 'white' },
+          { row: 1, col: 4, color: 'white' },
+          { row: 2, col: 2, color: 'white' },
+          { row: 2, col: 3, color: 'black' },
+          { row: 2, col: 4, color: 'black' },
         ].map((piece, idx) => {
           const PieceIcon =
             piece.color === 'black' ? ChessPieceBlackIcon : ChessPieceWhiteIcon;
@@ -327,14 +328,14 @@ const HomeScreen = ({route, navigation}: Props) => {
       <View style={styles.avatarHeader}>
         <LinearGradient
           colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
-          start={{x: 0, y: 0}}
-          end={{x: 1, y: 1}}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={styles.profileGradient}>
           <View style={styles.profileContainer}>
             <Image
               source={
                 accountLogin?.avatarUrl
-                  ? {uri: accountLogin.avatarUrl}
+                  ? { uri: accountLogin.avatarUrl }
                   : require('../images/user.png')
               }
               style={styles.avatar}
