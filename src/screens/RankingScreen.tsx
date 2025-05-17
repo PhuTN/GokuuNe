@@ -1,7 +1,14 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, ScrollView, useWindowDimensions } from 'react-native';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  ScrollView,
+  useWindowDimensions,
+} from 'react-native';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/AppNavigator';
 
 import UserView from '../components/common/RankingScreen/UserView';
 import PlayButton from '../components/common/PlayButton';
@@ -10,39 +17,38 @@ import TopInfo from '../components/common/RankingScreen/TopInfo';
 import LeaderBoardInfo from '../components/common/RankingScreen/LeaderBoardInfo';
 import LeaderBoard from '../components/common/RankingScreen/LeaderBoard';
 import ScreenHeader from '../components/common/ScreenHeader';
-import { User, Top10 } from '../fake_data/Binh/fake_data';
-import { useTheme } from '../asycnc_store/ThemeContext';
+import {User, Top10} from '../fake_data/Binh/fake_data';
+import {useTheme} from '../asycnc_store/ThemeContext';
 import Header from '../components/common/Header';
-import { he } from 'date-fns/locale';
-import { useLanguage } from '../asycnc_store/LanguageContext';
-import { translations } from '../untils/i18n';
+import {he} from 'date-fns/locale';
+import {useLanguage} from '../asycnc_store/LanguageContext';
+import {translations} from '../untils/i18n';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Ranking'>;
 const listLeaderBoard = [
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 },
-  { name: "Alex White", elo: 3900 }
-]
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+  {name: 'Alex White', elo: 3900},
+];
 const playerPosition = 5;
 
-const RankingScreen = ({ navigation }: Props) => {
-  const { theme, toggleTheme } = useTheme();
+const RankingScreen = ({navigation}: Props) => {
+  const {theme, toggleTheme} = useTheme();
   const isDark = theme === 'dark';
   const style = isDark ? darkStyle : whiteStyle;
-  const { height } = useWindowDimensions();
+  const {height} = useWindowDimensions();
 
-  const {language,toggleLanguage} = useLanguage();
-      const t = translations[language];
+  const {language, toggleLanguage} = useLanguage();
+  const t = translations[language];
   return (
     <View style={style.container}>
       <Header title={t.ranking}></Header>
 
-      <ScrollView style={{ paddingBottom: 30, height: height }} >
-
+      <ScrollView style={{paddingBottom: 30, height: height}}>
         <UserView user={User}></UserView>
         <PlayButton navigation={navigation}></PlayButton>
         <View style={style.topContainer}>
@@ -56,18 +62,17 @@ const RankingScreen = ({ navigation }: Props) => {
             <TopInfo topInfo={Top10[2]}></TopInfo>
           </View>
         </View>
-        <LeaderBoard listLeaderBoard={Top10.slice(3, 10)} user={User}></LeaderBoard>
+        <LeaderBoard
+          listLeaderBoard={Top10.slice(3, 10)}
+          user={User}></LeaderBoard>
       </ScrollView>
-
     </View>
   );
 };
 const whiteStyle = StyleSheet.create({
-  container: {
-
-  },
+  container: {},
   heading: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   topContainer: {
     height: 100,
@@ -76,18 +81,18 @@ const whiteStyle = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   top1View: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: 'flex-end',
+  },
 });
 const darkStyle = StyleSheet.create({
   container: {
-    backgroundColor: 'black'
+    backgroundColor: 'black',
   },
   heading: {
-    textAlign: 'center'
+    textAlign: 'center',
   },
   topContainer: {
     height: 100,
@@ -96,10 +101,10 @@ const darkStyle = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   top1View: {
-    alignSelf: 'flex-end'
-  }
+    alignSelf: 'flex-end',
+  },
 });
 export default RankingScreen;
