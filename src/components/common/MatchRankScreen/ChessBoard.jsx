@@ -36,21 +36,21 @@ function fromIndexToView(index) {
   };
   if (index >= 0 && index <= 18) {
     positionData.left = 18 * index + 9;
-    positionData.character = index + 1;
+    positionData.character = String.fromCharCode(65 + index);
   }
   if (index >= 19 && index <= 37) {
     positionData.left = 19 * 18;
     positionData.top = 18 * (38 - index) - 9;
-    positionData.character = String.fromCharCode(65 + (index - 19));
+    positionData.character = index - 18;
   }
   if (index >= 38 && index <= 56) {
     positionData.top = 19 * 18;
     positionData.left = 18 * (index - 38) + 9;
-    positionData.character = index - 37;
+    positionData.character = String.fromCharCode(27 + index);
   }
   if (index >= 57 && index <= 75) {
     positionData.top = 18 * (76 - index) - 9;
-    positionData.character = String.fromCharCode(65 + (index - 57));
+    positionData.character = index - 56;
   }
   return (
     <View
