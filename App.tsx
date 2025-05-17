@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import AppNavigator from './src/navigation/AppNavigator';
-import {LanguageProvider} from './src/asycnc_store/LanguageContext';
-import {ThemeProvider} from './src/asycnc_store/ThemeContext';
-import {NotificationProvider} from './src/asycnc_store/NotificationContext';
+import { LanguageProvider } from './src/asycnc_store/LanguageContext';
+import { ThemeProvider } from './src/asycnc_store/ThemeContext';
+import { NotificationProvider } from './src/asycnc_store/NotificationContext';
 import {
   SoundEffectProvider,
   BackgroundMusicProvider,
 } from './src/asycnc_store/SoundAndMusicContext';
 import PushNotification from 'react-native-push-notification';
-import {checkAndRequestNotificationPermission} from './src/untils/NotificationPermission';
+import { checkAndRequestNotificationPermission } from './src/untils/NotificationPermission';
 import NotificationPermissionCustom from './src/components/common/Notification_Permission_Custom';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ZoomWrapper from './src/components/ZoomWrapper'; // <--- Add this
 
 export default function App() {
@@ -39,15 +39,15 @@ export default function App() {
   }, []);
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <NotificationProvider>
         <ThemeProvider>
           <LanguageProvider>
             <SoundEffectProvider>
               <BackgroundMusicProvider>
-                <ZoomWrapper>
-                  <AppNavigator />
-                </ZoomWrapper>
+
+                <AppNavigator />
+
                 <NotificationPermissionCustom
                   visible={showPermissionModal}
                   onClose={() => setShowPermissionModal(false)}

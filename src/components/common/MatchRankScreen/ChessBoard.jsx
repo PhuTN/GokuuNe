@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Text,
   View,
@@ -10,15 +10,16 @@ import {
 } from 'react-native';
 import Dot from './Dot';
 //import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
-import {useSoundEffect} from '../../../asycnc_store/SoundAndMusicContext';
+import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
 //import {playVictorySound} from '../../../untils/VictorySound';
-import {useIsFocused} from '@react-navigation/native';
-import {useLanguage} from '../../../asycnc_store/LanguageContext';
-import {translations} from '../../../untils/i18n';
-import {GameState} from '../../../logic/GameLogic';
-import {Animated} from 'react-native';
-import {opacity} from 'react-native-reanimated/lib/typescript/Colors';
-import {AnimatedImage} from 'react-native-reanimated/lib/typescript/component/Image';
+import { useIsFocused } from '@react-navigation/native';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { translations } from '../../../untils/i18n';
+import { GameState } from '../../../logic/GameLogic';
+import { Animated } from 'react-native';
+import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
+import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
+import ZoomWrapper from '../../ZoomWrapper';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -82,14 +83,14 @@ export default function ChessBoard({
   const isFocuse = useIsFocused();
   const [pArr, setPArr] = useState(pieceArray);
   const [animatedParr, setAnimatedParr] = useState(pieceArray);
-  const {language, toggleLanguage} = useLanguage();
+  const { language, toggleLanguage } = useLanguage();
   const t = translations[language];
   const [gameState, setGameState] = useState(new GameState());
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const fadeAnimArr = useRef(
-    Array.from({length: 19 * 19}, () => new Animated.Value(1)),
+    Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
   ).current;
   useEffect(() => {
     setGameState(new GameState());
@@ -190,7 +191,7 @@ export default function ChessBoard({
     }
   }
 
-  const {playMoveSound, playCaptureSound, playWinSound, playLoseSound} =
+  const { playMoveSound, playCaptureSound, playWinSound, playLoseSound } =
     useSoundEffect();
   function displayMoveToUI(index, i) {
     const tempParray = [...pArr];
@@ -271,7 +272,7 @@ export default function ChessBoard({
           <Animated.Image
             style={[
               style.pieceImageEnable,
-              {opacity: fadeAnimArr[index * 19 + i]},
+              { opacity: fadeAnimArr[index * 19 + i] },
             ]}
             source={animatedParr[index * 19 + i]}></Animated.Image>
           <Animated.Image
@@ -319,32 +320,36 @@ export default function ChessBoard({
   return (
     <View>
       {renderSkipSurrenderButtons(false)}
+
       <View style={style.chessBoardBackGround}>
-        <View style={style.chessBoard}>
-          {board.map((item, index) => {
-            return (
-              <View style={style.row} key={'Row' + index}>
-                {item.map((cell, i) => {
-                  return cell;
-                })}
-              </View>
-            );
-          })}
-          <View style={style.touchableArea}>
-            {touchable.map((item, index) => {
+        <ZoomWrapper>
+          <View style={style.chessBoard}>
+            {board.map((item, index) => {
               return (
-                <View style={style.row} key={'TouchableRow' + index}>
+                <View style={style.row} key={'Row' + index}>
                   {item.map((cell, i) => {
                     return cell;
                   })}
                 </View>
               );
             })}
+            <View style={style.touchableArea}>
+              {touchable.map((item, index) => {
+                return (
+                  <View style={style.row} key={'TouchableRow' + index}>
+                    {item.map((cell, i) => {
+                      return cell;
+                    })}
+                  </View>
+                );
+              })}
+            </View>
           </View>
-        </View>
-        {arrayNum.map((item, index) => {
-          return fromIndexToView(index);
-        })}
+
+          {arrayNum.map((item, index) => {
+            return fromIndexToView(index);
+          })}
+        </ZoomWrapper>
       </View>
       {renderSkipSurrenderButtons(true)}
     </View>
