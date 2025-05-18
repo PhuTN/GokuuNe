@@ -104,6 +104,7 @@ export default function ChessBoard({
     setBlackSkip(false);
     setWhiteSkip(false);
   }, [isFocuse]);
+
   /*useEffect(()=>{
         if(isStart==true) {
             if(isCurrentPlayerWhite!=flag) {
@@ -208,8 +209,10 @@ export default function ChessBoard({
       const moveData = gameState.move(index, i, currentSide);
       if (moveData.canMove) {
         moveResult.mover = currentSide;
-        const charAsciiCode = 83 - index;
-        moveResult.movePosition = String.fromCharCode(charAsciiCode) + (i + 1);
+       const row = 19 - index;
+const col = String.fromCharCode(65 + i); // A + cột
+moveResult.movePosition = `${col}${row}`;
+
         if (moveData.deathPosition.length > 0) {
           playCaptureSound(); // Có ăn quân
         } else {
@@ -247,14 +250,16 @@ export default function ChessBoard({
       movePosition:'' nếu đánh ko đc, ví dụ 'A15' nếu đánh được
       } */
   }
-  function onReceiveMove(
-    moveString,
-    mover /*Tham số này là người đánh 'W' là white, 'B' là black */,
-  ) {
-    const row = moveString.substring(0, 1);
-    const col = moveString.substring(1, moveString.length);
-    displayMoveToUI(row, col);
-  }
+function onReceiveMove(moveString, mover) {
+  const colLetter = moveString.substring(0, 1).toUpperCase(); // 'D'
+  const rowNumber = parseInt(moveString.substring(1));        // 16
+
+  const i = colLetter.charCodeAt(0) - 65;         // 'A' → 0, 'B' → 1, ..., 'S' → 18
+  const index = 19 - rowNumber;                   // vì hàng 19 ở trên cùng, hàng 1 ở dưới
+
+  displayMoveToUI(index, i); // Truyền vào hàm xử lý đánh cờ
+}
+
   function renderTouchableCell(index) {
     let res = [];
 
@@ -322,7 +327,7 @@ export default function ChessBoard({
       {renderSkipSurrenderButtons(false)}
 
       <View style={style.chessBoardBackGround}>
-        <ZoomWrapper>
+     
           <View style={style.chessBoard}>
             {board.map((item, index) => {
               return (
@@ -346,10 +351,11 @@ export default function ChessBoard({
             </View>
           </View>
 
-          {arrayNum.map((item, index) => {
-            return fromIndexToView(index);
-          })}
-        </ZoomWrapper>
+        {arrayNum.map((item, index) => {
+  if (index >= 0 && index <= 18) return fromIndexToView(index); // Trên
+  if (index >= 57 && index <= 75) return fromIndexToView(index); // Trái
+  return null; // Bỏ phải và dưới
+})}
       </View>
       {renderSkipSurrenderButtons(true)}
     </View>

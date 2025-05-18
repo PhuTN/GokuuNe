@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import {useIsFocused} from '@react-navigation/native';
 import FindMatch from '../untils/FindMatch';
 import GameResultCard from '../components/common/MatchRankScreen/MatchResultCard';
 import Header from '../components/common/Header';
+import ZoomWrapper from '../components/ZoomWrapper';
 
 const default_avatar = require('../assets/images/default_avatar.jpg');
 
@@ -186,6 +187,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [surrender, setSurrender] = useState(0); //0 new ko ai dau hang, 1 neu trang dau hang, 2 neu den dau hang;
   const [isStart, setIsStart] = useState(false);
   const {height} = useWindowDimensions();
+  const [zoomMode, setZoomMode] = useState(false); // 👈 trạng thái zoom
   const [playerBlack, setPlayerBlack] = useState({
     userId: 'user0010',
     userName: 'Searching',
@@ -272,68 +274,119 @@ const RankingMatchScreen = ({navigation}) => {
       setSurrender(2);
     }
   };
+const chessBoardRef = useRef(
+  <ChessBoard
+    handleEvent={handleEvent}
+    flag={flag}
+    handleIsEnd={handleIsEnd}
+    handleSurrender={handleSurrender}
+    isCurrentPlayerWhite={isCurrentPlayerWhite}
+    isStart={isStart}
+  />
+);
+ return (
+  <View style={[styles.container, { flex: 1, position: 'relative' }]}>
+    {!zoomMode && (
+      <>
+        <Header title="Gokuu" />
+        {RenderSearchPopup(playerBlack.userName)}
+        {RenderResultPopup(
+          timeWhite,
+          timeBlack,
+          navigation,
+          isCurrentPlayerWhite,
+          isEnd,
+          whiteScore,
+          blackScore,
+          surrender,
+          playerBlack,
+          playeWhite,
+          currentIntervalId,
+        )}
+      </>
+    )}
 
-  return (
-    <View style={styles.container}>
-      <Header title="Gokuu"></Header>
-      {RenderSearchPopup(playerBlack.userName)}
-      {RenderResultPopup(
-        timeWhite,
-        timeBlack,
-        navigation,
-        isCurrentPlayerWhite,
-        isEnd,
-        whiteScore,
-        blackScore,
-        surrender,
-        playerBlack,
-        playeWhite,
-        currentIntervalId,
-      )}
-      <ScrollView>
-        <View style={[styles.mainView, {height: height + 200}]}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <View style={[styles.mainView, { minHeight: height + 200 }]}>
+
+        {!zoomMode && (
           <Player
             user={playerBlack}
             isWhite={false}
             time={timeBlack}
-            score={blackScore}></Player>
-          <ChessBoard
-            handleEvent={handleEvent}
-            flag={flag}
-            handleIsEnd={handleIsEnd}
-            handleSurrender={handleSurrender}
-            isCurrentPlayerWhite={isCurrentPlayerWhite}
-            isStart={isStart}></ChessBoard>
+            score={blackScore}
+          />
+        )}
+
+<View style={{ height: 500, alignItems: 'center', justifyContent: 'center' }}>
+  <ZoomWrapper isZoom={zoomMode}>
+    <ChessBoard
+      handleEvent={handleEvent}
+      flag={flag}
+      handleIsEnd={handleIsEnd}
+      handleSurrender={handleSurrender}
+      isCurrentPlayerWhite={isCurrentPlayerWhite}
+      isStart={isStart}
+    />
+  </ZoomWrapper>
+</View>
+
+
+        {!zoomMode && (
           <Player
             user={playeWhite}
             isWhite={true}
             time={timeWhite}
-            score={whiteScore}></Player>
+            score={whiteScore}
+          />
+        )}
 
+        {!zoomMode && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.touchable}>
               <LinearGradient
-                colors={['#6B50F6', '#CC8FED']} // Colors for gradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
+                colors={['#6B50F6', '#CC8FED']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.linearGradient}>
-                <Image source={messageIcon}></Image>
+                <Image source={messageIcon} />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.touchable}>
               <LinearGradient
-                colors={['#6B50F6', '#CC8FED']} // Colors for gradient
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 0}}
+                colors={['#6B50F6', '#CC8FED']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
                 style={styles.linearGradient}>
-                <Image source={noteIcon}></Image>
+                <Image source={noteIcon} />
               </LinearGradient>
             </TouchableOpacity>
           </View>
-        </View>
-      </ScrollView>
-    </View>
-  );
+        )}
+
+        
+      </View>
+    </ScrollView>
+
+    {!zoomMode && (
+      <TouchableOpacity
+        style={styles.zoomInButton}
+        onPress={() => setZoomMode(true)}>
+        <Text style={styles.zoomText}>🔍+</Text>
+      </TouchableOpacity>
+    )}
+    {zoomMode && (
+  <TouchableOpacity
+    style={styles.zoomInButton} // 👈 dùng lại style zoomIn
+    onPress={() => setZoomMode(false)}>
+    <Text style={styles.zoomText}>🔍➖</Text>
+  </TouchableOpacity>
+)}
+  </View>
+);
+
+
+
 };
 const whiteStyles = StyleSheet.create({
   container: {},
@@ -358,6 +411,31 @@ const whiteStyles = StyleSheet.create({
   },
   mainView: {
     marginTop: 20,
+  },
+  zoomInButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#6B50F6',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  zoomOutButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    backgroundColor: '#6B50F6',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  zoomText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 const darkStyles = StyleSheet.create({
@@ -386,5 +464,31 @@ const darkStyles = StyleSheet.create({
   mainView: {
     marginTop: 20,
   },
+  zoomInButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    backgroundColor: '#6B50F6',
+    borderRadius: 30,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 5,
+  },
+  zoomOutButton: {
+    marginTop: 20,
+    alignSelf: 'center',
+    backgroundColor: '#6B50F6',
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  zoomText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
+
 export default RankingMatchScreen;
