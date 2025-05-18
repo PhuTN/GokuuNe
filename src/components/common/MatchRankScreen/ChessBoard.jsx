@@ -35,7 +35,7 @@ function fromIndexToView(index) {
     character: '',
   };
   if (index >= 0 && index <= 18) {
-    positionData.left = 18 * index + 9;
+    positionData.left = 18 * index + 13;
     positionData.character = String.fromCharCode(65 + index);
   }
   if (index >= 19 && index <= 37) {
@@ -49,7 +49,8 @@ function fromIndexToView(index) {
     positionData.character = String.fromCharCode(27 + index);
   }
   if (index >= 57 && index <= 75) {
-    positionData.top = 18 * (76 - index) - 9;
+    positionData.top = 18 * (76 - index) - 4;
+    positionData.left=-2;
     positionData.character = index - 56;
   }
   return (
@@ -369,8 +370,8 @@ export const currentPlayerMove = {
 };
 const style = StyleSheet.create({
   chessBoardBackGround: {
-    width: 360,
-    height: 360,
+    width: 370,
+    height: 370,
     backgroundColor: '#f1b152',
     alignSelf: 'center',
   },
@@ -378,8 +379,8 @@ const style = StyleSheet.create({
     width: 325,
     height: 325,
     position: 'absolute',
-    top: 18,
-    left: 18,
+    top: 23,
+    left: 23,
     backgroundColor: '#fff5e9',
   },
   cell: {
