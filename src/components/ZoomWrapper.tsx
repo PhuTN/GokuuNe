@@ -101,17 +101,17 @@ export default function ZoomWrapper({
 
   return (
     <GestureHandlerRootView onLayout={onLayout}>
-      <PanGestureHandler onGestureEvent={panHandler}>
-        <Animated.View>
-          <PinchGestureHandler onGestureEvent={pinchHandler}>
-            <Animated.View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Animated.View style={animatedStyle}>
-                {children}
-              </Animated.View>
-            </Animated.View>
-          </PinchGestureHandler>
+  <PanGestureHandler onGestureEvent={panHandler} enabled={isZoom}>
+    <Animated.View>
+      <PinchGestureHandler onGestureEvent={pinchHandler} enabled={isZoom}>
+        <Animated.View style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <Animated.View style={animatedStyle}>
+            {children}
+          </Animated.View>
         </Animated.View>
-      </PanGestureHandler>
-    </GestureHandlerRootView>
+      </PinchGestureHandler>
+    </Animated.View>
+  </PanGestureHandler>
+</GestureHandlerRootView>
   );
 }

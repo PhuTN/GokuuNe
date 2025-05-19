@@ -22,8 +22,12 @@ import { StatusBar } from 'react-native';
 import SigninScreen from '../screens/Signin';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import FriendRequestScreen from '../screens/FriendRequestScreen';
+
+import SoloMatchScreen from '../screens/SoloMatchScreen';
+
 import HistoryScreen from '../screens/HistoryScreen';
 import HistoryDetail from '../screens/HistoryDetail';
+
 
 export type RootStackParamList = {
   Login: undefined;
@@ -31,6 +35,7 @@ export type RootStackParamList = {
    FriendRequests: { accountLogin: any } | undefined;
    ForgotPassword: undefined;
   Home: { accountLogin: any } | undefined;
+  SoloMatch: { accountLogin: any } | undefined;
   Chat: { accountLogin: any } | undefined;
   ChatDetail: { accountLogin: any; friend: any } | undefined;
   ChatTab: { accountLogin: any } | undefined;
@@ -46,6 +51,8 @@ export type RootStackParamList = {
   HostTimeSetting: { accountLogin: any; friend: any; selectedTime: any } | undefined;
   HostFriend: { accountLogin: any; selectedTime: any } | undefined;
   HostMatch: { accountLogin: any; selectedTime: any; friend: any; isRankingMode: any; selectedPiece: any } | undefined;
+    History: { accountLogin: any } | undefined;
+  HistoryDetail: { accountLogin: any; matchId: string } | undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -76,6 +83,7 @@ const AppNavigator = () => {
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="FriendRequests" component={FriendRequestScreen} />
+        <Stack.Screen name="SoloMatch" component={SoloMatchScreen} />
 
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="HistoryDetail" component={HistoryDetail} />

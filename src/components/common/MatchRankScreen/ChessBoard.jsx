@@ -20,6 +20,7 @@ import { Animated } from 'react-native';
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
 import ZoomWrapper from '../../ZoomWrapper';
+import { createMatch } from '../../../api/matchApi';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -82,7 +83,13 @@ export default function ChessBoard({
   handleSurrender,
   isCurrentPlayerWhite,
   isStart,
+   playerColor = 'B',
 }) {
+
+
+const [isEnd, setIsEnd] = useState(false);
+const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: trắng đầu hàng, 2: đen đầu hàng
+  const [moveHistory, setMoveHistory] = useState([]);
   const isFocuse = useIsFocused();
   const [pArr, setPArr] = useState(pieceArray);
   const [animatedParr, setAnimatedParr] = useState(pieceArray);
@@ -165,11 +172,14 @@ export default function ChessBoard({
     return res;
   }
 
-  async function onSurrender(isWhite) {
-    gameState.calculateScore();
-    playWinSound();
-    handleSurrender(isWhite);
-  }
+async function onSurrender(isWhite) {
+  gameState.calculateScore();
+  playWinSound();
+  setSurrender(isWhite ? 1 : 2);
+  setIsEnd(true); // kết thúc game khi có người đầu hàng
+  handleSurrender?.(isWhite); // gọi callback nếu cần
+}
+
   function loadBoardFromGameState(gameState) {
     const boardData = gameState.posArray;
     for (let i = 0; i < 19; i++) {
@@ -214,11 +224,23 @@ export default function ChessBoard({
     setGameState(gameState => {
       const moveData = gameState.move(index, i, currentSide);
       if (moveData.canMove) {
+        
+
+
         moveResult.mover = currentSide;
        const row = 19 - index;
 const col = String.fromCharCode(65 + i); // A + cột
 moveResult.movePosition = `${col}${row}`;
 setNewPosition([index,i,currentSide]);
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: `${col}${row}`,
+  };
+
+  setMoveHistory((prev) => [...prev, newMove]);
+  console.log("HELLLO",moveHistory)
+
 
         if (moveData.deathPosition.length > 0) {
           playCaptureSound(); // Có ăn quân
@@ -314,7 +336,9 @@ function displayPieceSource(index,i) {
       setWhiteSkip(true);
       if (blackSkip) {
         gameState.calculateScore();
+        setIsEnd(true);
         handleIsEnd(gameState);
+         
         console.log('White Skip');
       } else {
         handleEvent(gameState);
@@ -325,20 +349,66 @@ function displayPieceSource(index,i) {
       setBlackSkip(true);
       if (whiteSkip) {
         gameState.calculateScore();
+         setIsEnd(true);
         handleIsEnd(gameState);
         console.log('Black Skip');
       } else {
         handleEvent(gameState);
       }
     }
+
+ 
   }
   const board = renderRow();
   const touchable = renderTouchableRow();
 
+
+
+useEffect(() => {
+  if (!isEnd && surrender === 0) return;
+
+  const winner =
+    surrender === 1 ? 'black' :
+    surrender === 2 ? 'white' :
+    gameState.whiteScore > gameState.blackScore ? 'white' : 'black';
+
+  const payload = {
+    playerBlack: null, // vì là solo nên để null
+    playerWhite: null,
+    winner,
+    type: 'bot', // hoặc 'solo' nếu bạn có enum riêng
+    moves: moveHistory,
+    resultDescription:
+      surrender === 1 ? 'White surrendered' :
+      surrender === 2 ? 'Black surrendered' :
+      `Score - White: ${gameState.whiteScore}, Black: ${gameState.blackScore}`,
+    deltaElo: 0,
+  };
+
+  createMatch(payload)
+    .then(res => {
+      console.log('✅ Match saved to server:', res);
+    })
+    .catch(err => {
+      console.error('❌ Failed to save match:', err);
+    });
+}, [isEnd, surrender]);
+
+
   return (
     <View>
       {renderSkipSurrenderButtons(false)}
-
+<View style={{ alignItems: 'center' }}>
+  {/* Quân trắng phía trên */}
+  <Image
+    source={whitePiece}
+    style={{
+      width: 36,
+      height: 36,
+      marginBottom: 4, // sát bàn cờ
+      opacity: flag ? 1 : 0.3,
+    }}
+  />
       <View style={style.chessBoardBackGround}>
      
           <View style={style.chessBoard}>
@@ -371,9 +441,21 @@ function displayPieceSource(index,i) {
 })}
       </View>
 
+       <Image
+    source={blackPiece}
+    style={{
+      width: 36,
+      height: 36,
+      marginTop: 4, // sát bàn cờ
+      opacity: !flag ? 1 : 0.3,
+    }}
+  />
+</View>
 
       {renderSkipSurrenderButtons(true)}
-    </View >
+    </View>
+
+    
   );
 }
 export const currentPlayerMove = {
