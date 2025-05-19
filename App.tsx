@@ -10,13 +10,18 @@ import {
 import PushNotification from 'react-native-push-notification';
 import { checkAndRequestNotificationPermission } from './src/untils/NotificationPermission';
 import NotificationPermissionCustom from './src/components/common/Notification_Permission_Custom';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'; 
+import NavigationBar from 'react-native-system-navigation-bar';
 import ZoomWrapper from './src/components/ZoomWrapper'; // <--- Add this
+
 
 export default function App() {
   const [showPermissionModal, setShowPermissionModal] = useState(false);
 
   useEffect(() => {
+    
+       
+    NavigationBar.navigationHide();
     PushNotification.createChannel(
       {
         channelId: 'default-channel-id',
