@@ -9,9 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import Dot from './Dot';
-//import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
+import { playAttackSound, playCaptureSound } from '../../../untils/SoundEffects';
 import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
-//import {playVictorySound} from '../../../untils/VictorySound';
+import { playVictorySound } from '../../../untils/VictorySound';
 import { useIsFocused } from '@react-navigation/native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
@@ -125,6 +125,7 @@ export default function ChessBoard({
     },[isStart,flag])*/
   function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
     return (
+
       <View style={style.container}>
         <TouchableOpacity
           style={style.button}
@@ -144,6 +145,7 @@ export default function ChessBoard({
           <Text style={style.text}>{t.surrender_text}</Text>
         </TouchableOpacity>
       </View>
+
     );
   }
   function renderCellInRow(index) {
@@ -368,8 +370,10 @@ function displayPieceSource(index,i) {
   return null; // Bỏ phải và dưới
 })}
       </View>
+
+
       {renderSkipSurrenderButtons(true)}
-    </View>
+    </View >
   );
 }
 export const currentPlayerMove = {
