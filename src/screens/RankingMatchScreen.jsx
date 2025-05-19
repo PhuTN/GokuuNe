@@ -306,7 +306,7 @@ const chessBoardRef = useRef(
       </>
     )}
 
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={true}>
     <View style={[styles.mainView, { minHeight: height + 200 }]}>
 
         {!zoomMode && (

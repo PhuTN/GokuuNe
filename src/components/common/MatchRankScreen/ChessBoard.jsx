@@ -9,9 +9,9 @@ import {
   Alert,
 } from 'react-native';
 import Dot from './Dot';
-//import {playAttackSound, playCaptureSound} from '../../../untils/SoundEffects';
+import { playAttackSound, playCaptureSound } from '../../../untils/SoundEffects';
 import { useSoundEffect } from '../../../asycnc_store/SoundAndMusicContext';
-//import {playVictorySound} from '../../../untils/VictorySound';
+import { playVictorySound } from '../../../untils/VictorySound';
 import { useIsFocused } from '@react-navigation/native';
 import { useLanguage } from '../../../asycnc_store/LanguageContext';
 import { translations } from '../../../untils/i18n';
@@ -24,6 +24,8 @@ import { createMatch } from '../../../api/matchApi';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
+const blackDot = require('../../../assets/images/black_piece_dot.png');
+const whiteDot = require('../../../assets/images/white_piece_dot.png');
 let pieceArray = [];
 for (let i = 0; i < 19 * 19; i++) {
   pieceArray.push(null);
@@ -36,7 +38,7 @@ function fromIndexToView(index) {
     character: '',
   };
   if (index >= 0 && index <= 18) {
-    positionData.left = 18 * index + 9;
+    positionData.left = 18 * index + 13;
     positionData.character = String.fromCharCode(65 + index);
   }
   if (index >= 19 && index <= 37) {
@@ -50,7 +52,8 @@ function fromIndexToView(index) {
     positionData.character = String.fromCharCode(27 + index);
   }
   if (index >= 57 && index <= 75) {
-    positionData.top = 18 * (76 - index) - 9;
+    positionData.top = 18 * (76 - index) - 4;
+    positionData.left=-2;
     positionData.character = index - 56;
   }
   return (
@@ -96,6 +99,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [newPosition,setNewPosition] = useState([-1,-1]);
   const fadeAnimArr = useRef(
     Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
   ).current;
@@ -128,6 +132,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
     },[isStart,flag])*/
   function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
     return (
+
       <View style={style.container}>
         <TouchableOpacity
           style={style.button}
@@ -147,6 +152,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
           <Text style={style.text}>{t.surrender_text}</Text>
         </TouchableOpacity>
       </View>
+
     );
   }
   function renderCellInRow(index) {
@@ -225,6 +231,7 @@ async function onSurrender(isWhite) {
        const row = 19 - index;
 const col = String.fromCharCode(65 + i); // A + cột
 moveResult.movePosition = `${col}${row}`;
+setNewPosition([index,i,currentSide]);
 
   const newMove = {
     order: moveHistory.length + 1,
@@ -281,6 +288,12 @@ function onReceiveMove(moveString, mover) {
 
   displayMoveToUI(index, i); // Truyền vào hàm xử lý đánh cờ
 }
+function displayPieceSource(index,i) {
+  if(index==newPosition[0]&&i==newPosition[1]) {
+    return newPosition[2]=='B'?blackDot:whiteDot;
+  } 
+  return pArr[index*19+i];
+}
 
   function renderTouchableCell(index) {
     let res = [];
@@ -304,7 +317,7 @@ function onReceiveMove(moveString, mover) {
             source={animatedParr[index * 19 + i]}></Animated.Image>
           <Animated.Image
             style={style.pieceImageEnable}
-            source={pArr[index * 19 + i]}></Animated.Image>
+            source={displayPieceSource(index,i)}></Animated.Image>
         </TouchableOpacity>,
       );
     }
@@ -427,6 +440,7 @@ useEffect(() => {
   return null; // Bỏ phải và dưới
 })}
       </View>
+
        <Image
     source={blackPiece}
     style={{
@@ -437,8 +451,11 @@ useEffect(() => {
     }}
   />
 </View>
+
       {renderSkipSurrenderButtons(true)}
     </View>
+
+    
   );
 }
 export const currentPlayerMove = {
@@ -449,8 +466,8 @@ export const currentPlayerMove = {
 };
 const style = StyleSheet.create({
   chessBoardBackGround: {
-    width: 360,
-    height: 360,
+    width: 370,
+    height: 370,
     backgroundColor: '#f1b152',
     alignSelf: 'center',
   },
@@ -458,8 +475,8 @@ const style = StyleSheet.create({
     width: 325,
     height: 325,
     position: 'absolute',
-    top: 18,
-    left: 18,
+    top: 23,
+    left: 23,
     backgroundColor: '#fff5e9',
   },
   cell: {

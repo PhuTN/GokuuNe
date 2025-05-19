@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "@openspacelabs/react-native-zoomable-view": "^2.4.2",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/slider": "^4.5.6",
     "@react-native-google-signin/google-signin": "^14.0.1",
@@ -37,6 +38,7 @@
     "react-native-svg-transformer": "^1.5.0",
     "react-native-vector-icons": "^10.2.0",
     "socket.io-client": "^4.8.1",
+    "react-native-zoomable-view": "^0.3.1",
     "world-countries": "^5.1.0"
   },
   "devDependencies": {
