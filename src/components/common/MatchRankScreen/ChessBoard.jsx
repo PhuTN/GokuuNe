@@ -23,6 +23,8 @@ import ZoomWrapper from '../../ZoomWrapper';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
+const blackDot = require('../../../assets/images/black_piece_dot.png');
+const whiteDot = require('../../../assets/images/white_piece_dot.png');
 let pieceArray = [];
 for (let i = 0; i < 19 * 19; i++) {
   pieceArray.push(null);
@@ -90,6 +92,7 @@ export default function ChessBoard({
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  const [newPosition,setNewPosition] = useState([-1,-1]);
   const fadeAnimArr = useRef(
     Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
   ).current;
@@ -213,6 +216,7 @@ export default function ChessBoard({
        const row = 19 - index;
 const col = String.fromCharCode(65 + i); // A + cột
 moveResult.movePosition = `${col}${row}`;
+setNewPosition([index,i,currentSide]);
 
         if (moveData.deathPosition.length > 0) {
           playCaptureSound(); // Có ăn quân
@@ -260,6 +264,12 @@ function onReceiveMove(moveString, mover) {
 
   displayMoveToUI(index, i); // Truyền vào hàm xử lý đánh cờ
 }
+function displayPieceSource(index,i) {
+  if(index==newPosition[0]&&i==newPosition[1]) {
+    return newPosition[2]=='B'?blackDot:whiteDot;
+  } 
+  return pArr[index*19+i];
+}
 
   function renderTouchableCell(index) {
     let res = [];
@@ -283,7 +293,7 @@ function onReceiveMove(moveString, mover) {
             source={animatedParr[index * 19 + i]}></Animated.Image>
           <Animated.Image
             style={style.pieceImageEnable}
-            source={pArr[index * 19 + i]}></Animated.Image>
+            source={displayPieceSource(index,i)}></Animated.Image>
         </TouchableOpacity>,
       );
     }
