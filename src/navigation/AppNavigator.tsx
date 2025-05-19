@@ -22,6 +22,7 @@ import { StatusBar } from 'react-native';
 import SigninScreen from '../screens/Signin';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import FriendRequestScreen from '../screens/FriendRequestScreen';
+import SoloMatchScreen from '../screens/SoloMatchScreen';
 
 export type RootStackParamList = {
   Login: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
    FriendRequests: { accountLogin: any } | undefined;
    ForgotPassword: undefined;
   Home: { accountLogin: any } | undefined;
+  SoloMatch: { accountLogin: any } | undefined;
   Chat: { accountLogin: any } | undefined;
   ChatDetail: { accountLogin: any; friend: any } | undefined;
   ChatTab: { accountLogin: any } | undefined;
@@ -74,6 +76,7 @@ const AppNavigator = () => {
         <Stack.Screen name="HostMatch" component={HostMatchScreen} />
         <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
         <Stack.Screen name="FriendRequests" component={FriendRequestScreen} />
+        <Stack.Screen name="SoloMatch" component={SoloMatchScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

@@ -84,24 +84,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
   };
 
   const handleFriends = () => {
-    if (accountLogin) {
-      // notify({
-      //   message: t.noti_success,
-      //   description: t.noti_go_friends,
-      //   type: 'success',
-      //   systemNotification: true,
-      //   pushState: notification,
-      // });
-      navigation.navigate('Friends', { accountLogin });
-    } else {
-      notify({
-        message: t.noti_warning,
-        description: t.noti_login_require,
-        type: 'warning',
-        systemNotification: true,
-        pushState: notification,
-      });
-    }
+    navigation.navigate('SoloMatch', { accountLogin });
   };
 
   const handleAIChallenge = () => {

@@ -2,6 +2,12 @@ import { friends } from "../fake_data/Dien/fake_data";
 
 export const translations = {
   en: {
+  whiteWin: 'White wins!',
+  blackWin: 'Black wins!',
+  back: 'Back',
+  playAgain: 'Play Again',
+  whiteScore: 'White Score',
+  blackScore: 'Black Score',
     greeting: "Hello",
     toggle_theme: "Toggle Theme",
     toggle_language: "Toggle Language",
@@ -208,6 +214,12 @@ forgot_password: "Forgot password?",
     no_user_found: 'No active user found'
   },
   vi: {
+whiteWin: 'Trắng thắng!',
+  blackWin: 'Đen thắng!',
+  back: 'Quay lại',
+  playAgain: 'Đấu tiếp',
+  whiteScore: 'Điểm trắng',
+  blackScore: 'Điểm đen',
     register_title: "ĐĂNG KÝ",
 create_account: "Tạo tài khoản",
 login_email: "Email",
