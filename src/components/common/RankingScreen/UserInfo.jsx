@@ -6,9 +6,15 @@ export default function UserInfo({user}) {
     
     return (
     <View style={styles.container}>
-        <Image source={{
-            uri:user.userAvatarURL
-        }} style={styles.image}></Image> 
+     <Image
+  source={
+    user?.userAvatarURL
+      ? { uri: user.userAvatarURL }
+      : require('../../../images/user.png') // ảnh mặc định nếu user hoặc avatar null
+  }
+  style={styles.image}
+/>
+
         <UserNameCountry user={user}></UserNameCountry>
     </View> 
     );

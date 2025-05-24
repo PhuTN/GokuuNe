@@ -13,7 +13,7 @@ export default function Matches({user}) {
       <Image source={matches}></Image>
       <View>
         <Text style={styles.matchText}>{t.match_text}</Text>
-        <Text style={styles.numberText}>{user.matches}</Text>
+       <Text style={styles.numberText}>{user?.matches ?? 0}</Text>
       </View>
     </View>
   );

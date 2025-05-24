@@ -24,7 +24,7 @@ export const playMoveWithAI = async ({ userId, move }) => {
         userId,
         move
     });
-    return response.data;
+    return response.data; // { playerMove: 'D4', aiMove: 'Q16' }
 };
 
 // 🟢 Tắt engine của người chơi (kết thúc phiên)

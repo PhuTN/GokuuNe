@@ -21,6 +21,7 @@ import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
 import ZoomWrapper from '../../ZoomWrapper';
 import { createMatch } from '../../../api/matchApi';
+import { socket } from '../../../untils/socket';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -76,19 +77,19 @@ function fromIndexToView(index) {
     </View>
   );
 }
-export default function ChessBoard({
+export default function ChessBoard2({
   handleEvent,
   flag,
   handleIsEnd,
   handleSurrender,
   isCurrentPlayerWhite,
   isStart,
-   playerColor = 'B',
+   userId,
+   playerColor,
+   opponentId,
 }) {
-const isMyTurnSelf = (playerColor === 'B' && !flag) || (playerColor === 'W' && flag);
-const isMyTurnOpponent = !isMyTurnSelf;
-
-
+console.log("MAAAAAAM",playerColor)
+const [myColor] = useState(playerColor); 
 const [isEnd, setIsEnd] = useState(false);
 const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: trắng đầu hàng, 2: đen đầu hàng
   const [moveHistory, setMoveHistory] = useState([]);
@@ -100,7 +101,14 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
   const [gameState, setGameState] = useState(new GameState());
   const [whiteSkip, setWhiteSkip] = useState(false);
   const [blackSkip, setBlackSkip] = useState(false);
+  const isEndedByOpponentRef = useRef(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  function calculateDeltaElo(eloA, eloB, resultA, K = 32) {
+  const expectedA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
+  const deltaA = Math.round(K * (resultA - expectedA)); // làm tròn
+  const deltaB = -deltaA;
+  return [deltaA, deltaB];
+}
   const [newPosition,setNewPosition] = useState([-1,-1]);
   const fadeAnimArr = useRef(
     Array.from({ length: 19 * 19 }, () => new Animated.Value(1)),
@@ -132,33 +140,39 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
             console.log("Start");
         }
     },[isStart,flag])*/
- function renderSkipSurrenderButtons(isCurrentPlayerWhite, canSkip) {
-  return (
-    <View style={style.container}>
-      <TouchableOpacity
-        style={[style.button, { opacity: canSkip ? 1 : 0.5 }]}
-        disabled={!canSkip}
-        onPress={e => {
-          e.preventDefault();
-          onSkip(isCurrentPlayerWhite);
-        }}>
-        <Text style={style.text}>{t.skip_text}</Text>
-      </TouchableOpacity>
+  function renderSkipSurrenderButtons(isCurrentPlayerWhite) {
+    return (
 
-      <TouchableOpacity
-        style={style.button}
-        onPress={e => {
-          e.preventDefault();
-          onSurrender(isCurrentPlayerWhite);
-        }}>
-        <Text style={style.text}>{t.surrender_text}</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
+      <View style={style.container}>
+<TouchableOpacity
+  style={[
+    style.button,
+    {
+      opacity:
+        (playerColor === 'B' && !flag) || (playerColor === 'W' && flag) ? 1 : 0.5,
+    },
+  ]}
+  disabled={!((playerColor === 'B' && !flag) || (playerColor === 'W' && flag))}
+  onPress={e => {
+    e.preventDefault();
+    onSkip(isCurrentPlayerWhite);
+  }}
+>
+  <Text style={style.text}>{t.skip_text}</Text>
+</TouchableOpacity>
 
+        <TouchableOpacity
+          style={style.button}
+          onPress={e => {
+            e.preventDefault();
+            onSurrender(isCurrentPlayerWhite);
+          }}>
+          <Text style={style.text}>{t.surrender_text}</Text>
+        </TouchableOpacity>
+      </View>
 
-
+    );
+  }
   function renderCellInRow(index) {
     let res = [];
     for (let i = 0; i < 18; i++) {
@@ -182,6 +196,11 @@ async function onSurrender(isWhite) {
   setSurrender(isWhite ? 1 : 2);
   setIsEnd(true); // kết thúc game khi có người đầu hàng
   handleSurrender?.(isWhite); // gọi callback nếu cần
+
+  socket.emit("move:send", {
+    fromUser: userId,
+    move: "surrender"
+  });
 }
 
   function loadBoardFromGameState(gameState) {
@@ -214,7 +233,8 @@ async function onSurrender(isWhite) {
 
   const { playMoveSound, playCaptureSound, playWinSound, playLoseSound } =
     useSoundEffect();
-  function displayMoveToUI(index, i) {
+  function displayMoveToUI(index, i, forcedSide = null) {
+    
     const tempParray = [...pArr];
 
     if (tempParray[index * 19 + i] != null) {
@@ -224,7 +244,13 @@ async function onSurrender(isWhite) {
       mover: '',
       movePosition: '',
     };
-    const currentSide = flag ? 'W' : 'B';
+   let opponentColor  ;
+   if(forcedSide)
+    opponentColor = playerColor === 'B' ? 'W' : 'B';
+
+console.log("TROOL",playerColor)
+    const currentSide =  opponentColor || (flag ? 'W' : 'B');
+    console.log("LOOOOL",currentSide,forcedSide)
     setGameState(gameState => {
       const moveData = gameState.move(index, i, currentSide);
       if (moveData.canMove) {
@@ -263,7 +289,8 @@ setNewPosition([index,i,currentSide]);
             duration: 2000,
             useNativeDriver: true,
           }).start();
-          tempPAnimationArr[id] = flag ? blackPiece : whitePiece;
+       tempPAnimationArr[id] = currentSide === 'B' ? whitePiece : blackPiece; // vì đây là quân bị ăn
+
         }
 
         setAnimatedParr(tempPAnimationArr);
@@ -284,14 +311,101 @@ setNewPosition([index,i,currentSide]);
       } */
   }
 function onReceiveMove(moveString, mover) {
+if (moveString === "end") {
+  isEndedByOpponentRef.current = true; 
+  console.log("📥 Nhận nước đi: END từ đối thủ");
+  setIsEnd(true);
+  gameState.calculateScore();
+  handleIsEnd?.(gameState);
+  return;
+}
+
+ if (moveString === "pass") {
+    console.log("📩 Đối thủ bỏ lượt");
+
+    if (playerColor === 'B') {
+      // mình là đen, đối thủ là trắng → trắng skip
+      setWhiteSkip(true);
+      if (blackSkip) {
+          const moveText =  "White pass" ;
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: moveText,
+  };
+  setMoveHistory(prev => [...prev, newMove]);
+        gameState.calculateScore();
+        setIsEnd(true);
+        handleIsEnd(gameState);
+          socket.emit("move:send", {
+    fromUser: userId,
+    move: "end",
+  });
+      } else {
+        handleEvent(gameState);
+
+                 const moveText =  "White pass" ;
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: moveText,
+  };
+  setMoveHistory(prev => [...prev, newMove]);
+      }
+    } else {
+      // mình là trắng, đối thủ là đen → đen skip
+      setBlackSkip(true);
+      if (whiteSkip) {
+                 const moveText =  "Black pass" ;
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: moveText,
+  };
+  setMoveHistory(prev => [...prev, newMove]);
+        gameState.calculateScore();
+        
+        setIsEnd(true);
+        handleIsEnd(gameState);
+          socket.emit("move:send", {
+    fromUser: userId,
+    move: "end",
+  });
+      } else {
+         const moveText =  "Black pass" ;
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: moveText,
+  };
+  setMoveHistory(prev => [...prev, newMove]);
+        handleEvent(gameState);
+      }
+    }
+
+    return;
+  }
+  if (moveString === "surrender") {
+    console.log("🏳️ Đối thủ đầu hàng");
+
+    // nếu đối thủ là trắng → trắng đầu hàng → mình thắng
+    setSurrender(playerColor === 'B' ? 1 : 2); 
+    setIsEnd(true);
+    handleSurrender?.(playerColor === 'B' ? 1 : 2);
+    return;
+  }
   const colLetter = moveString.substring(0, 1).toUpperCase(); // 'D'
   const rowNumber = parseInt(moveString.substring(1));        // 16
 
-  const i = colLetter.charCodeAt(0) - 65;         // 'A' → 0, 'B' → 1, ..., 'S' → 18
-  const index = 19 - rowNumber;                   // vì hàng 19 ở trên cùng, hàng 1 ở dưới
-
-  displayMoveToUI(index, i); // Truyền vào hàm xử lý đánh cờ
+  const i = colLetter.charCodeAt(0) - 65;         // 'A' → 0, B → 1
+  const index = 19 - rowNumber;                   // vì hàng 19 ở trên cùng
+ console.log("11CAK",playerColor)
+  // 👇 luôn đánh quân ngược với màu của mình
+  const opponentColor = playerColor === 'B' ? 'W' : 'B';
+    console.log("CAK",playerColor)
+  displayMoveToUI(index, i, opponentColor); // truyền màu quân
 }
+
 function displayPieceSource(index,i) {
   if(index==newPosition[0]&&i==newPosition[1]) {
     return newPosition[2]=='B'?blackDot:whiteDot;
@@ -305,13 +419,26 @@ function displayPieceSource(index,i) {
     for (let i = 0; i < 19; i++) {
       res.push(
         <TouchableOpacity
-          style={style.touchable}
-          key={'Button' + i + '_Row' + index}
-          onPress={e => {
-            e.preventDefault();
+  style={style.touchable}
+  key={'Button' + i + '_Row' + index}
+  onPress={e => {
+    e.preventDefault();
+    // Chỉ cho phép đánh khi đúng lượt (playerColor === lượt hiện tại)
+    if ((playerColor === 'B' && !flag) || (playerColor === 'W' && flag)) {
+  const result = onMove(index, i); // thực hiện đánh
+  if (result?.movePosition) {
+    socket.emit('move:send', {
+      fromUser: userId,
+      move: result.movePosition, // ví dụ: "D16"
+    });
+    console.log("📤 Gửi nước đi:", result.movePosition);
+  }
+} else {
+  console.log("⛔ Không phải lượt của bạn");
+}
 
-            console.log(onMove(index, i)); //Gọi hàm onMove
-          }}>
+  }}
+>
           <Dot index={index * 19 + i}></Dot>
           <Animated.Image
             style={[
@@ -336,51 +463,59 @@ function displayPieceSource(index,i) {
   }
 
   function onSkip(isWhite) {
-    if (isWhite && flag) {
-      setWhiteSkip(true);
-      const moveText = isWhite ? "White pass" : "Black pass";
-
-const newMove = {
-  order: moveHistory.length + 1,
-  move: moveText,
-};
-
-setMoveHistory(prev => [...prev, newMove]);
-
-      if (blackSkip) {
-        gameState.calculateScore();
-        setIsEnd(true);
-        handleIsEnd(gameState);
-         
-        console.log('White Skip');
-      } else {
-        handleEvent(gameState);
-      }
-      return;
+    
+  if (isWhite && flag) {
+    console.log("🟦 Mình là trắng, bấm bỏ lượt");
+    setWhiteSkip(true);
+    if (blackSkip) {
+      console.log("✅ Cả 2 cùng bỏ lượt → kết thúc");
+      gameState.calculateScore();
+      setIsEnd(true);
+      handleIsEnd(gameState);
+        socket.emit("move:send", {
+    fromUser: userId,
+    move: "end",
+  });
+    } else {
+      handleEvent(gameState);
     }
-    if (!isWhite && !flag) {
-       const moveText = isWhite ? "White pass" : "Black pass";
-
-const newMove = {
-  order: moveHistory.length + 1,
-  move: moveText,
-};
-
-setMoveHistory(prev => [...prev, newMove]);
-
-      setBlackSkip(true);
-      if (whiteSkip) {
-        gameState.calculateScore();
-         setIsEnd(true);
-        handleIsEnd(gameState);
-        console.log('Black Skip');
-      } else {
-        handleEvent(gameState);
-      }
-    }
-
- 
   }
+
+  if (!isWhite && !flag) {
+    console.log("⬛ Mình là đen, bấm bỏ lượt");
+    setBlackSkip(true);
+    if (whiteSkip) {
+      console.log("✅ Cả 2 cùng bỏ lượt → kết thúc");
+      gameState.calculateScore();
+      setIsEnd(true);
+      handleIsEnd(gameState);
+        socket.emit("move:send", {
+    fromUser: userId,
+    move: "end",
+  });
+    } else {
+      handleEvent(gameState);
+    }
+  }
+
+  // Truyền pass cho đối thủ
+  socket.emit("move:send", {
+    fromUser: userId,
+    move: "pass",
+  });
+
+
+const move = "pass";
+  const moveText = isWhite ? "White pass" : "Black pass";
+
+  const newMove = {
+    order: moveHistory.length + 1,
+    move: moveText,
+  };
+  setMoveHistory(prev => [...prev, newMove]);
+
+}
+
   const board = renderRow();
   const touchable = renderTouchableRow();
 
@@ -388,17 +523,20 @@ setMoveHistory(prev => [...prev, newMove]);
 
 useEffect(() => {
   if (!isEnd && surrender === 0) return;
-
+ if (isEndedByOpponentRef.current) {
+    console.log("⛔ Không lưu trận vì kết thúc bởi đối thủ.");
+    return;
+  }
   const winner =
     surrender === 1 ? 'black' :
     surrender === 2 ? 'white' :
     gameState.whiteScore > gameState.blackScore ? 'white' : 'black';
 
   const payload = {
-    playerBlack: null, // vì là solo nên để null
-    playerWhite: null,
+   playerBlack: playerColor === 'B' ? userId : opponentId,
+  playerWhite: playerColor === 'W' ? userId : opponentId,
     winner,
-    type: 'bot', // hoặc 'solo' nếu bạn có enum riêng
+    type: 'ranked', // hoặc 'solo' nếu bạn có enum riêng
     moves: moveHistory,
     resultDescription:
       surrender === 1 ? 'White surrendered' :
@@ -406,8 +544,7 @@ useEffect(() => {
       `Score - White: ${gameState.whiteScore}, Black: ${gameState.blackScore}`,
     deltaElo: 0,
   };
-
-  console.log("PAYLOAD",payload)
+console.log(payload)
   createMatch(payload)
     .then(res => {
       console.log('✅ Match saved to server:', res);
@@ -417,12 +554,20 @@ useEffect(() => {
     });
 }, [isEnd, surrender]);
 
+useEffect(() => {
+  socket.on("move:receive", ({ move, fromUser }) => {
+    console.log("📥 Nhận nước đi từ đối thủ:", move);
+    onReceiveMove(move); // thực hiện đánh
+  });
 
+  return () => {
+    socket.off("move:receive");
+  };
+}, []);
  return (
   <View>
     {/* Nút bỏ lượt và đầu hàng của Đối thủ (ở trên) */}
-{renderSkipSurrenderButtons(playerColor === 'W' ? false : true, isMyTurnOpponent)}
-
+    {/* {renderSkipSurrenderButtons(playerColor === 'W' ? false : true)} */}
 
     <View style={{ alignItems: 'center' }}>
       {/* Quân đối thủ hiển thị phía trên bàn cờ */}
@@ -449,8 +594,8 @@ useEffect(() => {
       )}
 
       {/* Bàn cờ */}
-      <View style={style.chessBoardBackGround}>
-        <View style={style.chessBoard}>
+      <View style={style.ChessBoard2BackGround}>
+        <View style={style.ChessBoard2}>
           {board.map((item, index) => (
             <View style={style.row} key={'Row' + index}>
               {item.map((cell, i) => cell)}
@@ -498,7 +643,7 @@ useEffect(() => {
     </View>
 
     {/* Nút bỏ lượt và đầu hàng của Người chơi (ở dưới) */}
-  {renderSkipSurrenderButtons(playerColor === 'W' ? true : false, isMyTurnSelf)}
+    {renderSkipSurrenderButtons(playerColor === 'W' ? true : false)}
   </View>
 );
 
@@ -510,13 +655,13 @@ export const currentPlayerMove = {
   },
 };
 const style = StyleSheet.create({
-  chessBoardBackGround: {
+  ChessBoard2BackGround: {
     width: 370,
     height: 370,
     backgroundColor: '#f1b152',
     alignSelf: 'center',
   },
-  chessBoard: {
+  ChessBoard2: {
     width: 325,
     height: 325,
     position: 'absolute',

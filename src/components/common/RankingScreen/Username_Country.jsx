@@ -5,12 +5,14 @@ export default function UserNameCountry({user}) {
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
     const styles=isDark?darkStyles:whiteStyles;
-    return (
-        <View style={styles.container}>
-            <Text style={styles.text}>{user.userName}</Text> 
-            <Country user={user}></Country>
-        </View>
-    )
+    if (!user) return null; // hoặc <Text>Đang tải...</Text>
+
+return (
+  <View style={styles.container}>
+    <Text style={styles.text}>{user.userName}</Text>
+    {/* <Country user={user}></Country> */}
+  </View>
+);
 }
 const whiteStyles = StyleSheet.create({
     container: {

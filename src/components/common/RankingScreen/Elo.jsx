@@ -9,7 +9,7 @@ export default function Elo({user}) {
         <Image source ={matches}></Image> 
         <View>
         <Text style={styles.matchText}>ELO</Text> 
-        <Text style={styles.numberText}>{user.elo}</Text>
+        <Text style={styles.numberText}>{user?.elo ?? 0}</Text>
         </View>
     </View>
         
