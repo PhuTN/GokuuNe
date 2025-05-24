@@ -129,25 +129,20 @@ const SettingScreen = ({route, navigation}: Props) => {
   };
 
   const handleHistory = () => {
-    if (accountLogin) {
-      // notify({
-      //   message: t.noti_info,
-      //   description: t.noti_history,
-      //   type: 'info',
-      //   systemNotification: true,
-      //   pushState: notification,
-      // });
-      //navigation.navigate('Profile', { accountLogin });
-    } else {
-      notify({
-        message: t.noti_warning,
-        description: t.noti_login_require,
-        type: 'warning',
-        systemNotification: true,
-        pushState: notification,
-      });
-    }
-  };
+  if (accountLogin) {
+    // 👉 Navigate tới màn History
+    navigation.navigate('History');
+  } else {
+    notify({
+      message: t.noti_warning,
+      description: t.noti_login_require,
+      type: 'warning',
+      systemNotification: true,
+      pushState: notification,
+    });
+  }
+};
+
 
   const handleContact = () => {
     // notify({

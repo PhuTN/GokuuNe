@@ -9,7 +9,7 @@ export default function UserNameCountry({user}) {
 
 return (
   <View style={styles.container}>
-    <Text style={styles.text}>{user.userName}</Text>
+    <Text style={styles.text}>{user.displayName}</Text>
     {/* <Country user={user}></Country> */}
   </View>
 );

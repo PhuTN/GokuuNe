@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { useLanguage } from "../../../asycnc_store/LanguageContext";
 import { translations } from "../../../untils/i18n";
 import { useTheme } from "../../../asycnc_store/ThemeContext";
-export default function HistoryTag({ navigation, history }) {
+export default function HistoryTag({ navigation, history , matchId }) {
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
     const { theme, toggleTheme } = useTheme();
@@ -19,7 +19,7 @@ export default function HistoryTag({ navigation, history }) {
     return (
         <TouchableOpacity style={styles.card} onPress={(e) => {
             e.preventDefault();
-            navigation.navigate("HistoryDetail");
+              navigation.navigate("HistoryDetail", { matchId });
         }}>
             <Text style={styles.time}>🕒 {history.matchDate}</Text>
 

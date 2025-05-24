@@ -8,8 +8,8 @@ export default function UserInfo({user}) {
     <View style={styles.container}>
      <Image
   source={
-    user?.userAvatarURL
-      ? { uri: user.userAvatarURL }
+    user?.avatarUrl
+      ? { uri: user.avatarUrl }
       : require('../../../images/user.png') // ảnh mặc định nếu user hoặc avatar null
   }
   style={styles.image}

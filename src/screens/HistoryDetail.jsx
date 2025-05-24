@@ -6,15 +6,17 @@ import { historyDetails } from "../fake_data/Binh/fake_data";
 import { useTheme } from "../asycnc_store/ThemeContext";
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { translations } from "../untils/i18n";
+import { getMatchById } from "../api/matchApi";
+import { da } from "date-fns/locale";
 const blackPiece = require('../assets/images/pieceBlack.png');
 const whitePiece = require('../assets/images/pieceWhite.png');
 
-
-export default function HistoryDetail() {
+export default function HistoryDetail({ route }) {
     const [pArr, setPArr] = useState(Array(19 * 19).fill(null));
     const [currentIndex, setCurrentIndex] = useState(0);
     const [blackScore, setBlackScore] = useState(0);
     const [whiteScore, setWhiteScore] = useState(6.5);
+    const { matchId } = route.params;   // 🔥 Nhận matchId từ navigation
     const { theme, toggleTheme } = useTheme();
     const isDark = theme == 'dark';
     const styles = isDark ? blackStyle : whiteStyle;
@@ -79,6 +81,25 @@ export default function HistoryDetail() {
     }
     const images = renderImageRow();
     const board = renderRow(styles);
+
+
+//////////// Match data theo format này, nhớ chú ý pass với surrender
+        useEffect(() => {
+        const fetchMatchDetail = async () => {
+            try {
+                const data = await getMatchById(matchId);  // 🔥 Gọi API
+              
+                console.log("Matchdata",data)
+            } catch (error) {
+                console.error('❌ Lỗi lấy chi tiết trận đấu:', error);
+            }
+        };
+        fetchMatchDetail();
+    }, [matchId]);
+
+
+
+
     return <View style={styles.background}>
         <Header title="History"></Header>
 

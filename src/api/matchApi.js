@@ -31,4 +31,10 @@ export const deleteMatch = async (id) => {
   return response.data;
 };
 
+
+// 🟢 Lấy danh sách trận đấu của user theo userId
+export const getMatchesByUserId = async (userId) => {
+  const response = await matchApi.get(`/user/${userId}`); // hoặc `/user/${userId}` nếu bạn chưa đổi path
+  return response.data;
+};
 export default matchApi;
