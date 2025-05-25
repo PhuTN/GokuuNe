@@ -1,12 +1,75 @@
-import { Matches } from "../fake_data/Binh/fake_data";
+// import { socket } from "./socket";
 
 
-export default function FindMatch() {
-    const randomColor = Math.round(Math.random());
-    console.log(randomColor); // Neu ra 0 thi nguoi choi hien tai phe den, 1 phe trang
-    const matchResult= randomColor!=0?[Matches.playerWhite,Matches.playerBlack]:[Matches.playerBlack,Matches.playerWhite];
-    return {
-        matchResult:matchResult,
-        isCurrentPlayerWhite:randomColor!=0
+// export default function FindMatch(userId) {
+//   return new Promise((resolve, reject) => {
+//     if (!socket || !socket.connected) {
+//       console.log("❌ Socket chưa kết nối. Đảm bảo đã login trước khi gọi FindMatch.");
+//       return reject("❌ Socket chưa kết nối.");
+//     }
+
+//     console.log("📡 Gửi yêu cầu rank:find với userId:", userId);
+//     socket.emit('rank:find', userId);
+
+//     // Nhận sự kiện khi match thành công
+//     const onMatched = (data) => {
+//       console.log("✅ Nhận rank:matched:", data);
+//       const { opponent } = data;
+
+//       const isCurrentPlayerWhite = opponent._id > userId;
+//       console.log("🎯 Bạn là", isCurrentPlayerWhite ? "Trắng" : "Đen");
+
+//       const matchResult = isCurrentPlayerWhite
+//         ? [userId, opponent]
+//         : [opponent, userId];
+
+//       // Cleanup
+//       socket.off('rank:matched', onMatched);
+//       clearTimeout(timeoutId);
+
+//       console.log("🎮 Ghép trận hoàn tất:", matchResult);
+//       resolve({ matchResult, isCurrentPlayerWhite });
+//     };
+
+//     socket.on('rank:matched', onMatched);
+
+//     // Timeout sau 15s nếu không match
+//     const timeoutId = setTimeout(() => {
+//       console.warn("⏱ Timeout: Không tìm được đối thủ sau 15s.");
+//       socket.off('rank:matched', onMatched);
+//       reject("⏱ Timeout khi tìm trận.");
+//     }, 1500000);
+//   });
+// }
+
+import { socket } from "./socket";
+
+export default function FindMatch(userId) {
+  return new Promise((resolve, reject) => {
+    if (!socket || !socket.connected) {
+      console.log("❌ Socket chưa kết nối.");
+      return reject("❌ Socket chưa kết nối.");
     }
+
+    console.log("📡 Gửi yêu cầu rank:find với userId:", userId);
+    socket.emit("rank:find", userId);
+
+    const onMatched = (data) => {
+      console.log("✅ Nhận rank:matched:", data);
+      const { opponent } = data;
+
+      socket.off("rank:matched", onMatched);
+      clearTimeout(timeoutId);
+
+      resolve(opponent); // chỉ trả về opponent
+    };
+
+    socket.on("rank:matched", onMatched);
+
+    const timeoutId = setTimeout(() => {
+      console.warn("⏱ Timeout: Không tìm được đối thủ sau 15s.");
+      socket.off("rank:matched", onMatched);
+      reject("⏱ Timeout khi tìm trận.");
+    }, 15000);
+  });
 }

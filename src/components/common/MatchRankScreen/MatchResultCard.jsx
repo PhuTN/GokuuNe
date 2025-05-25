@@ -66,16 +66,30 @@ const GameResultCard = ({gameResult, navigation}) => {
 
           {/* Ratings */}
           <View style={styles.ratings}>
-            <Text style={styles.ratingTitle}>{t.rank_text}</Text>
-            <Text style={styles.ratingValue}>
+           
+            {/* <Text style={styles.ratingValue}>
               {Result.currentRank}{' '}
               <Text style={styles.ratingChange}>{Result.rankRising}</Text>
-            </Text>
-            <Text style={styles.leagueTitle}>{t.elo_text}</Text>
-            <Text style={styles.ratingValue}>
-              {Result.currentElo}{' '}
-              <Text style={styles.ratingGain}>{Result.eloRisiing}</Text>
-            </Text>
+            </Text> */}
+            <Text style={styles.ratingTitle}>{t.elo_text}</Text>
+          <Text style={styles.ratingValue}>
+  {gameResult.currentElo ?? '???'}{' '}
+  <Text
+    style={[
+      styles.ratingGain,
+      {
+        color:
+          gameResult.deltaElo > 0
+            ? 'green'
+            : gameResult.deltaElo < 0
+            ? 'red'
+            : 'gray',
+      },
+    ]}>
+    ({gameResult.deltaElo > 0 ? '+' : ''}
+    {gameResult.deltaElo})
+  </Text>
+</Text>
           </View>
 
           {/* Buttons */}

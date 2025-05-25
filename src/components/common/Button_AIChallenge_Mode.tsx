@@ -39,7 +39,7 @@ const Button_AIChallenge_Mode: React.FC<ButtonProps> = ({ title, subtitle, Icon1
           </View>
 
           {/* Dòng dưới: Subtitle */}
-          <Text style={styles.subtitle}>{subtitle}</Text>
+          {/* <Text style={styles.subtitle}>{subtitle}</Text> */}
         </View>
       </LinearGradient>
     </TouchableOpacity>

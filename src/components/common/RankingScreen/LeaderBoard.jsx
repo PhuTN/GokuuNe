@@ -5,19 +5,25 @@ import { useTheme } from '../../../asycnc_store/ThemeContext';
 export default function LeaderBoard({listLeaderBoard,user}) {
     const {theme, toggleTheme} = useTheme();
     const style = (theme==='dark')?darkStyle:whiteStyle;
-    return (<View style={style.container}>
-        {
-            listLeaderBoard.map((item,index)=>{
-                let isPlayer=false;
-                if(item.userId===user.userId)  
-                {
-                    isPlayer=true;
-                }
-                return <LeaderBoardInfo info={item} index={index+4} isPlayer={isPlayer} key={"LeaderBoard"+index}></LeaderBoardInfo>
-            })
-        }
+     if (!Array.isArray(listLeaderBoard) || !user) return null;
+
+  return (
+    <View style={style.container}>
+      {
+        listLeaderBoard.map((item, index) => {
+          const isPlayer = item?.userId === user.userId;
+          return (
+            <LeaderBoardInfo
+              info={item}
+              index={index + 4}
+              isPlayer={isPlayer}
+              key={`LeaderBoard${index}`}
+            />
+          );
+        })
+      }
     </View>
-    )
+  );
 }
 const whiteStyle= StyleSheet.create( {
     container:{

@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,7 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/AppNavigator';
 import Player from '../components/common/MatchRankScreen/Player';
-import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
+import ChessBoard2 from '../components/common/MatchRankScreen/ChessBoard2';
 import ScreenHeader from '../components/common/ScreenHeader';
 import {Matches} from '../fake_data/Binh/fake_data';
 import LinearGradient from 'react-native-linear-gradient';
@@ -20,11 +20,15 @@ import {useTheme} from '../asycnc_store/ThemeContext';
 import SearchMatchPopup from '../components/common/MatchRankScreen/SearchMatchPopup';
 import GameState from '../game_logic/GameState';
 import ResultPopup from '../components/common/MatchRankScreen/ResultPopup';
-import {useIsFocused} from '@react-navigation/native';
+import {useFocusEffect, useIsFocused} from '@react-navigation/native';
 import FindMatch from '../untils/FindMatch';
 import GameResultCard from '../components/common/MatchRankScreen/MatchResultCard';
 import Header from '../components/common/Header';
 import ZoomWrapper from '../components/ZoomWrapper';
+
+import { connectSocket, socket } from '../untils/socket';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserById } from '../api/userApi';
 
 const default_avatar = require('../assets/images/default_avatar.jpg');
 
@@ -53,6 +57,17 @@ function RenderSearchPopup(userName) {
   }
   return <></>;
 }
+function calculateDeltaElo(yourElo, opponentElo, result, k = 32) {
+  const expected = 1 / (1 + Math.pow(10, (opponentElo - yourElo) / 400));
+  const delta = Math.round(k * (result - expected));
+  console.log('📊 Elo Debug Info:');
+console.log('Your Elo:', yourElo);
+console.log('Opponent Elo:', opponentElo);
+console.log('Expected Score:', expected.toFixed(4));
+console.log('Result (1=win, 0=lose, 0.5=draw):', result);
+console.log('Delta Elo:', delta);
+  return delta;
+}
 function RenderResultPopup(
   timeWhite,
   timeBlack,
@@ -65,7 +80,11 @@ function RenderResultPopup(
   playerBlack,
   playerWhite,
   currentIntervalId,
+   setTimeWhite, // 👈 thêm
+  setTimeBlack , // 👈 thêm
+   hasSetTimeZero 
 ) {
+ 
   const yoursCore = isCurrentPlayerWhite ? whiteScore : blackScore;
   const opponentScore = isCurrentPlayerWhite ? blackScore : whiteScore;
   const gameResult = {
@@ -75,11 +94,41 @@ function RenderResultPopup(
     playerBlack: playerBlack,
     playerWhite: playerWhite,
   };
+
+  const yourElo = parseFloat(isCurrentPlayerWhite ? playerWhite.elo : playerBlack.elo);
+const opponentElo = parseFloat(isCurrentPlayerWhite ? playerBlack.elo : playerWhite.elo);
+
+const isPlayerWin = (() => {
+  if (surrender === 1) return !isCurrentPlayerWhite; // Trắng đầu hàng → đen thắng
+  if (surrender === 2) return isCurrentPlayerWhite;  // Đen đầu hàng → trắng thắng
+  if (timeWhite === '0:00') return !isCurrentPlayerWhite;
+  if (timeBlack === '0:00') return isCurrentPlayerWhite;
+  if (!isEnd) return false;
+
+  // Kết thúc do hết lượt chơi
+  if (whiteScore > blackScore) return isCurrentPlayerWhite;
+  if (blackScore > whiteScore) return !isCurrentPlayerWhite;
+
+  return false; // Hoà → không ai thắng
+})();
+let result = isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0;
+const deltaElo = calculateDeltaElo(yourElo, opponentElo, result);
+gameResult.deltaElo = deltaElo;
+
+gameResult.currentElo = yourElo + deltaElo;
+
+    const setTimesOnce = () => {
+    if (!hasSetTimeZero.current) {
+      setTimeWhite('0:00');
+      setTimeBlack('0:00');
+      hasSetTimeZero.current = true;
+    }
+  };
   if (timeWhite == '0:00') {
     clearInterval(currentIntervalId);
     if (!isCurrentPlayerWhite) {
       gameResult.resultText = 'Victory';
-
+setTimesOnce();
       return (
         <GameResultCard
           gameResult={gameResult}
@@ -89,6 +138,7 @@ function RenderResultPopup(
     }
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     gameResult.resultText = 'Defeat';
+    setTimesOnce();
     return (
       <GameResultCard
         gameResult={gameResult}
@@ -99,6 +149,7 @@ function RenderResultPopup(
     clearInterval(currentIntervalId);
     if (isCurrentPlayerWhite) {
       gameResult.resultText = 'Victory';
+      setTimesOnce();
       return (
         <GameResultCard
           gameResult={gameResult}
@@ -108,6 +159,7 @@ function RenderResultPopup(
     }
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     gameResult.resultText = 'Defeat';
+    setTimesOnce();
     return (
       <GameResultCard
         gameResult={gameResult}
@@ -121,6 +173,7 @@ function RenderResultPopup(
       (whiteScore < blackScore && !isCurrentPlayerWhite)
     ) {
       gameResult.resultText = 'Victory';
+      setTimesOnce();
       return (
         <GameResultCard
           gameResult={gameResult}
@@ -133,6 +186,7 @@ function RenderResultPopup(
       (whiteScore > blackScore && !isCurrentPlayerWhite)
     ) {
       gameResult.resultText = 'Defeat';
+      setTimesOnce();
       return (
         <GameResultCard
           gameResult={gameResult}
@@ -147,6 +201,7 @@ function RenderResultPopup(
   ) {
     clearInterval(currentIntervalId);
     gameResult.resultText = 'Defeat';
+    setTimesOnce();
     console.log(gameResult.playerBlack);
     return (
       <GameResultCard
@@ -161,6 +216,7 @@ function RenderResultPopup(
   ) {
     clearInterval(currentIntervalId);
     gameResult.resultText = 'Victory';
+    setTimesOnce();
     console.log(gameResult.playerBlack);
     return (
       <GameResultCard
@@ -177,8 +233,10 @@ const RankingMatchScreen = ({navigation}) => {
   const isFocuse = useIsFocused();
   const messageIcon = require('../assets/images/message.png');
   const noteIcon = require('../assets/images/note.png');
-  const [timeBlack, setTimeBlack] = useState('5:00');
-  const [timeWhite, setTimeWhite] = useState('5:00');
+  const [timeBlack, setTimeBlack] = useState('15:00');
+  const [timeWhite, setTimeWhite] = useState('15:00');
+  const [userId, setUserId] = useState(null); 
+  const [opponentId, setOpponentId] = useState(null); 
   const [currentIntervalId, setCurrentIntervalId] = useState();
   const [isCurrentPlayerWhite, setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore, setWhiteScore] = useState(2.5);
@@ -188,6 +246,8 @@ const RankingMatchScreen = ({navigation}) => {
   const [isStart, setIsStart] = useState(false);
   const {height} = useWindowDimensions();
   const [zoomMode, setZoomMode] = useState(false); // 👈 trạng thái zoom
+  const hasSetTimeZero = useRef(false);
+  const [accountLogin, setAccountLogin] = useState(null);
   const [playerBlack, setPlayerBlack] = useState({
     userId: 'user0010',
     userName: 'Searching',
@@ -212,33 +272,142 @@ const RankingMatchScreen = ({navigation}) => {
   });
 
   const [flag, setFlag] = useState(false);
+useEffect(() => {
+  return () => {
+    // Khi rời khỏi màn hình (unmount)
+    if (!isEnd && surrender === 0 && userId && opponentId) {
+      console.log("👋 Người chơi đã thoát khỏi màn hình, gửi surrender");
 
-  useEffect(() => {
-    console.log('Height', height);
-    const setUp = new Promise(function (resolve, reject) {
+      // Gửi tín hiệu đầu hàng cho người kia
+      const surrenderMove = {
+        fromUser: userId,
+        move: "surrender",
+      };
+      socket.emit("move:send", surrenderMove);
+    }
+  };
+}, [isEnd, surrender, userId, opponentId]);
+
+function createMatchData(user, opponent) {
+  const isCurrentPlayerWhite = opponent._id > user._id;
+
+  const playerWhiteData = {
+    userId: isCurrentPlayerWhite ? user._id : opponent._id,
+    userName: isCurrentPlayerWhite ? user.displayName : opponent.displayName,
+    country: "",
+    matches: (isCurrentPlayerWhite ? user.matchHistory : opponent.matchHistory)?.length || 0,
+    elo: isCurrentPlayerWhite ? user.elo : opponent.elo,
+    userCountryImageURL: { uri: "" },
+    userAvatarURL: {
+      uri: isCurrentPlayerWhite
+        ? user.avatarUrl || ""
+        : opponent.avatarUrl || ""
+    },
+    rank: 0
+  };
+
+  const playerBlackData = {
+    userId: !isCurrentPlayerWhite ? user._id : opponent._id,
+    userName: !isCurrentPlayerWhite ? user.displayName : opponent.displayName,
+    country: "",
+    matches: (!isCurrentPlayerWhite ? user.matchHistory : opponent.matchHistory)?.length || 0,
+    elo: !isCurrentPlayerWhite ? user.elo : opponent.elo,
+    userCountryImageURL: { uri: "" },
+    userAvatarURL: {
+      uri: !isCurrentPlayerWhite
+        ? user.avatarUrl || ""
+        : opponent.avatarUrl || ""
+    },
+    rank: 0
+  };
+
+  return {
+    playerWhite: playerWhiteData,
+    playerBlack: playerBlackData
+  };
+}
+useFocusEffect(
+  useCallback(() => {
+    const fetchUser = async () => {
+      try {
+        const local = await AsyncStorage.getItem("currentUser");
+        if (!local) return;
+        const user = JSON.parse(local);
+        const freshUser = await getUserById(user._id);
+        setAccountLogin(freshUser);
+        console.log("MA",freshUser)
+      } catch (error) {
+        console.error('❌ Lỗi khi reload user:', error);
+      }
+    };
+
+    fetchUser();
+  }, [])
+);
+useEffect(() => {
+   if (!accountLogin?._id) return; // ❗ Tránh chạy khi chưa có user
+  const setUp = async () => {
+    try {
+      console.log("🚀 Bắt đầu setUp tìm trận...");
+
+     const user = accountLogin; // ✅ Sử dụng user mới nhất
+     console.log("MA2",accountLogin)
+      const userId = user?._id;
+setUserId(userId);
+      if (!userId) {
+        console.warn("⚠️ Không tìm thấy userId");
+        return;
+      }
+
+      console.log("🟢 Nối socket với userId:", userId);
+      connectSocket(userId);
+
+      console.log("🔍 Gửi yêu cầu tìm trận...");
+      const opponent = await FindMatch(userId);
+      console.log("✅ Ghép cặp với:", opponent);
+
+      const matchInfo = createMatchData(user, opponent);
+      console.log("🎮 Match Info:", matchInfo);
+
+      setPlayerWhite(matchInfo.playerWhite);
+      setPlayerBlack(matchInfo.playerBlack);
+
+      setIsCurrentPlayerWhite(matchInfo.playerWhite.userId === userId);
+      const opponentIdCalc = matchInfo.playerWhite.userId === userId
+  ? matchInfo.playerBlack.userId
+  : matchInfo.playerWhite.userId;
+setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
+      setFlag(false);
+      setWhiteScore(6.5);
+      setBlackScore(0);
+      setIsEnd(false);
+      setSurrender(0);
+  setIsStart(true);
+
+      console.log("⏳ Chờ 10s trước khi bắt đầu trận...");
       setTimeout(() => {
-        const matchResult = FindMatch();
-        setIsCurrentPlayerWhite(matchResult.isCurrentPlayerWhite);
-        setPlayerBlack(matchResult.matchResult[1]);
-        setPlayerWhite(matchResult.matchResult[0]);
-        resolve();
-      }, 10000);
-    });
-    setFlag(false);
-    setWhiteScore(6.5);
-    setBlackScore(0);
-    setIsEnd(false);
-    setSurrender(0);
-    setIsStart(false);
-    setUp.then(() => {
-      setIsStart(true);
-      setCurrentIntervalId(
-        setInterval(() => {
-          setTimeBlack(prevTimeBlack => decreaseTime(prevTimeBlack));
-        }, 1000),
-      );
-    });
-  }, [isFocuse]);
+        console.log("🎯 Trận đấu bắt đầu!");
+
+        
+
+        const interval = setInterval(() => {
+          setTimeBlack((prev) => {
+            const next = decreaseTime(prev);
+            console.log("⏱️ Đếm ngược đen:", next);
+            return next;
+          });
+        }, 1000);
+
+        setCurrentIntervalId(interval);
+      }, 1000);
+    } catch (err) {
+      console.error("❌ Lỗi trong quá trình ghép cặp:", err);
+    }
+  };
+
+  setUp();
+}, [isFocuse,accountLogin]);
+
 
   const handleEvent = gameState => {
     clearInterval(currentIntervalId);
@@ -274,14 +443,17 @@ const RankingMatchScreen = ({navigation}) => {
       setSurrender(2);
     }
   };
-const chessBoardRef = useRef(
-  <ChessBoard
+
+  
+const ChessBoard2Ref = useRef(
+  <ChessBoard2
     handleEvent={handleEvent}
-    flag={flag}
+   
     handleIsEnd={handleIsEnd}
     handleSurrender={handleSurrender}
-    isCurrentPlayerWhite={isCurrentPlayerWhite}
+   
     isStart={isStart}
+      userId={userId}
   />
 );
  return (
@@ -302,44 +474,78 @@ const chessBoardRef = useRef(
           playerBlack,
           playeWhite,
           currentIntervalId,
+          setTimeWhite, // 👈 thêm
+  setTimeBlack,  // 👈 thêm,
+   hasSetTimeZero 
         )}
       </>
     )}
 
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={true}>
     <View style={[styles.mainView, { minHeight: height + 200 }]}>
+{!zoomMode && (
+  isCurrentPlayerWhite ? (
+    <>
+      <Player
+        user={playerBlack}
+        isWhite={false}
+        time={timeBlack}
+        score={blackScore}
+      />
+    </>
+  ) : (
+    <>
+      <Player
+        user={playeWhite}
+        isWhite={true}
+        time={timeWhite}
+        score={whiteScore}
+      />
+    </>
+  )
+)}
 
-        {!zoomMode && (
-          <Player
-            user={playerBlack}
-            isWhite={false}
-            time={timeBlack}
-            score={blackScore}
-          />
-        )}
-
-<View style={{ height: 600, alignItems: 'center', justifyContent: 'center' }}>
-  <ZoomWrapper isZoom={zoomMode}>
-    <ChessBoard
-      handleEvent={handleEvent}
-      flag={flag}
-      handleIsEnd={handleIsEnd}
-      handleSurrender={handleSurrender}
-      isCurrentPlayerWhite={isCurrentPlayerWhite}
-      isStart={isStart}
-    />
-  </ZoomWrapper>
-</View>
+{isStart && userId && (
+  <View style={{ height: 600, alignItems: 'center', justifyContent: 'center' }}>
+    <ZoomWrapper isZoom={zoomMode}>
+      <ChessBoard2
+        handleEvent={handleEvent}
+        flag={flag}
+        handleIsEnd={handleIsEnd}
+        handleSurrender={handleSurrender}
+        isCurrentPlayerWhite={isCurrentPlayerWhite}
+        isStart={isStart}
+        playerColor={isCurrentPlayerWhite ? "W" : "B"}
+        userId={userId}
+        opponentId={opponentId}
+      />
+    </ZoomWrapper>
+  </View>
+)}
 
 
-        {!zoomMode && (
-          <Player
-            user={playeWhite}
-            isWhite={true}
-            time={timeWhite}
-            score={whiteScore}
-          />
-        )}
+
+       {!zoomMode && (
+  isCurrentPlayerWhite ? (
+    <>
+      <Player
+        user={playeWhite}
+        isWhite={true}
+        time={timeWhite}
+        score={whiteScore}
+      />
+    </>
+  ) : (
+    <>
+      <Player
+        user={playerBlack}
+        isWhite={false}
+        time={timeBlack}
+        score={blackScore}
+      />
+    </>
+  )
+)}
 
         {!zoomMode && (
           <View style={styles.buttonContainer}>

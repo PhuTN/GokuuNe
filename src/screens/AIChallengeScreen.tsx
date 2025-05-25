@@ -142,7 +142,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
       systemNotification: true,
       pushState: notification,
     });
-    navigation.navigate('AIMatch', {accountLogin, selectedPiece, selectedMode}); // Tạo màn hình chơi với AI
+    navigation.navigate('AiMatchSolo', {accountLogin, selectedPiece, selectedMode}); // Tạo màn hình chơi với AI
     setSelectedMode(null);
     setSelectedPiece(null);
   };
@@ -162,11 +162,6 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
         />
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{t.ai_name}</Text>
-          <CountryFlag
-            isoCode={countryMap[t.ai_country]}
-            size={30}
-            style={styles.flag}
-          />
         </View>
       </View>
 
@@ -207,7 +202,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
         />
         <Button_AIChallenge_Mode
           title={t.ai_challenge_medium}
-          subtitle={t.ai_challenge_medium_detail}
+        
           Icon1={CrownLightIcon}
           Icon2={CrownLightIcon}
           Icon3={CrownBlackIcon}

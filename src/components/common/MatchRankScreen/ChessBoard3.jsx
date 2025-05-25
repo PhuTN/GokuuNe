@@ -21,6 +21,7 @@ import { opacity } from 'react-native-reanimated/lib/typescript/Colors';
 import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/Image';
 import ZoomWrapper from '../../ZoomWrapper';
 import { createMatch } from '../../../api/matchApi';
+import { playMoveWithAI } from '../../../api/aiApi';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -76,7 +77,7 @@ function fromIndexToView(index) {
     </View>
   );
 }
-export default function ChessBoard({
+export default function ChessBoard3({
   handleEvent,
   flag,
   handleIsEnd,
@@ -84,6 +85,8 @@ export default function ChessBoard({
   isCurrentPlayerWhite,
   isStart,
    playerColor = 'B',
+   userId,
+   isReady
 }) {
 const isMyTurnSelf = (playerColor === 'B' && !flag) || (playerColor === 'W' && flag);
 const isMyTurnOpponent = !isMyTurnSelf;
@@ -180,7 +183,6 @@ async function onSurrender(isWhite) {
   gameState.calculateScore();
   playWinSound();
   setSurrender(isWhite ? 1 : 2);
-  console.log("White score surrender",gameState.whiteScore);
   setIsEnd(true); // kết thúc game khi có người đầu hàng
   handleSurrender?.(isWhite); // gọi callback nếu cần
 }
@@ -243,7 +245,12 @@ setNewPosition([index,i,currentSide]);
     move: `${col}${row}`,
   };
 
-  setMoveHistory((prev) => [...prev, newMove]);
+ setMoveHistory(prev => {
+  const updated = [...prev, newMove];
+  console.log("📜 moveHistory sau khi đi nước:", updated);
+  return updated;
+});
+
   console.log("HELLLO",moveHistory)
 
 
@@ -278,12 +285,55 @@ setNewPosition([index,i,currentSide]);
     });
     return moveResult;
   }
-  function onMove(index, i) {
-    return displayMoveToUI(index, i); /*Trả vể {
-      mover:'' nếu đánh ko đc, 'B' nếu là black, 'W' nếu là white,
-      movePosition:'' nếu đánh ko đc, ví dụ 'A15' nếu đánh được
-      } */
+async function onMove(index, i) {
+  const result = displayMoveToUI(index, i); // Người chơi đánh quân playerColor
+
+  if (result?.movePosition) {
+    // 🧠 Gọi AI phản đòn với quân ngược lại
+    try {
+      const aiColor = playerColor === 'B' ? 'W' : 'B';
+      const res = await playMoveWithAI({
+        userId,
+        move: result.movePosition,
+      });
+
+      const aiMove = res.aiMove?.trim(); // ví dụ: "D4"
+      console.log("🤖 AI đánh:", aiMove);
+
+     if (!aiMove || aiMove.toLowerCase() === 'resign' || aiMove.toLowerCase() === 'pass') {
+  onReceiveAIMove(aiMove);
+  return;
+}
+
+      // Chuyển từ D4 → index và i
+      const col = aiMove[0].toUpperCase().charCodeAt(0) - 65;
+      const row = 19 - parseInt(aiMove.slice(1));
+
+      // 💡 Override flag để đảm bảo AI đánh đúng màu
+      const tempFlag = playerColor === 'B'; // nếu người là B thì flag true -> AI là W
+      const currentSide = tempFlag ? 'W' : 'B';
+
+      setGameState(gameState => {
+        const moveData = gameState.move(row, col, currentSide);
+        if (moveData.canMove) {
+          setNewPosition([row, col, currentSide]);
+          setMoveHistory(prev => [
+            ...prev,
+            { order: prev.length + 1, move: aiMove }
+          ]);
+          loadBoardFromGameState(gameState);
+          handleEvent(gameState);
+        }
+        return gameState;g
+      });
+    } catch (err) {
+      console.error("❌ Lỗi gọi AI:", err);
+    }
   }
+
+  return result;
+}
+
 function onReceiveMove(moveString, mover) {
   const colLetter = moveString.substring(0, 1).toUpperCase(); // 'D'
   const rowNumber = parseInt(moveString.substring(1));        // 16
@@ -293,6 +343,86 @@ function onReceiveMove(moveString, mover) {
 
   displayMoveToUI(index, i); // Truyền vào hàm xử lý đánh cờ
 }
+
+  function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function onReceiveAIMove(aiMove) {
+  if (!aiMove) {
+    setIsEnd(true);
+    handleIsEnd(gameState);
+    console.warn("❌ AI không trả về nước đi (undefined hoặc null)");
+    return;
+  }
+
+  await delay(2000);  // Đợi 2 giây
+  const move = aiMove.trim().toLowerCase();
+  console.log("🤖 AI đánh:", move);
+
+  // Nếu AI resign
+  if (move === 'resign') {
+    console.log("❌ AI đã resign, kết thúc ván.");
+    setIsEnd(true);
+    handleIsEnd(gameState);
+    return;
+  }
+
+  // Nếu AI pass
+  if (move === 'pass') {
+    const isWhite = playerColor === 'B'; // Người là đen thì AI là trắng
+    const moveText = isWhite ? "White pass" : "Black pass";
+    const newMove = { order: moveHistory.length + 1, move: moveText };
+
+    setMoveHistory(prev => {
+      const updated = [...prev, newMove];
+      console.log("📜 moveHistory sau khi AI pass:", updated);
+
+      // 🧩 Kiểm tra nước gần nhất có pass không
+      if (prev.length > 0 && prev[prev.length - 1].move.toLowerCase().includes('pass')) {
+        console.log("🔥 Cả hai bên đều pass, kết thúc ván.");
+        gameState.calculateScore();
+        setIsEnd(true);
+        handleIsEnd(gameState);
+      } else {
+        console.log("📌 AI pass nhưng nước trước không phải pass.");
+        // Chỉ cập nhật whiteSkip/blackSkip nếu chưa đủ điều kiện
+        if (isWhite) setWhiteSkip(true); else setBlackSkip(true);
+        handleEvent(gameState);
+      }
+
+      return updated;
+    });
+
+    return;
+  }
+
+  // Nếu không phải pass/resign, xử lý nước đi bình thường (ví dụ D4)
+  const col = move[0].toUpperCase().charCodeAt(0) - 65;
+  const row = 19 - parseInt(move.slice(1));
+  if (isNaN(col) || isNaN(row)) {
+    console.warn(`⚠️ Nước đi AI không hợp lệ: ${move}`);
+    return;
+  }
+
+  setGameState(gameState => {
+    const moveData = gameState.move(row, col, playerColor === 'B' ? 'W' : 'B');
+    if (moveData.canMove) {
+      setNewPosition([row, col, playerColor === 'B' ? 'W' : 'B']);
+      setMoveHistory(prev => [...prev, { order: prev.length + 1, move }]);
+      loadBoardFromGameState(gameState);
+      handleEvent(gameState);
+    } else {
+      console.warn(`⚠️ AI move không thể thực hiện: ${move}`);
+    }
+    return gameState;
+  });
+}
+
+
+
+
+
 function displayPieceSource(index,i) {
   if(index==newPosition[0]&&i==newPosition[1]) {
     return newPosition[2]=='B'?blackDot:whiteDot;
@@ -336,52 +466,81 @@ function displayPieceSource(index,i) {
     return res;
   }
 
-  function onSkip(isWhite) {
+async function onSkip(isWhite) {
+    console.log(`🚀 onSkip bắt đầu - isWhite: ${isWhite}, flag: ${flag}, playerColor: ${playerColor}`);
+
     if (isWhite && flag) {
-      setWhiteSkip(true);
-      const moveText = isWhite ? "White pass" : "Black pass";
+        console.log('💡 Người chơi White skip');
+        setWhiteSkip(true);
+        const moveText = isWhite ? "White pass" : "Black pass";
+        const newMove = { order: moveHistory.length + 1, move: moveText };
+        setMoveHistory(prev => {
+            const updated = [...prev, newMove];
+            console.log("📜 moveHistory sau khi người chơi skip:", updated);
+            return updated;
+        });
 
-const newMove = {
-  order: moveHistory.length + 1,
-  move: moveText,
-};
+        console.log(`🔥 Trạng thái trước kiểm tra blackSkip: blackSkip=${blackSkip}`);
+        if (blackSkip) {
+            console.log('🏆 Cả hai bên đều pass (white + black), tính điểm và kết thúc ván');
+            gameState.calculateScore();
+            setIsEnd(true);
+            handleIsEnd(gameState);
+        } else {
+            console.log('💬 Chưa đủ điều kiện kết thúc, gọi handleEvent');
+            handleEvent(gameState);
+        }
+    } else if (!isWhite && !flag) {
+        console.log('💡 Người chơi Black skip');
+        const moveText = isWhite ? "White pass" : "Black pass";
+        const newMove = { order: moveHistory.length + 1, move: moveText };
+        setMoveHistory(prev => {
+            const updated = [...prev, newMove];
+            console.log("📜 moveHistory sau khi người chơi skip:", updated);
+            return updated;
+        });
 
-setMoveHistory(prev => [...prev, newMove]);
-
-      if (blackSkip) {
-        gameState.calculateScore();
-        setIsEnd(true);
-        handleIsEnd(gameState);
-         
-        console.log('White Skip');
-      } else {
-        handleEvent(gameState);
-      }
-      return;
+        setBlackSkip(true);
+        console.log(`🔥 Trạng thái trước kiểm tra whiteSkip: whiteSkip=${whiteSkip}`);
+        if (whiteSkip) {
+            console.log('🏆 Cả hai bên đều pass (black + white), tính điểm và kết thúc ván');
+            gameState.calculateScore();
+            setIsEnd(true);
+            handleIsEnd(gameState);
+        } else {
+            console.log('💬 Chưa đủ điều kiện kết thúc, gọi handleEvent');
+            handleEvent(gameState);
+        }
     }
-    if (!isWhite && !flag) {
-       const moveText = isWhite ? "White pass" : "Black pass";
 
-const newMove = {
-  order: moveHistory.length + 1,
-  move: moveText,
-};
+    // 🧠 Gửi PASS cho AI (nếu đúng lượt)
+    if ((isWhite && playerColor === 'W') || (!isWhite && playerColor === 'B')) {
+        console.log('🧠 Gửi PASS cho AI');
+        try {
+            const res = await playMoveWithAI({ userId, move: 'pass' });
+            console.log(`🤖 Phản hồi từ AI:`, res);
+            const aiMove = res?.aiMove?.trim();
+            console.log(`🤖 AI đánh: ${aiMove}`);
 
-setMoveHistory(prev => [...prev, newMove]);
+            if (!aiMove || aiMove.toLowerCase() === 'resign' || aiMove.toLowerCase() === 'pass') {
+                console.log('🤖 AI skip hoặc resign, gọi onReceiveAIMove');
+                onReceiveAIMove(aiMove);
+                return;
+            }
 
-      setBlackSkip(true);
-      if (whiteSkip) {
-        gameState.calculateScore();
-         setIsEnd(true);
-        handleIsEnd(gameState);
-        console.log('Black Skip');
-      } else {
-        handleEvent(gameState);
-      }
+            const col = aiMove[0].toUpperCase().charCodeAt(0) - 65;
+            const row = 19 - parseInt(aiMove.slice(1));
+            console.log(`📍 AI move tọa độ: row=${row}, col=${col}`);
+            displayMoveToUI(row, col);
+        } catch (err) {
+            console.error("❌ Lỗi khi gửi pass cho AI:", err);
+        }
+    } else {
+        console.log('⏭ Không gửi PASS cho AI (chưa tới lượt AI)');
     }
 
- 
-  }
+    console.log('🏁 Kết thúc onSkip');
+}
   const board = renderRow();
   const touchable = renderTouchableRow();
 
@@ -418,11 +577,29 @@ useEffect(() => {
     });
 }, [isEnd, surrender]);
 
+if (!isReady) {
+  return (
+    <View style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      position: 'absolute',     // phủ toàn bộ màn hình
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      zIndex: 999,              // đảm bảo nằm trên
+    }}>
+      <Text style={{ color: 'black', fontSize: 18 }}>⏳ Đang chuẩn bị trận... Vui lòng đợi</Text>
+    </View>
+  );
+}
+
 
  return (
   <View>
     {/* Nút bỏ lượt và đầu hàng của Đối thủ (ở trên) */}
-{renderSkipSurrenderButtons(playerColor === 'W' ? false : true, isMyTurnOpponent)}
+{/* {renderSkipSurrenderButtons(playerColor === 'W' ? false : true, isMyTurnOpponent)} */}
 
 
     <View style={{ alignItems: 'center' }}>
@@ -450,8 +627,8 @@ useEffect(() => {
       )}
 
       {/* Bàn cờ */}
-      <View style={style.chessBoardBackGround}>
-        <View style={style.chessBoard}>
+      <View style={style.ChessBoard3BackGround}>
+        <View style={style.ChessBoard3}>
           {board.map((item, index) => (
             <View style={style.row} key={'Row' + index}>
               {item.map((cell, i) => cell)}
@@ -511,13 +688,13 @@ export const currentPlayerMove = {
   },
 };
 const style = StyleSheet.create({
-  chessBoardBackGround: {
+  ChessBoard3BackGround: {
     width: 370,
     height: 370,
     backgroundColor: '#f1b152',
     alignSelf: 'center',
   },
-  chessBoard: {
+  ChessBoard3: {
     width: 325,
     height: 325,
     position: 'absolute',

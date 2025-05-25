@@ -17,7 +17,16 @@ export default  function Player({user,isWhite,time,score}) {
         
         <View style={[styles.container,heightStyle]}>
             <View style={styles.playerInfo}>
-            <Image style={styles.avatar} source={user.userAvatarURL}></Image> 
+<Image
+  style={styles.avatar}
+  source={
+    user?.userAvatarURL?.uri
+      ? { uri: user.userAvatarURL.uri }
+      : require('../../../images/user.png')
+  }
+/>
+
+
             <View  >
                 <Text style={styles.textStyle}>{user.userName} ({user.elo})</Text> 
                 <View style={styles.pieceContainer}>
@@ -25,7 +34,7 @@ export default  function Player({user,isWhite,time,score}) {
                     <Text style={styles.textStyle}>+{score}</Text> 
                 </View>
             </View> 
-            <Image source={user.userCountryImageURL} style={styles.flagImage} ></Image>
+         
             </View>
             <View style={styles.timeContainer}>
                 <Text style={styles.timeText}>{
