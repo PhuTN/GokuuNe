@@ -49,7 +49,7 @@ const GameResultCard = ({gameResult, navigation}) => {
 
             {/* Score */}
             <Text style={styles.score}>
-              {gameResult.blackScore} - {gameResult.whiteScore}
+              {gameResult.whiteScore} - {gameResult.blackScore}
             </Text>
 
             {/* Player 2 */}
