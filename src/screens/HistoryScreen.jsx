@@ -96,7 +96,10 @@ export default function HistoryScreen({ navigation }) {
 
 const whiteStyles = StyleSheet.create({
     scroll: {
-        marginBottom: 300,
+
+        marginBottom: 200,
+
+
         marginTop: 50
     },
     background: {}

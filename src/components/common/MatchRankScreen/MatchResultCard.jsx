@@ -17,7 +17,7 @@ const GameResultCard = ({gameResult, navigation}) => {
     title: {
       fontSize: 30,
       fontWeight: 'bold',
-      color: gameResult.resultText === 'Victory' ? '#FFF400' : 'red',
+      color: gameResult.resultText === 'Victory' ? '#FFC107' : 'red',
     },
   });
   useEffect(() => {
@@ -49,7 +49,7 @@ const GameResultCard = ({gameResult, navigation}) => {
 
             {/* Score */}
             <Text style={styles.score}>
-              {gameResult.blackScore} - {gameResult.whiteScore}
+              {gameResult.whiteScore} - {gameResult.blackScore}
             </Text>
 
             {/* Player 2 */}
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginBottom: 12,
-    backgroundColor: 'gray',
+    backgroundColor: 'rgba(188, 44, 255, 0.5)',
     borderRadius: 10,
     paddingVertical: 10,
   },
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   primaryButton: {
-    backgroundColor: '#8BC34A',
+    backgroundColor: 'rgba(188, 44, 255, 0.5)',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',

@@ -129,6 +129,7 @@ const SettingScreen = ({route, navigation}: Props) => {
   };
 
   const handleHistory = () => {
+
   if (accountLogin) {
     // 👉 Navigate tới màn History
     navigation.navigate('History');
@@ -142,6 +143,7 @@ const SettingScreen = ({route, navigation}: Props) => {
     });
   }
 };
+
 
 
   const handleContact = () => {

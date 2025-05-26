@@ -386,4 +386,19 @@ export const history = [{
     },
     matchDate: '16/05/2025 -14:30',
     mode: 'AI-Easy' //AI-de
+},{
+    playerBlack: {
+        username: 'Ngoc kem',
+        avatar: 'https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png',
+        score: 43.5,
+        win: true,
+    },
+    playerWhite: {
+        username: 'Ngoc kem',
+        avatar: 'https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png',
+        score: 41.0,
+        win: false,
+    },
+    matchDate: '16/05/2025 -14:30',
+    mode: 'Rank' //Xep hang
 }]

@@ -18,6 +18,7 @@ import ChessBoard from '../components/common/MatchRankScreen/ChessBoard';
 import GameResultCard from '../components/common/MatchRankScreen/MatchResultCard';
 import { useLanguage } from '../asycnc_store/LanguageContext';
 import { translations } from '../untils/i18n';
+import AIPlayerTag from '../components/common/AIScreen/AIPlayerTag';
 
 const default_avatar = require('../assets/images/default_avatar.jpg');
 const messageIcon = require('../assets/images/message.png');
@@ -42,7 +43,7 @@ const t = translations[language];
   const [surrender, setSurrender] = useState(0);
   const [isStart, setIsStart] = useState(true);
   const [flag, setFlag] = useState(false);
-
+  
 const resetGame = () => {
   navigation.replace('SoloMatch'); // 👈 thay thế chính screen hiện tại
 };
@@ -179,8 +180,10 @@ function RenderResultPopup(
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={[styles.mainView, { minHeight: height + 200 }]}>
-          <View style={{ height: 700, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ height: 700, alignItems: 'center', justifyContent: 'center' }}> 
+            
             <ZoomWrapper isZoom={zoomMode}>
+              <AIPlayerTag playerName={t.player1_Text} avatar={"https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"}></AIPlayerTag>
               <ChessBoard
                 handleEvent={handleEvent}
                 flag={flag}
@@ -188,11 +191,13 @@ function RenderResultPopup(
                 handleSurrender={handleSurrender}
                 isCurrentPlayerWhite={isCurrentPlayerWhite}
                 isStart={isStart}
-              />
-            </ZoomWrapper>
+              /> 
+              <AIPlayerTag playerName={t.player2_Text} avatar={"https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?semt=ais_hybrid&w=740"}></AIPlayerTag>
+            </ZoomWrapper> 
+            
           </View>
 
-          {!zoomMode && (
+         {/* {!zoomMode && (
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.touchable}>
                 <LinearGradient
@@ -213,7 +218,7 @@ function RenderResultPopup(
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-          )}
+          )}*/}
         </View>
       </ScrollView>
 

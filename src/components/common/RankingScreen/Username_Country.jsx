@@ -1,6 +1,13 @@
 import { StyleSheet, Text,View } from "react-native";
 import Country from "./Country";
 import { useTheme } from "../../../asycnc_store/ThemeContext";
+function displayUserName(user) {
+    if(user.length>10) {
+        user = user.substring(0,7);
+        user=user+"..."
+    }
+    return user;
+}
 export default function UserNameCountry({user}) {
     const {theme,toggleTheme} = useTheme();
     const isDark=theme==='dark';
@@ -9,7 +16,9 @@ export default function UserNameCountry({user}) {
 
 return (
   <View style={styles.container}>
-    <Text style={styles.text}>{user.displayName}</Text>
+
+    <Text style={styles.text}>{displayUserName(user.displayName)}</Text>
+
     {/* <Country user={user}></Country> */}
   </View>
 );

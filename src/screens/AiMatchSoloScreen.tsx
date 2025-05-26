@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback} from 'react';
 import {
   View,
   Text,
@@ -9,7 +9,7 @@ import {
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../asycnc_store/ThemeContext';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused,useFocusEffect   } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 
 import Header from '../components/common/Header';
@@ -21,6 +21,8 @@ import { translations } from '../untils/i18n';
 import ChessBoard3 from '../components/common/MatchRankScreen/ChessBoard3';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { startAIMatch } from '../api/aiApi';
+import AIPlayerTag from '../components/common/AIScreen/AIPlayerTag';
+import { getUserById } from '../api/userApi';
 
 const default_avatar = require('../assets/images/default_avatar.jpg');
 const messageIcon = require('../assets/images/message.png');
@@ -39,15 +41,52 @@ const { language } = useLanguage();
 const t = translations[language];
   const [zoomMode, setZoomMode] = useState(false);
   const [isReady, setIsReady] = useState(false);
-
+const [user, setUser] = useState(null);
   const [isCurrentPlayerWhite, setIsCurrentPlayerWhite] = useState(false);
   const [whiteScore, setWhiteScore] = useState(6.5);
   const [blackScore, setBlackScore] = useState(0);
   const [isEnd, setIsEnd] = useState(false);
   const [surrender, setSurrender] = useState(0);
   const [isStart, setIsStart] = useState(true);
-  const [flag, setFlag] = useState(false);
-const [userId, setUserId] = useState<string | null>(null);
+  const [flag, setFlag] = useState(false); 
+const [userId, setUserId] = useState<string | null>(null); 
+const [accountLogin, setAccountLogin] = useState<any>(null); 
+useEffect(() => {
+  const loadAccountLogin = async () => {
+    const acc = await AsyncStorage.getItem('currentUser');
+    if (acc) setAccountLogin(JSON.parse(acc));
+  };
+  loadAccountLogin();
+}, []); 
+ useFocusEffect(
+  useCallback(() => {
+    const fetchUser = async () => {
+      try {
+        if (accountLogin?._id) {
+          const freshUser = await getUserById(accountLogin._id);
+          const userMapped = {
+            userId: freshUser._id,
+            userName: freshUser.displayName ?? 'Unknown',
+            country: freshUser.nationality ?? 'VietNam',
+            matches: Math.floor(Math.random() * 100) + 1,
+            elo: freshUser.elo ?? 2200,
+            userCountryImageURL:
+              'https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg',
+            userAvatarURL:
+              freshUser.avatarUrl ??
+              'https://example.com/default-avatar.jpg',
+            rank: freshUser.rank ?? 4,
+          };
+          setUser(userMapped);
+        }
+      } catch (error) {
+        console.error('❌ Lỗi khi tải lại user:', error);
+      }
+    };
+
+    fetchUser();
+  }, [accountLogin?._id]),
+);
 
 const resetGame = () => {
   navigation.replace('AiMatchSoloMatch'); // 👈 thay thế chính screen hiện tại
@@ -210,8 +249,10 @@ function RenderResultPopup(
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={[styles.mainView, { minHeight: height + 200 }]}>
+          
           <View style={{ height: 700, alignItems: 'center', justifyContent: 'center' }}>
-            <ZoomWrapper isZoom={zoomMode}>
+            <ZoomWrapper isZoom={zoomMode}> 
+              <AIPlayerTag playerName={"AI"} avatar={"https://typli.ai/ai-text-generator.png"}></AIPlayerTag>
   <ChessBoard3
   handleEvent={handleEvent}
   flag={flag}
@@ -223,9 +264,11 @@ function RenderResultPopup(
   userId={userId}
   isReady={isReady} 
 />
-
-            </ZoomWrapper>
+<AIPlayerTag playerName={user?.userName} avatar={user?.userAvatarURL}></AIPlayerTag>
+            </ZoomWrapper> 
+            
           </View>
+          
 
           {!zoomMode && (
             <View style={styles.buttonContainer}>

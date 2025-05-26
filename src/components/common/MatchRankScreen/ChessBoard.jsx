@@ -180,6 +180,7 @@ async function onSurrender(isWhite) {
   gameState.calculateScore();
   playWinSound();
   setSurrender(isWhite ? 1 : 2);
+  console.log("White score surrender",gameState.whiteScore);
   setIsEnd(true); // kết thúc game khi có người đầu hàng
   handleSurrender?.(isWhite); // gọi callback nếu cần
 }
