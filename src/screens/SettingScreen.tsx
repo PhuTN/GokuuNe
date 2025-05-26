@@ -137,7 +137,7 @@ const SettingScreen = ({route, navigation}: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      //navigation.navigate('Profile', { accountLogin });
+      navigation.navigate('History', { accountLogin });
     } else {
       notify({
         message: t.noti_warning,
