@@ -202,7 +202,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
         />
         <Button_AIChallenge_Mode
           title={t.ai_challenge_medium}
-        
+          subtitle={t.ai_challenge_medium_detail}
           Icon1={CrownLightIcon}
           Icon2={CrownLightIcon}
           Icon3={CrownBlackIcon}
