@@ -23,7 +23,7 @@ import PrivacyIcon from '../assets/icons/privacy_icon.svg';
 import BackgroundMusicIcon from '../assets/icons/background_music_icon.svg';
 import SoundEffectIcon from '../assets/icons/sound_effect_icon.svg';
 import NotificationSoundIcon from '../assets/icons/notification_sound_icon.svg';
-import Button_Setting from '../components/common/Button_Setting';
+import Button_Setting from '../components/common/Button/Button_Setting';
 import Header from '../components/common/Header';
 import CountryFlag from 'react-native-country-flag';
 import countries from 'world-countries';

@@ -9,10 +9,10 @@ import {
   Linking,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {useLanguage} from '../../asycnc_store/LanguageContext';
-import {useTheme} from '../../asycnc_store/ThemeContext';
-import {translations} from '../../untils/i18n';
-import NotificationIcon from '../../assets/icons/notification_permission_icon.svg';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {useTheme} from '../../../asycnc_store/ThemeContext';
+import {translations} from '../../../untils/i18n';
+import NotificationIcon from '../../../assets/icons/notification_permission_icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
 
 type Props = {

@@ -24,7 +24,7 @@ import DailyIcon from '../assets/icons/daily_time_icon.svg';
 import CustomTimeIcon from '../assets/icons/custom_time_icon.svg';
 import ArrowDropdownIcon from '../assets/icons/arrow_dropdown_icon.svg';
 import ArrowDropupIcon from '../assets/icons/arrow_dropup_icon.svg';
-import ButtonChoose from '../components/common/Button_Save';
+import ButtonChoose from '../components/common/Button/Button_Save';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'HostTimeSetting'>;
 

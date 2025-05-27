@@ -11,7 +11,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/AppNavigator';
 
 import UserView from '../components/common/RankingScreen/UserView';
-import PlayButton from '../components/common/PlayButton';
+import PlayButton from '../components/common/Button/PlayButton';
 import Top1Avatar from '../components/common/RankingScreen/Top1Avatar';
 import TopInfo from '../components/common/RankingScreen/TopInfo';
 import LeaderBoardInfo from '../components/common/RankingScreen/LeaderBoardInfo';

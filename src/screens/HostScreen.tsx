@@ -8,15 +8,15 @@ import {notify} from '../untils/Notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import Header from '../components/common/Header';
-import ButtonHostTime from '../components/common/Button_Host_Time';
+import ButtonHostTime from '../components/common/HostScreen/Button_Host_Time';
 import RapidTimeIcon from '../assets/icons/rapid_time_icon.svg';
 import ToggleButtonNotification from '../components/common/ToggleButton_Notification';
-import Button_Host_Chess_Piece from '../components/common/Button_Host_Chess_Piece';
+import Button_Host_Chess_Piece from '../components/common/HostScreen/Button_Host_Chess_Piece';
 import BlackArmyIcon from '../assets/icons/black_army_icon.svg';
 import WhiteArmyIcon from '../assets/icons/white_army_icon.svg';
 import RandomIcon from '../assets/icons/random_icon.svg';
-import ButtonHostFriend from '../components/common/Button_Host_Friend';
-import Button_Save from '../components/common/Button_Save';
+import ButtonHostFriend from '../components/common/HostScreen/Button_Host_Friend';
+import Button_Save from '../components/common/Button/Button_Save';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Host'>;
 
@@ -113,6 +113,7 @@ const HostScreen = ({route, navigation}: Props) => {
         type: 'warning',
         systemNotification: true,
         pushState: notification,
+        inapp: true
       });
       return;
     }
@@ -135,6 +136,11 @@ const HostScreen = ({route, navigation}: Props) => {
       contentContainerStyle={{alignItems: 'center'}}>
       {/* Header */}
       <Header title={t.host} />
+
+      {/* Id Room */}
+      <View>
+        
+      </View>
 
       {/* Button Time Setting */}
       <ButtonHostTime

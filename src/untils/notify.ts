@@ -1,5 +1,17 @@
 import PushNotification from 'react-native-push-notification';
 import { NotificationType } from '../asycnc_store/NotificationContext';
+import Toast from 'react-native-toast-message';
+import Sound from 'react-native-sound';
+
+const playSound = () => {
+  const notificationSound = new Sound('custom_sound.mp3', Sound.MAIN_BUNDLE, (error) => {
+    if (error) {
+      console.log('Failed to load sound', error);
+      return;
+    }
+    notificationSound.play();
+  });
+};
 
 type NotifyType = 'success' | 'info' | 'warning' | 'danger';
 
@@ -10,6 +22,7 @@ interface NotifyOptions {
   enabled?: boolean;
   systemNotification?: boolean;
   pushState?: NotificationType;
+  inapp?: boolean;
 }
 
 /**
@@ -21,9 +34,23 @@ export const notify = ({
   enabled = true,
   systemNotification = false,
   pushState = 'on',
+  inapp = false,
+  type = 'info',
 }: NotifyOptions) => {
   if (!enabled) return;
 
+  if (inapp) {
+    // Show in-app notification using react-native-toast-message
+    playSound();
+    Toast.show({
+      type,
+      text1: message,
+      text2: description || '',
+      position: 'top',
+      visibilityTime: 2000,
+    });
+  }
+  
   if (systemNotification && pushState === 'on') {
     PushNotification.localNotification({
       channelId: 'default-channel-id',

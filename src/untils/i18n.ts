@@ -2,40 +2,40 @@ import { friends } from "../fake_data/Dien/fake_data";
 
 export const translations = {
   en: {
-  whiteWin: 'White wins!',
-  blackWin: 'Black wins!',
-  back: 'Back',
-  playAgain: 'Play Again',
-  whiteScore: 'White Score',
-  blackScore: 'Black Score',
+    whiteWin: 'White wins!',
+    blackWin: 'Black wins!',
+    back: 'Back',
+    playAgain: 'Play Again',
+    whiteScore: 'White Score',
+    blackScore: 'Black Score',
     greeting: "Hello",
     toggle_theme: "Toggle Theme",
     toggle_language: "Toggle Language",
     skip_text: "Skip",
     surrender_text: "Surrender",
-// ✨ Dùng cho màn hình Signin
-register_title: "Register",            // "Đăng ký"
-create_account: "Create an account",    // "Tạo tài khoản"
-login_email: "Email",                   // "Email"
-login_email_placeholder: "Enter email", // "Nhập email"
-login_confirm_password: "Confirm Password", // "Xác nhận mật khẩu"
-login_confirm_password_placeholder: "Re-enter password", // "Nhập lại mật khẩu"
-register_button: "REGISTER",            // "Đăng ký"
-notice: "Notification",                 // "Thông báo"
-notice_fill_all: "Please fill all fields",  // "Vui lòng nhập đầy đủ thông tin"
-notice_password_not_match: "Passwords do not match", // "Mật khẩu không khớp"
-success: "Success",                     // "Thành công"
-register_success: "Registration successful!", // "Đăng ký thành công!"
-// 📥 Thêm vào en:
-forgot_password_title: "FORGOT PASSWORD",
-forgot_password_heading: "Reset your password",
-send_code_button: "SEND CODE",
-enter_code_label: "Verification Code",
-enter_code_placeholder: "Enter verification code",
-resend_code_button: "RESEND CODE",
-reset_password_button: "RESET PASSWORD",
+    // ✨ Dùng cho màn hình Signin
+    register_title: "Register",            // "Đăng ký"
+    create_account: "Create an account",    // "Tạo tài khoản"
+    login_email: "Email",                   // "Email"
+    login_email_placeholder: "Enter email", // "Nhập email"
+    login_confirm_password: "Confirm Password", // "Xác nhận mật khẩu"
+    login_confirm_password_placeholder: "Re-enter password", // "Nhập lại mật khẩu"
+    register_button: "REGISTER",            // "Đăng ký"
+    notice: "Notification",                 // "Thông báo"
+    notice_fill_all: "Please fill all fields",  // "Vui lòng nhập đầy đủ thông tin"
+    notice_password_not_match: "Passwords do not match", // "Mật khẩu không khớp"
+    success: "Success",                     // "Thành công"
+    register_success: "Registration successful!", // "Đăng ký thành công!"
+    // 📥 Thêm vào en:
+    forgot_password_title: "FORGOT PASSWORD",
+    forgot_password_heading: "Reset your password",
+    send_code_button: "SEND CODE",
+    enter_code_label: "Verification Code",
+    enter_code_placeholder: "Enter verification code",
+    resend_code_button: "RESEND CODE",
+    reset_password_button: "RESET PASSWORD",
 
-forgot_password: "Forgot password?",
+    forgot_password: "Forgot password?",
     //Binh
     ranking: 'Ranking',
     play_button_text: 'PLAY',
@@ -72,7 +72,36 @@ forgot_password: "Forgot password?",
     player1_Text:"Player 1",
     player2_Text:"Player 2",
     //dien
-    signin_button:"Register",
+    noti_permission_deny: "You have previously denied Notifications. Please go to settings to enable",
+    noti_permission_cancel: "Cancel",
+    noti_permission_setting: "Settings",
+
+    post: "POST",
+    post_time_just_now: "Just now",
+    post_time_min: "minutes ago",
+    post_time_hour: "hours ago",
+    post_time_day: "days ago",
+    post_like: "Likes",
+    post_unlike: "Unlike",
+    post_comment: "Comments",
+    post_caption_show_more: "Show more",
+    post_caption_hide: "Hide",
+    post_more_function_block_user: "Block user ",
+    post_more_function_hide_post: "Hide this post",
+    post_more_function_report_post: "Report post",
+    post_detail_write_comment: "Enter comment ...",
+
+    post_detail: "POST DETAIL",
+    post_detail_no_comment: "No comments yet",
+    post_detail_sort_newest: "↓ Newest",
+    post_detail_sort_oldest: "↑ Oldest",
+
+    post_create: "CREATE POST",
+    post_create_caption_placeholder: "What are you thinking?",
+    post_create_add_photo: "Add a photo",
+    post_create_submit: "Post",
+
+    signin_button: "Register",
     home_guest: "Guest",
     home_ranking: "RANKING",
     home_AI: "AI",
@@ -226,38 +255,38 @@ forgot_password: "Forgot password?",
     no_user_found: 'No active user found'
   },
   vi: {
-whiteWin: 'Trắng thắng!',
-  blackWin: 'Đen thắng!',
-  back: 'Quay lại',
-  playAgain: 'Đấu tiếp',
-  whiteScore: 'Điểm trắng',
-  blackScore: 'Điểm đen',
+    whiteWin: 'Trắng thắng!',
+    blackWin: 'Đen thắng!',
+    back: 'Quay lại',
+    playAgain: 'Đấu tiếp',
+    whiteScore: 'Điểm trắng',
+    blackScore: 'Điểm đen',
     register_title: "ĐĂNG KÝ",
-create_account: "Tạo tài khoản",
-login_email: "Email",
-login_email_placeholder: "Nhập email",
-login_confirm_password: "Xác nhận mật khẩu",
-login_confirm_password_placeholder: "Nhập lại mật khẩu",
-register_button: "Đăng ký",
-notice: "Thông báo",
-notice_fill_all: "Vui lòng nhập đầy đủ thông tin",
-notice_password_not_match: "Mật khẩu không khớp",
-success: "Thành công",
-register_success: "Đăng ký thành công!",
+    create_account: "Tạo tài khoản",
+    login_email: "Email",
+    login_email_placeholder: "Nhập email",
+    login_confirm_password: "Xác nhận mật khẩu",
+    login_confirm_password_placeholder: "Nhập lại mật khẩu",
+    register_button: "Đăng ký",
+    notice: "Thông báo",
+    notice_fill_all: "Vui lòng nhập đầy đủ thông tin",
+    notice_password_not_match: "Mật khẩu không khớp",
+    success: "Thành công",
+    register_success: "Đăng ký thành công!",
 
     greeting: "Xin chào",
     toggle_theme: "Chuyển giao diện",
     toggle_language: "Chuyển ngôn ngữ",
 
     // 📥 Thêm vào vi:
-forgot_password_title: "QUÊN MẬT KHẨU",
-forgot_password_heading: "Đặt lại mật khẩu",
-send_code_button: "GỬI MÃ",
-enter_code_label: "Mã xác thực",
-enter_code_placeholder: "Nhập mã xác thực",
-resend_code_button: "GỬI LẠI MÃ",
-reset_password_button: "ĐỔI MẬT KHẨU",
-forgot_password: "Quên mật khẩu?",
+    forgot_password_title: "QUÊN MẬT KHẨU",
+    forgot_password_heading: "Đặt lại mật khẩu",
+    send_code_button: "GỬI MÃ",
+    enter_code_label: "Mã xác thực",
+    enter_code_placeholder: "Nhập mã xác thực",
+    resend_code_button: "GỬI LẠI MÃ",
+    reset_password_button: "ĐỔI MẬT KHẨU",
+    forgot_password: "Quên mật khẩu?",
     //Binh
     ranking: 'Xếp Hạng',
     skip_text: "Bỏ qua lượt",
@@ -298,6 +327,35 @@ forgot_password: "Quên mật khẩu?",
     choose_level_text:"Chọn màn chơi",
     level_text:"Màn",
     //dien
+    noti_permission_deny: "Bạn đã từ chối Thông báo. Vui lòng vào cài đặt để bật",
+    noti_permission_cancel: "Hủy",
+    noti_permission_setting: "Cài đặt",
+
+    post: "BÀI ĐĂNG",
+    post_time_just_now: "Vừa xong",
+    post_time_min: "phút trước",
+    post_time_hour: "giờ trước",
+    post_time_day: "ngày trước",
+    post_like: "Lượt thích",
+    post_unlike: "Bỏ thích",
+    post_comment: "Bình luận",
+    post_caption_show_more: "Hiển thị thêm",
+    post_caption_hide: "Ẩn bớt",
+    post_more_function_block_user: "Chặn người dùng ",
+    post_more_function_hide_post: "Ẩn bài đăng này",
+    post_more_function_report_post: "Báo cáo bài viết",
+
+    post_detail: "Chi tiết bài đăng",
+    post_detail_no_comment: "Chưa có bình luận nào",
+    post_detail_sort_newest: "↓ Mới nhất",
+    post_detail_sort_oldest: "↑ Cũ nhất",
+    post_detail_write_comment: "Nhập bình luận ...",
+
+    post_create: "TẠO BÀI ĐĂNG",
+    post_create_caption_placeholder: "Bạn đang nghĩ gì?",
+    post_create_add_photo: "Thêm 1 bức ảnh",
+    post_create_submit: "Đăng",
+
     signin_button: "Đăng ký",
     home_guest: "Khách",
     home_ranking: "ĐẤU XẾP HẠNG",

@@ -1,7 +1,7 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import ArrowIcon from "../../assets/icons/arrow_icon.svg";
-import { useTheme } from "../../asycnc_store/ThemeContext";
+import ArrowIcon from "../../../assets/icons/arrow_icon.svg";
+import { useTheme } from "../../../asycnc_store/ThemeContext";
 
 interface ButtonProps {
   icon: React.ElementType;

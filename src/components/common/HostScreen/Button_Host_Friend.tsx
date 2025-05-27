@@ -1,11 +1,11 @@
 import React from 'react';
 import {TouchableOpacity, View, Text, StyleSheet, Image} from 'react-native';
-import ArrowCustomIcon from '../../assets/icons/arrow_custom_icon.svg';
+import ArrowCustomIcon from '../../../assets/icons/arrow_custom_icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
-import {useLanguage} from '../../asycnc_store/LanguageContext';
-import {translations} from '../../untils/i18n';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
 
 // Ánh xạ từ tên quốc gia sang mã ISO
 const countryMap: Record<string, string> = countries.reduce((map, country) => {
@@ -36,7 +36,7 @@ const Button_Host_Friend: React.FC<ButtonProps> = ({
           <Image
             source={
               friend?.avatarFriend ||
-              require('../../images/user_question_mark.png')
+              require('../../../images/user_question_mark.png')
             }
             style={styles.avatar}
           />

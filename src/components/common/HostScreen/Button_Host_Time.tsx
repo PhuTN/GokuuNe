@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
-import ArrowCustomIcon from "../../assets/icons/arrow_custom_icon.svg";
+import ArrowCustomIcon from "../../../assets/icons/arrow_custom_icon.svg";
 import LinearGradient from "react-native-linear-gradient";
 
 interface ButtonProps {

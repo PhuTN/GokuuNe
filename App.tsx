@@ -9,18 +9,20 @@ import {
 } from './src/asycnc_store/SoundAndMusicContext';
 import PushNotification from 'react-native-push-notification';
 import { checkAndRequestNotificationPermission } from './src/untils/NotificationPermission';
-import NotificationPermissionCustom from './src/components/common/Notification_Permission_Custom';
-import { GestureHandlerRootView } from 'react-native-gesture-handler'; 
+import NotificationPermissionCustom from './src/components/common/Notification/Notification_Permission_Custom';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import NavigationBar from 'react-native-system-navigation-bar';
 import ZoomWrapper from './src/components/ZoomWrapper'; // <--- Add this
+import Toast from 'react-native-toast-message';
+import { toastConfig } from './src/components/common/Notification/ToastConfig';
 
 
 export default function App() {
   const [showPermissionModal, setShowPermissionModal] = useState(false);
 
   useEffect(() => {
-    
-       
+
+
     NavigationBar.navigationHide();
     PushNotification.createChannel(
       {
@@ -58,6 +60,7 @@ export default function App() {
                   onClose={() => setShowPermissionModal(false)}
                   setModalVisible={setShowPermissionModal}
                 />
+                <Toast config={toastConfig}/>
               </BackgroundMusicProvider>
             </SoundEffectProvider>
           </LanguageProvider>

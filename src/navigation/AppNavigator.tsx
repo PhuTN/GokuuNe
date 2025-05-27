@@ -30,13 +30,15 @@ import HistoryDetail from '../screens/HistoryDetail';
 import AiMatchSoloScreen from '../screens/AiMatchSoloScreen';
 import ChallengeScreen from '../screens/ChallengeScreen';
 import ChallengeDetail from '../screens/ChallengeDetailScreen';
-
+import PostScreen from '../screens/PostScreen';
+import PostDetailScreen from '../screens/PostDetailScreen';
+import PostCreateScreen from '../screens/PostCreateScreen';
 
 export type RootStackParamList = {
   Login: undefined;
-   Signin: undefined; 
-   FriendRequests: { accountLogin: any } | undefined;
-   ForgotPassword: undefined;
+  Signin: undefined;
+  FriendRequests: { accountLogin: any } | undefined;
+  ForgotPassword: undefined;
   Home: { accountLogin: any } | undefined;
   SoloMatch: { accountLogin: any } | undefined;
   Chat: { accountLogin: any } | undefined;
@@ -54,9 +56,14 @@ export type RootStackParamList = {
   HostTimeSetting: { accountLogin: any; friend: any; selectedTime: any } | undefined;
   HostFriend: { accountLogin: any; selectedTime: any } | undefined;
   HostMatch: { accountLogin: any; selectedTime: any; friend: any; isRankingMode: any; selectedPiece: any } | undefined;
-    History: { accountLogin: any } | undefined;
+  History: { accountLogin: any } | undefined;
   HistoryDetail: { accountLogin: any; matchId: string } | undefined;
   AiMatchSolo: { accountLogin: any; selectedPiece: any; selectedMode: any } | undefined;
+  Post: { accountLogin: any } | undefined;
+  PostDetail: { accountLogin: any, post: any } | undefined;
+  PostCreate: { accountLogin: any, onPostCreated: any } | undefined;
+  Challenge: undefined;
+  ChallengeDetail: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -92,8 +99,11 @@ const AppNavigator = () => {
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="HistoryDetail" component={HistoryDetail} />
         <Stack.Screen name="AiMatchSolo" component={AiMatchSoloScreen} />
-        <Stack.Screen name ="Challenge" component={ChallengeScreen}/> 
-        <Stack.Screen name="ChallengeDetail"  component={ChallengeDetail}/>
+        <Stack.Screen name="Challenge" component={ChallengeScreen} />
+        <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
+        <Stack.Screen name="Post" component={PostScreen} />
+        <Stack.Screen name="PostDetail" component={PostDetailScreen} />
+        <Stack.Screen name="PostCreate" component={PostCreateScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

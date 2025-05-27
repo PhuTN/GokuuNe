@@ -17,7 +17,7 @@ import {useLanguage} from '../asycnc_store/LanguageContext';
 import {useTheme} from '../asycnc_store/ThemeContext';
 import {translations} from '../untils/i18n';
 import {Card} from 'react-native-paper';
-import Button_AddFriend from '../components/common/Button_AddFriend';
+import Button_AddFriend from '../components/common/Button/Button_AddFriend';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
 import Header from '../components/common/Header';
@@ -316,8 +316,6 @@ const FriendsScreen = ({navigation}: Props) => {
     </View>
   );
 };
-
-export default FriendsScreen;
 
 const lightStyles = StyleSheet.create({
   scrollView: {

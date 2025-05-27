@@ -7,7 +7,7 @@ import Header from '../components/common/Header';
 import { Card } from 'react-native-paper';
 import { useLanguage } from '../asycnc_store/LanguageContext';
 import { useTheme } from '../asycnc_store/ThemeContext';
-import Button_AddFriend from '../components/common/Button_AddFriend';
+import Button_AddFriend from '../components/common/Button/Button_AddFriend';
 import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import BackIcon from '../assets/icons/back_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';

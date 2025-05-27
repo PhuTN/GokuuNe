@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import React from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import LinearGradient from 'react-native-linear-gradient';
-import Button_Home from '../components/common/Button_Home';
+import Button_Home from '../components/common/Button/Button_Home';
 import RankingIcon from '../assets/icons/ranking_icon.svg';
 import AIChallengeIcon from '../assets/icons/AIChallenge_icon.svg';
 import FriendsIcon from '../assets/icons/friends_icon.svg';
@@ -185,19 +185,22 @@ const HomeScreen = ({ route, navigation }: Props) => {
         type: 'warning',
         systemNotification: true,
         pushState: notification,
+        inapp: true,
       });
+      navigation.navigate('Host', { accountLogin, selectedTime, friend });
     }
   };
 
   const handleChat = () => {
     if (accountLogin) {
-      // notify({
-      //   message: t.noti_info,
-      //   description: t.noti_go_chat,
-      //   type: 'info',
-      //   systemNotification: true,
-      //   pushState: notification,
-      // });
+      notify({
+        message: t.noti_info,
+        description: t.noti_go_chat,
+        type: 'info',
+        systemNotification: true,
+        pushState: notification,
+        inapp: true,
+      });
       navigation.navigate('Chat', { accountLogin });
     } else {
       notify({
@@ -206,6 +209,30 @@ const HomeScreen = ({ route, navigation }: Props) => {
         type: 'warning',
         systemNotification: true,
         pushState: notification,
+        inapp: true,
+      });
+    }
+  };
+
+  const handlePost = () => {
+    if (accountLogin) {
+      // notify({
+      //   message: t.noti_info,
+      //   description: t.noti_go_chat,
+      //   type: 'info',
+      //   systemNotification: true,
+      //   pushState: notification,
+      //   inapp: true,
+      // });
+      navigation.navigate('Post', { accountLogin });
+    } else {
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        systemNotification: true,
+        pushState: notification,
+        inapp: true,
       });
     }
   };
@@ -308,28 +335,28 @@ const HomeScreen = ({ route, navigation }: Props) => {
       </View>
 
       {/* Header - Avatar + Name */}
-      <View style={styles.avatarHeader}>
-        <LinearGradient
-          colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.profileGradient}>
-          <View style={styles.profileContainer}>
-            <Image
-              source={
-                accountLogin?.avatarUrl
-                  ? { uri: accountLogin.avatarUrl }
-                  : require('../images/user.png')
-              }
-              style={styles.avatar}
-            />
+      <TouchableOpacity style={styles.avatarHeader} onPress={handlePost}>
+          <LinearGradient
+            colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.profileGradient}>
+            <View style={styles.profileContainer}>
+              <Image
+                source={
+                  accountLogin?.avatarUrl
+                    ? { uri: accountLogin.avatarUrl }
+                    : require('../images/user.png')
+                }
+                style={styles.avatar}
+              />
 
-            <Text style={styles.username}>
-              {accountLogin?.displayName || t.home_guest}
-            </Text>
-          </View>
-        </LinearGradient>
-      </View>
+              <Text style={styles.username}>
+                {accountLogin?.displayName || t.home_guest}
+              </Text>
+            </View>
+          </LinearGradient>
+      </TouchableOpacity>
 
       {/* Title */}
       <Text style={styles.title}>GOKUU</Text>
