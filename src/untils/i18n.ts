@@ -295,6 +295,8 @@ forgot_password: "Quên mật khẩu?",
     ai_easy: 'AI-Dễ', 
     player1_Text:"Người chơi 1",
     player2_Text:"Người chơi 2",
+    choose_level_text:"Chọn màn chơi",
+    level_text:"Màn",
     //dien
     signin_button: "Đăng ký",
     home_guest: "Khách",

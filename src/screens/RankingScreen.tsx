@@ -93,7 +93,7 @@ useEffect(() => {
 
       <ScrollView style={{paddingBottom: 30, height: height}}>
         <UserView user={user}></UserView>
-        <PlayButton navigation={navigation}></PlayButton>
+        <PlayButton navigation={navigation} destination={"RankingMatch"}></PlayButton>
         <View style={style.topContainer}>
           <View>
             <TopInfo topInfo={Top10[1]}></TopInfo>

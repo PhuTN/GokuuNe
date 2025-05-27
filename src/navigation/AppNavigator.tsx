@@ -28,6 +28,8 @@ import SoloMatchScreen from '../screens/SoloMatchScreen';
 import HistoryScreen from '../screens/HistoryScreen';
 import HistoryDetail from '../screens/HistoryDetail';
 import AiMatchSoloScreen from '../screens/AiMatchSoloScreen';
+import ChallengeScreen from '../screens/ChallengeScreen';
+import ChallengeDetail from '../screens/ChallengeDetailScreen';
 
 
 export type RootStackParamList = {
@@ -90,6 +92,8 @@ const AppNavigator = () => {
         <Stack.Screen name="History" component={HistoryScreen} />
         <Stack.Screen name="HistoryDetail" component={HistoryDetail} />
         <Stack.Screen name="AiMatchSolo" component={AiMatchSoloScreen} />
+        <Stack.Screen name ="Challenge" component={ChallengeScreen}/> 
+        <Stack.Screen name="ChallengeDetail"  component={ChallengeDetail}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
