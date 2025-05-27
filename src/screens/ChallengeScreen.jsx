@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../components/common/Header";
 import { View,Text, StyleSheet,ScrollView, TouchableOpacity } from "react-native";
 import { useTheme } from "../asycnc_store/ThemeContext"; 
-import PlayButton from "../components/common/PlayButton";
+import PlayButton from "../components/common/Button/PlayButton";
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { translations } from "../untils/i18n";
 import AsyncStorage from "@react-native-async-storage/async-storage";
