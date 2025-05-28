@@ -7,7 +7,8 @@ import LinearGradient from 'react-native-linear-gradient';
 import Button_Home from '../components/common/Button/Button_Home';
 import RankingIcon from '../assets/icons/ranking_icon.svg';
 import AIChallengeIcon from '../assets/icons/AIChallenge_icon.svg';
-import FriendsIcon from '../assets/icons/friends_icon.svg';
+import ChallengeIcon from '../assets/icons/sword_icon.svg';
+import SolvePuzzlesIcon from '../assets/icons/puzzle_icon.svg';
 import HostIcon from '../assets/icons/host_icon.svg';
 import ChatIcon from '../assets/icons/chat_icon.svg';
 import SettingIcon from '../assets/icons/setting_icon.svg';
@@ -21,13 +22,14 @@ import { useLanguage } from '../asycnc_store/LanguageContext';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import { translations } from '../untils/i18n';
 import { Dimensions } from 'react-native';
-import { notify } from '../untils/notify';
+import { notify } from '../untils/Notify';
 import { useNotification } from '../asycnc_store/NotificationContext';
 import { socket } from '../untils/socket';
 import { useFocusEffect } from '@react-navigation/native';
 import { getUserById } from '../api/userApi';
 import { getUnreadConversationCount } from '../api/messageApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NotificationCustom from '../components/common/Notification/Notification_Custom';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
@@ -41,15 +43,9 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
   const { notification, toggleNotification } = useNotification();
 
-  const [accountLogin, setAccountLogin] = useState(
-    route.params?.accountLogin ?? null,
-  );
-  const [selectedTime, setSelectedTime] = useState<string>(
-    `${t.host_time_default} ${t.host_time_min}`,
-  );
+  const [accountLogin, setAccountLogin] = useState(route.params?.accountLogin ?? null);
 
-  const windowWidth = Dimensions.get('window').width;
-  const windowHeight = Dimensions.get('window').height;
+  const [modalNotificationCustomVisible, setModalNotificationCustomVisible] = useState(false);
 
   useEffect(() => {
     setAccountLogin(route.params?.accountLogin ?? null);
@@ -87,6 +83,10 @@ const HomeScreen = ({ route, navigation }: Props) => {
     navigation.navigate('SoloMatch', { accountLogin });
   };
 
+  const handleChallenge = () => {
+    navigation.navigate('Challenge');
+  };
+
   const handleAIChallenge = () => {
     // notify({
     //   message: t.noti_success,
@@ -109,8 +109,17 @@ const HomeScreen = ({ route, navigation }: Props) => {
     navigation.navigate('Login');
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
+    setModalNotificationCustomVisible(true);
+  };
+
+  const handleLogoutConfirm = async (confirmed: boolean) => {
+    setModalNotificationCustomVisible(false);
+    if (!confirmed) {
+      return;
+    }
     try {
+
       // ✅ Ngắt kết nối socket nếu còn kết nối
       if (socket && socket.connected) {
         socket.disconnect();
@@ -128,6 +137,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         type: 'success',
         systemNotification: true,
         pushState: notification,
+        inapp: true
       });
 
       // ✅ Quay về trang Home (hoặc Login nếu cần)
@@ -143,9 +153,11 @@ const HomeScreen = ({ route, navigation }: Props) => {
         type: 'danger',
         systemNotification: true,
         pushState: notification,
+        inapp: true
       });
     }
   };
+
   const handleRanking = () => {
     navigation.navigate('Ranking', { accountLogin });
     /*if (accountLogin) {
@@ -168,7 +180,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
     }*/
   };
 
-  const handleHost = (friend: any) => {
+  const handleHost = (friend: any, match: any) => {
     if (accountLogin) {
       // notify({
       //   message: t.noti_success,
@@ -177,7 +189,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
       //   systemNotification: true,
       //   pushState: notification,
       // });
-      navigation.navigate('Host', { accountLogin, selectedTime, friend });
+      navigation.navigate('Host', { accountLogin, selectedTime: `${t.host_time_default} ${t.host_time_min}`, friend, match });
     } else {
       notify({
         message: t.noti_warning,
@@ -187,7 +199,6 @@ const HomeScreen = ({ route, navigation }: Props) => {
         pushState: notification,
         inapp: true,
       });
-      navigation.navigate('Host', { accountLogin, selectedTime, friend });
     }
   };
 
@@ -336,26 +347,26 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
       {/* Header - Avatar + Name */}
       <TouchableOpacity style={styles.avatarHeader} onPress={handlePost}>
-          <LinearGradient
-            colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.profileGradient}>
-            <View style={styles.profileContainer}>
-              <Image
-                source={
-                  accountLogin?.avatarUrl
-                    ? { uri: accountLogin.avatarUrl }
-                    : require('../images/user.png')
-                }
-                style={styles.avatar}
-              />
+        <LinearGradient
+          colors={['rgba(107, 80, 246, 0.6)', 'rgba(188, 44, 255, 0.6)']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.profileGradient}>
+          <View style={styles.profileContainer}>
+            <Image
+              source={
+                accountLogin?.avatarUrl
+                  ? { uri: accountLogin.avatarUrl }
+                  : require('../images/user.png')
+              }
+              style={styles.avatar}
+            />
 
-              <Text style={styles.username}>
-                {accountLogin?.displayName || t.home_guest}
-              </Text>
-            </View>
-          </LinearGradient>
+            <Text style={styles.username}>
+              {accountLogin?.displayName || t.home_guest}
+            </Text>
+          </View>
+        </LinearGradient>
       </TouchableOpacity>
 
       {/* Title */}
@@ -371,7 +382,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         <Button_Home
           title={t.home_host}
           Icon={HostIcon}
-          onPress={() => handleHost(null)}
+          onPress={() => handleHost(null, 1)}
         />
         <Button_Home
           title={t.home_AI}
@@ -380,8 +391,13 @@ const HomeScreen = ({ route, navigation }: Props) => {
         />
         <Button_Home
           title={t.home_friends}
-          Icon={FriendsIcon}
+          Icon={ChallengeIcon}
           onPress={handleFriends}
+        />
+        <Button_Home
+          title={t.home_solve_puzzles}
+          Icon={SolvePuzzlesIcon}
+          onPress={handleChallenge}
         />
       </View>
 
@@ -401,6 +417,16 @@ const HomeScreen = ({ route, navigation }: Props) => {
           <Button_Home Icon={LoginIcon} onPress={handleLogin} isIconOnly />
         )}
       </View>
+
+      <NotificationCustom
+        visible={modalNotificationCustomVisible}
+        setModalVisible={setModalNotificationCustomVisible}
+        onClose={() => setModalNotificationCustomVisible(false)}
+        contentNotification={t.noti_logout_confirm}
+        contentButtonNo={t.noti_confirm_no}
+        contentButtonYes={t.noti_confirm_yes}
+        onConfirm={handleLogoutConfirm}
+      />
     </ScrollView>
   );
 };

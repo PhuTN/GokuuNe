@@ -147,7 +147,6 @@ const PostScreen = ({ route, navigation }: Props) => {
     const [posts, setPosts] = useState(
         [...mockPosts].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
     );
-    const [modalCreateVisible, setModalCreateVisible] = useState(false);
     const [modalMoreFunctionVisible, setModalMoreFunctionVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState();
     const [modalReportVisible, setModalReportVisible] = useState(false);

@@ -18,7 +18,7 @@ import {useLanguage} from '../asycnc_store/LanguageContext';
 import {useTheme} from '../asycnc_store/ThemeContext';
 import {translations} from '../untils/i18n';
 import {registerUser} from '../api/userApi';
-import {notify} from '../untils/notify';
+import {notify} from '../untils/Notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signin'>;

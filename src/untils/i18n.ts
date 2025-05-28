@@ -109,6 +109,7 @@ export const translations = {
     home_AI: "AI",
     home_friends: "1 vs 1",
     home_host: "HOST",
+    home_solve_puzzles: "SOLVE PUZZLES",
 
     login: "LOGIN",
     login_title: "Login",
@@ -142,11 +143,16 @@ export const translations = {
     friends_no_user_found: "No user found",
 
     host: "Host",
+    host_room_id: "Room ID",
     host_ranking_mode: "Ranking mode",
     host_ranking_mode_on: "Ranking mode is on",
     host_ranking_mode_off: "Ranking mode is off",
     host_chess_piece: "Play as",
     host_random_user: "Random player",
+    host_no_challenger: "No challengers yet!",
+    host_challenges: "List of challenges",
+    host_challenge_title: "Want to challenge your!",
+    host_no_challenges: "No challenge yet!",
 
     host_time: "Time",
     host_time_default: "10",
@@ -214,6 +220,10 @@ export const translations = {
     noti_go_ai: "You have chosen to play with AI",
     noti_go_friends: "You have selected friends",
     noti_go_host: "You have chosen to host the game",
+    noti_logout_confirm: "Are you sure want to log out?",
+    noti_confirm_yes: "Yes",
+    noti_confirm_no: "No",
+    noti_unfriend_confirm: "Are you sure want to unfriend",
 
     noti_ai_white_army: "You have chosen to play as the white army",
     noti_ai_black_army: "You have chosen to play as the black army",
@@ -367,6 +377,7 @@ export const translations = {
     home_AI: "ĐẤU MÁY",
     home_friends: "1 vs 1",
     home_host: "TẠO PHÒNG",
+    home_solve_puzzles: "GIẢI CÂU ĐỐ",
 
     login: "ĐĂNG NHẬP",
     login_title: "Đăng nhập",
@@ -405,11 +416,16 @@ export const translations = {
     friends_no_user_found: "Không tìm thấy người dùng nào",
 
     host: "Tạo phòng",
+    host_room_id: "Mã phòng",
     host_ranking_mode: "Chế độ xếp hạng",
     host_ranking_mode_on: "Chế độ xếp hạng đã bật",
     host_ranking_mode_off: "Chế độ xếp hạng đã tắt",
     host_chess_piece: "Chọn quân cờ",
     host_random_user: "Người chơi ngẫu nhiên",
+    host_no_challenger: "Chưa có người thách đấu!",
+    host_challenges: "Danh sách thách đấu",
+    host_challenge_title: "Muốn thách đầu bạn!",
+    host_no_challenges: "Chưa có lời thách đầu nào!",
 
     host_time: "Thời gian",
     host_time_default: "10",
@@ -479,6 +495,10 @@ export const translations = {
     noti_go_ai: "Bạn đã chọn chơi với máy",
     noti_go_friends: "Bạn đã chọn bạn bè",
     noti_go_host: "Bạn đã chọn tạo phòng chơi",
+    noti_logout_confirm: "Bạn có chắc muốn đăng xuất?",
+    noti_confirm_yes: "Có",
+    noti_confirm_no: "Không",
+    noti_unfriend_confirm: "Bạn có chắc chắn muốn hủy kết bạn với",
 
     noti_ai_white_army: "Bạn đã chọn chơi với quân trắng",
     noti_ai_black_army: "Bạn đã chọn chơi với quân đen",

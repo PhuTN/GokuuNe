@@ -125,7 +125,6 @@ export const getFriendRequests = async (userId) => {
     return response.data;
 };
 
-
 export const unfriendUser = async (userId, friendId) => {
   const response = await api.delete(`/${userId}/unfriend/${friendId}`);
   return response.data;

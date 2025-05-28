@@ -51,6 +51,7 @@ const HostFriendScreen = ({route, navigation}: Props) => {
   const accountFriends = friends.filter(
     friend => friend.idAccount === accountLogin.id,
   );
+  const [match, setMatch] = useState(route.params?.match ?? null);
   const [searchText, setSearchText] = useState('');
   const filteredFriends =
     searchText.trim() === ''
@@ -64,7 +65,7 @@ const HostFriendScreen = ({route, navigation}: Props) => {
         );
 
   const handleChooseFriend = (friend: any) => {
-    navigation.replace('Host', {accountLogin, selectedTime, friend});
+    navigation.replace('Host', {accountLogin, selectedTime, friend, match});
   };
 
   return (
