@@ -2,7 +2,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {useLanguage} from '../../../asycnc_store/LanguageContext';
 import {translations} from '../../../untils/i18n';
-export default function PlayButton({navigation}) {
+export default function PlayButton({navigation, destination}) {
   const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
   return (
@@ -10,7 +10,7 @@ export default function PlayButton({navigation}) {
       style={style.playButton}
       onPress={e => {
         e.preventDefault();
-        navigation.navigate('RankingMatch');
+        navigation.navigate(destination);
       }}>
       <LinearGradient
         colors={['#6B50F6', '#CC8FED']}

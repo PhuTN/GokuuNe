@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 
 import Header from "../components/common/Header";
-import { View,Text, StyleSheet,ScrollView, TouchableOpacity } from "react-native";
+import { View,Text, StyleSheet,ScrollView, TouchableOpacity,Image } from "react-native";
 import { useTheme } from "../asycnc_store/ThemeContext"; 
 import PlayButton from "../components/common/Button/PlayButton";
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { translations } from "../untils/i18n";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 
+const lockImage = require('../assets/images/lock.png');
 export default function ChallengeScreen({navigation}) {  
     const {theme,toggleThem} = useTheme();
     const isDark = theme==='dark';
@@ -16,13 +18,31 @@ export default function ChallengeScreen({navigation}) {
     const  t = translations[language];
     const [currentLevel, setCurrentLevel] = useState(1);
     const levels = Array.from({ length: 10 }, (_, i) => i + 1);
+    const [currentPassLevel, setCurrentPassLevel] = useState(1); 
+    const isFocused = useIsFocused();
+    async function loadCurrentPassLevel() {
+        let currentPassLevel = await AsyncStorage.getItem("current_pass_level");
+        if(currentPassLevel==null) {
+          currentPassLevel="1";
+          AsyncStorage.setItem("current_pass_level",currentPassLevel);
+        } 
+        setCurrentPassLevel(parseInt(currentPassLevel));
+      }
+    
+    useEffect(()=>{
+      
+      loadCurrentPassLevel();
+    },[isFocused])
 const LevelButton = ({ level }) => (
   <TouchableOpacity style={level!=currentLevel?styles.levelButton:styles.levelSelectedButton} onPress={(e)=>{
     e.preventDefault();
+    if(level>currentPassLevel) {
+      return;
+    }
     setCurrentLevel(level);
     AsyncStorage.setItem("challenge_level",level+"");
   }}>
-    <Text style={styles.levelText}>{t.level_text} {level}</Text>
+    {level<=currentPassLevel?<Text style={styles.levelText}>{t.level_text} {level}</Text>:<Image style={styles.image} source={lockImage}></Image>}
   </TouchableOpacity>
 );
 useEffect(()=>{
@@ -95,6 +115,11 @@ const whiteStyle = StyleSheet.create({
     alignItems: 'center',
     borderWidth:5,
     borderColor:'#FFC107'
+  },
+  image: {
+    width:40,
+    height:40,
+    alignSelf:'center'
   }
 });
 const blackStyle = StyleSheet.create({

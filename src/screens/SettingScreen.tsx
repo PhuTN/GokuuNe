@@ -34,7 +34,7 @@ import ToggleButtonSoundMusic from '../components/common/ToggleButton_Sound_Musi
 import {useLanguage} from '../asycnc_store/LanguageContext';
 import {useTheme} from '../asycnc_store/ThemeContext';
 import {translations} from '../untils/i18n';
-import {notify} from '../untils/Notify';
+import {notify} from '../untils/notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
 import {
   useSoundEffect,

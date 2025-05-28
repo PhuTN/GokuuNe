@@ -28,7 +28,7 @@ import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';
 import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
-import {notify} from '../untils/Notify';
+import {notify} from '../untils/notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useFocusEffect} from '@react-navigation/native';

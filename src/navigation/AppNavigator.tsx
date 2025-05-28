@@ -72,7 +72,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <StatusBar hidden={true}></StatusBar>
-      <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator initialRouteName="Challenge" screenOptions={{ headerShown: false }}>
         {/* <Stack.Screen name="TestThemeAndLanguage" component={ThemeLanguageTester} /> */}
         <Stack.Screen name="ChatTab" component={ChatTabScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />

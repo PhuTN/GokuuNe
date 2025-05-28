@@ -1,6 +1,32 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Modal, View, Text, TouchableOpacity } from 'react-native';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { translations } from '../../../untils/i18n';
 
-const ResultChallenge = ({  isWin, navigation,setLoseOrWin }) => {
+const ResultChallenge = ({  isWin, navigation,setLoseOrWin, isReachFinalLevel }) => {
+  const {language, toggleLanguage} = useLanguage();
+  const t=translations[language];
+  async function onNextLevel() {
+     let currentPassLevel =await AsyncStorage.getItem("current_pass_level");
+     let currentPassLevelNumber = parseInt(currentPassLevel);
+     currentPassLevelNumber++;
+     if(currentPassLevelNumber>=11) {
+      currentPassLevel=1;
+     }
+     await AsyncStorage.setItem("current_pass_level",currentPassLevelNumber+"");
+     await AsyncStorage.setItem("challenge_level",currentPassLevelNumber+"");
+     navigation.replace("ChallengeDetail");
+
+  }
+  async function onBack() {
+    let currentPassLevel =await AsyncStorage.getItem("current_pass_level");
+    let currentPassLevelNumber = parseInt(currentPassLevel);
+    currentPassLevelNumber++;
+    await AsyncStorage.setItem("current_pass_level",""+currentPassLevelNumber);
+    navigation.goBack();
+  }
+  
+  
   return (
     
       <View style={{
@@ -28,10 +54,10 @@ const ResultChallenge = ({  isWin, navigation,setLoseOrWin }) => {
             color: isWin ? '#FFD700' : '#FF4500',
             marginBottom: 20,
           }}>
-            {isWin ? 'Chiến thắng!' : 'Thất bại!'}
+            {isWin ? t.win_text+'!' : t.lose_text+'!'}
           </Text>
 
-          {!isWin&&<TouchableOpacity
+          {!isWin?<TouchableOpacity
             onPress={(e)=>{
                 setLoseOrWin(1); 
                 navigation.replace("ChallengeDetail");
@@ -43,13 +69,28 @@ const ResultChallenge = ({  isWin, navigation,setLoseOrWin }) => {
               borderRadius: 10,
               marginBottom: 15,
             }}>
-            <Text style={{ color: 'white', fontWeight: 'bold' }}>Chơi lại</Text>
-          </TouchableOpacity>}
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>{t.try_again_text}</Text>
+          </TouchableOpacity>:  
+          !isReachFinalLevel?<TouchableOpacity
+            onPress={(e)=>{
+                setLoseOrWin(1); 
+                onNextLevel();
+            }}
+            style={{
+              backgroundColor: '#C084FC',
+              paddingVertical: 10,
+              paddingHorizontal: 40,
+              borderRadius: 10,
+              marginBottom: 15,
+            }}>
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>{t.next_level_text}</Text>
+          </TouchableOpacity>:<></>
+          }
 
           <TouchableOpacity
             onPress={(e)=>{
                 e.preventDefault();
-                navigation.goBack();
+                onBack();
             }}
             style={{
               borderColor: '#C084FC',
@@ -58,7 +99,7 @@ const ResultChallenge = ({  isWin, navigation,setLoseOrWin }) => {
               paddingHorizontal: 40,
               borderRadius: 10,
             }}>
-            <Text style={{ color: '#C084FC', fontWeight: 'bold' }}>Quay về</Text>
+            <Text style={{ color: '#C084FC', fontWeight: 'bold' }}>{t.back_text}</Text>
           </TouchableOpacity>
         </View>
       </View>

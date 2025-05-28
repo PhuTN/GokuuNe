@@ -70,7 +70,9 @@ export const translations = {
     ai_medium: 'AI-Medium',
     ai_easy: 'AI-Easy',
     player1_Text:"Player 1",
-    player2_Text:"Player 2",
+    player2_Text:"Player 2", 
+    try_again_text:"Try again",
+    next_level_text:"Next level",
     //dien
     noti_permission_deny: "You have previously denied Notifications. Please go to settings to enable",
     noti_permission_cancel: "Cancel",
@@ -326,6 +328,9 @@ export const translations = {
     player2_Text:"Người chơi 2",
     choose_level_text:"Chọn màn chơi",
     level_text:"Màn",
+    try_again_text:"Thử lại",
+    next_level_text:"Màn kế tiếp",
+    
     //dien
     noti_permission_deny: "Bạn đã từ chối Thông báo. Vui lòng vào cài đặt để bật",
     noti_permission_cancel: "Hủy",
