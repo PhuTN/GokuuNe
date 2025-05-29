@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -10,13 +10,13 @@ import {
   Modal,
   TouchableWithoutFeedback,
 } from 'react-native';
-import {RootStackParamList} from '../navigation/AppNavigator';
-import {friends} from '../fake_data/Dien/fake_data';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {useLanguage} from '../asycnc_store/LanguageContext';
-import {useTheme} from '../asycnc_store/ThemeContext';
-import {translations} from '../untils/i18n';
-import {Card} from 'react-native-paper';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { friends } from '../fake_data/Dien/fake_data';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useLanguage } from '../asycnc_store/LanguageContext';
+import { useTheme } from '../asycnc_store/ThemeContext';
+import { translations } from '../untils/i18n';
+import { Card } from 'react-native-paper';
 import Button_AddFriend from '../components/common/Button/Button_AddFriend';
 import countries from 'world-countries';
 import CountryFlag from 'react-native-country-flag';
@@ -28,11 +28,11 @@ import AddFriendIcon from '../assets/icons/add_friend_icon.svg';
 import PointIcon from '../assets/icons/point_icon.svg';
 import MoreFunctionIcon from '../assets/icons/more_function_icon.svg';
 import ChallengeIcon from '../assets/icons/challenge_icon.svg';
-import {notify} from '../untils/notify';
-import {useNotification} from '../asycnc_store/NotificationContext';
+import { notify } from '../untils/Notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect} from '@react-navigation/native';
-import {searchUsers, sendFriendRequest} from '../api/userApi';
+import { useFocusEffect } from '@react-navigation/native';
+import { searchUsers, sendFriendRequest } from '../api/userApi';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Friends'>;
 
@@ -41,22 +41,24 @@ const countryMap: Record<string, string> = countries.reduce((map, country) => {
   return map;
 }, {} as Record<string, string>);
 
-const FriendsScreen = ({navigation}: Props) => {
+const FriendsScreen = ({ navigation, route }: Props) => {
   const [accountLogin, setAccountLogin] = useState<any>(null);
   const [searchText, setSearchText] = useState('');
   const [filteredAccounts, setFilteredAccounts] = useState([]);
   const [isMoreModalVisible, setMoreModalVisible] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState(null);
 
-  const {language} = useLanguage();
+  const { language } = useLanguage();
   const t = translations[language];
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
-  const {notification} = useNotification();
+  const { notification } = useNotification();
   const [selectedTime, setSelectedTime] = useState<string>(
     `${t.host_time_default} ${t.host_time_min}`,
   );
+
+  const [match, setMatch] = useState(route.params?.match ?? null);
 
   useFocusEffect(
     useCallback(() => {
@@ -82,7 +84,7 @@ const FriendsScreen = ({navigation}: Props) => {
             name: u.displayName || 'Chưa cập nhật',
             point: u.elo ?? 0,
             avatar: u.avatarUrl
-              ? {uri: u.avatarUrl}
+              ? { uri: u.avatarUrl }
               : require('../images/user.png'),
             //    country: countryMap[u.nationality ?? ''] ?? 'US',
           }));
@@ -148,12 +150,12 @@ const FriendsScreen = ({navigation}: Props) => {
         name: u.displayName || 'Chưa cập nhật',
         point: u.elo ?? 0,
         avatar: u.avatarUrl
-          ? {uri: u.avatarUrl}
+          ? { uri: u.avatarUrl }
           : require('../images/user.png'),
         country: countryMap[u.nationality || 'Vietnam'] || 'VN',
       }));
       setFilteredAccounts(mapped);
-    } catch (err: any) {}
+    } catch (err: any) { }
   };
 
   const handleMoreFunctionChallenge = () => {
@@ -161,12 +163,13 @@ const FriendsScreen = ({navigation}: Props) => {
       accountLogin,
       friend: selectedFriend,
       selectedTime,
+      match
     });
     closeMoreModal();
   };
 
   const handleMoreFunctionSendMessage = () => {
-    navigation.navigate('ChatDetail', {accountLogin, friend: selectedFriend});
+    navigation.navigate('ChatDetail', { accountLogin, friend: selectedFriend });
     closeMoreModal();
   };
 
@@ -175,11 +178,11 @@ const FriendsScreen = ({navigation}: Props) => {
   };
 
   const handleChallenge = (friend: any) => {
-    navigation.navigate('Host', {accountLogin, selectedTime, friend});
+    navigation.navigate('Host', { accountLogin, selectedTime, friend, match });
   };
 
   const handleLeaderBoard = () => {
-    navigation.navigate('FriendLeaderBoard', {accountLogin});
+    navigation.navigate('FriendLeaderBoard', { accountLogin });
   };
 
   return (
@@ -203,7 +206,7 @@ const FriendsScreen = ({navigation}: Props) => {
 
       {/* Nếu searchText rỗng, hiển thị danh sách bạn bè hiện có */}
       {searchText.trim() === '' && (
-        <View style={{width: '100%', alignItems: 'center'}}>
+        <View style={{ width: '100%', alignItems: 'center' }}>
           <View style={styles.friendsHeader}>
             {/* <Text style={styles.friendsTitle}>{`${t.friends_title} (${filteredFriends.length})`}</Text> */}
             {/* <TouchableOpacity style={styles.leaderboardBtn} onPress={handleLeaderBoard}>
@@ -215,8 +218,8 @@ const FriendsScreen = ({navigation}: Props) => {
             data={filteredFriends}
             keyExtractor={item => item.idFriend.toString()}
             style={styles.list}
-            contentContainerStyle={{paddingBottom: 10}}
-            renderItem={({item}) => (
+            contentContainerStyle={{ paddingBottom: 10 }}
+            renderItem={({ item }) => (
               <Card style={styles.friendItem}>
                 <View style={styles.friendItemContent}>
                   <Image source={item.avatarFriend} style={styles.avatar} />
@@ -258,8 +261,8 @@ const FriendsScreen = ({navigation}: Props) => {
           data={filteredAccounts}
           keyExtractor={item => item.id.toString()}
           style={styles.list}
-          contentContainerStyle={{paddingBottom: 10}}
-          renderItem={({item}) => (
+          contentContainerStyle={{ paddingBottom: 10 }}
+          renderItem={({ item }) => (
             <Card style={styles.friendItem}>
               <View style={styles.friendItemContent}>
                 <Image source={item.avatar} style={styles.avatar} />
@@ -295,7 +298,7 @@ const FriendsScreen = ({navigation}: Props) => {
         onRequestClose={closeMoreModal}>
         <TouchableWithoutFeedback onPress={closeMoreModal}>
           <View style={styles.modalOverlay}>
-            <TouchableWithoutFeedback onPress={() => {}}>
+            <TouchableWithoutFeedback onPress={() => { }}>
               <View style={styles.modalContainer}>
                 <TouchableOpacity onPress={handleMoreFunctionChallenge}>
                   <Text style={styles.modalOption}>{t.friends_challenge}</Text>
@@ -374,7 +377,7 @@ const lightStyles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
@@ -506,7 +509,7 @@ const darkStyles = StyleSheet.create({
     padding: 10,
     elevation: 2,
     shadowColor: 'white',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },

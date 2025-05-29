@@ -19,7 +19,7 @@ import Header from '../components/common/Header';
 import {useLanguage} from '../asycnc_store/LanguageContext';
 import {useTheme} from '../asycnc_store/ThemeContext';
 import {translations} from '../untils/i18n';
-import {notify} from '../untils/notify';
+import {notify} from '../untils/Notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
 import {login, registerUser} from '../api/userApi';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -78,6 +78,7 @@ const LoginScreen = ({navigation}: Props) => {
         type: 'success',
         systemNotification: true,
         pushState: notification,
+        inapp: true
       });
 
       // ✅ Navigate qua Home

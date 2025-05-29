@@ -40,6 +40,7 @@ const HostTimeSettingScreen = ({route, navigation}: Props) => {
     route.params?.accountLogin ?? null,
   );
   const [friend, setFriend] = useState(route.params?.friend ?? null);
+  const [match, setMatch] = useState(route.params?.match ?? null);
   const [selectedTime, setSelectedTime] = useState(
     route.params?.selectedTime ?? null,
   );
@@ -131,7 +132,7 @@ const HostTimeSettingScreen = ({route, navigation}: Props) => {
     setCustomMinutes(0);
     setCustomSeconds(0);
     // Sử dụng trực tiếp biến `time` thay vì `selectedTime`
-    navigation.replace('Host', {accountLogin, friend, selectedTime: time});
+    navigation.replace('Host', {accountLogin, friend, selectedTime: time, match});
   };
 
   const handleChooseCustomTime = () => {
@@ -148,7 +149,7 @@ const HostTimeSettingScreen = ({route, navigation}: Props) => {
     setCustomMinutes(0);
     setCustomSeconds(0);
     // Truyền trực tiếp giá trị `time`
-    navigation.replace('Host', {accountLogin, friend, selectedTime: time});
+    navigation.replace('Host', {accountLogin, friend, selectedTime: time, match});
   };
 
   return (

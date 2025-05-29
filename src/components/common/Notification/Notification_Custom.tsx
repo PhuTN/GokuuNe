@@ -1,17 +1,8 @@
-// src/components/Notification_Permission_Custom.tsx
 import React from 'react';
-import {
-  Modal,
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  Linking,
-  TouchableWithoutFeedback,
-} from 'react-native';
-import {useLanguage} from '../../../asycnc_store/LanguageContext';
-import {useTheme} from '../../../asycnc_store/ThemeContext';
-import {translations} from '../../../untils/i18n';
+import { Modal, View, Text, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { useTheme } from '../../../asycnc_store/ThemeContext';
+import { translations } from '../../../untils/i18n';
 import NotificationIcon from '../../../assets/icons/notification_permission_icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -19,66 +10,71 @@ type Props = {
   visible: boolean;
   setModalVisible: (visible: boolean) => void;
   onClose: () => void;
-  contentNoti: string;
-  contentButton1: string;
-  contentButton2: string;
+  contentNotification: string;
+  contentButtonNo: string;
+  contentButtonYes: string;
+  onConfirm: (confirmed: boolean) => void;
 };
 
-const NotificationPermissionCustom: React.FC<Props> = ({
+const NotificationCustom: React.FC<Props> = ({
   visible,
   setModalVisible,
   onClose,
-  contentNoti,
-  contentButton1,
-  contentButton2
+  contentNotification,
+  contentButtonNo,
+  contentButtonYes,
+  onConfirm,
 }) => {
-  const {language, toggleLanguage} = useLanguage();
+  const { language } = useLanguage();
   const t = translations[language];
 
-  const {theme, toggleTheme} = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const hanldeSetting = () => {
-    Linking.openSettings();
+  const handleYes = () => {
+    onConfirm(true);
     setModalVisible(false);
   };
 
+  const handleNo = () => {
+    onConfirm(false);
+    setModalVisible(false);
+  };
+
+  const handleOverlayPress = () => {
+    onConfirm(false);
+    setModalVisible(false);
+    onClose();
+  };
+
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      onRequestClose={() => setModalVisible(false)}>
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+    <Modal transparent visible={visible} animationType="fade" onRequestClose={handleOverlayPress}>
+      <TouchableWithoutFeedback onPress={handleOverlayPress}>
         <View style={styles.overlay}>
           <TouchableWithoutFeedback onPress={() => {}}>
             <View style={styles.container}>
-              {/* Hàng đầu - Icon */}
               <NotificationIcon width={60} height={60} />
-
-              {/* Hàng giữa - Nội dung */}
               <View style={styles.contentContainer}>
-                {/* <Text style={styles.title}>Thông báo</Text> */}
-                <Text style={styles.message}>{contentNoti}</Text>
+                <Text style={styles.message}>{contentNotification}</Text>
               </View>
-
-              {/* Hàng cuối - Button */}
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-                  <Text style={styles.cancelText}>
-                    {contentButton1}
-                  </Text>
+                <TouchableOpacity onPress={handleNo}>
+                  <LinearGradient
+                    colors={['#ccc', '#aaa']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.cancelButton}>
+                    <Text style={styles.cancelText}>{contentButtonNo}</Text>
+                  </LinearGradient>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={hanldeSetting}>
+                <TouchableOpacity onPress={handleYes}>
                   <LinearGradient
                     colors={['#6B50F6', '#CC8FED']}
-                    start={{x: 0, y: 0}}
-                    end={{x: 1, y: 1}}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
                     style={styles.settingButton}>
-                    <Text style={styles.settingText}>
-                      {contentButton2}
-                    </Text>
+                    <Text style={styles.settingText}>{contentButtonYes}</Text>
                   </LinearGradient>
                 </TouchableOpacity>
               </View>
@@ -89,8 +85,6 @@ const NotificationPermissionCustom: React.FC<Props> = ({
     </Modal>
   );
 };
-
-export default NotificationPermissionCustom;
 
 const lightStyles = StyleSheet.create({
   overlay: {
@@ -107,13 +101,6 @@ const lightStyles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: 'center',
   },
-  iconContainer: {
-    marginBottom: 16,
-  },
-  icon: {
-    width: 60,
-    height: 60,
-  },
   contentContainer: {
     alignItems: 'center',
     marginBottom: 24,
@@ -129,10 +116,16 @@ const lightStyles = StyleSheet.create({
     gap: 30,
   },
   cancelButton: {
-    backgroundColor: '#ccc',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   settingButton: {
     paddingVertical: 10,
@@ -142,7 +135,7 @@ const lightStyles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 5,
     shadowColor: '#6B50F6',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
@@ -171,13 +164,6 @@ const darkStyles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: 'center',
   },
-  iconContainer: {
-    marginBottom: 16,
-  },
-  icon: {
-    width: 60,
-    height: 60,
-  },
   contentContainer: {
     alignItems: 'center',
     marginBottom: 24,
@@ -193,10 +179,16 @@ const darkStyles = StyleSheet.create({
     gap: 30,
   },
   cancelButton: {
-    backgroundColor: '#ccc',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
   },
   settingButton: {
     paddingVertical: 10,
@@ -206,12 +198,12 @@ const darkStyles = StyleSheet.create({
     justifyContent: 'center',
     elevation: 5,
     shadowColor: '#6B50F6',
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
   },
   cancelText: {
-    color: '#000',
+    color: '#fff',
     fontSize: 16,
   },
   settingText: {
@@ -219,3 +211,5 @@ const darkStyles = StyleSheet.create({
     fontSize: 16,
   },
 });
+
+export default NotificationCustom;

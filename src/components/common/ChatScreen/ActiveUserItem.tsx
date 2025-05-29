@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -10,9 +10,14 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import {unfriendUser} from '../../../api/userApi';
-import {socket} from '../../../untils/socket';
+import { unfriendUser } from '../../../api/userApi';
+import { socket } from '../../../untils/socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import NotificationCustom from '../Notification/Notification_Custom';
+import { useLanguage } from '../../../asycnc_store/LanguageContext';
+import { translations } from '../../../untils/i18n';
+import { notify } from '../../../untils/Notify';
+import { useNotification } from '../../../asycnc_store/NotificationContext';
 
 type Props = {
   user: {
@@ -23,9 +28,14 @@ type Props = {
   };
 };
 
-export default function ActiveUserItem({user}: Props) {
+export default function ActiveUserItem({ user }: Props) {
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+  const { notification, toggleNotification } = useNotification();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [modalNotificationCustomVisible, setModalNotificationCustomVisible] = useState(false);
 
   // 🔁 Lấy currentUserId từ AsyncStorage
   React.useEffect(() => {
@@ -43,32 +53,34 @@ export default function ActiveUserItem({user}: Props) {
   };
 
   const handleUnfriend = () => {
-    setModalVisible(false);
-    Alert.alert(
-      'Xác nhận',
-      `Bạn có chắc chắn muốn hủy kết bạn với ${user.displayName}?`,
-      [
-        {text: 'Hủy', style: 'cancel'},
-        {
-          text: 'Xác nhận',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              if (!currentUserId) return;
-              await unfriendUser(currentUserId, user._id);
-              ToastAndroid.show('✅ Đã hủy kết bạn', ToastAndroid.SHORT);
+    setModalVisible(true);
+    setModalNotificationCustomVisible(true);
+  }
 
-              // Emit reload cho cả hai
-              socket.emit('friend:update', {userId: currentUserId});
-              socket.emit('friend:update', {userId: user._id});
-            } catch (err) {
-              console.error('❌ Lỗi khi hủy kết bạn:', err);
-              ToastAndroid.show('❌ Lỗi khi hủy kết bạn', ToastAndroid.SHORT);
-            }
-          },
-        },
-      ],
-    );
+  const handleUnfriendConfirm = async (confirmed: boolean) => {
+    setModalVisible(false);
+    if (!confirmed) {
+      return;
+    }
+    try {
+      if (!currentUserId) return;
+      await unfriendUser(currentUserId, user._id);
+      notify({
+        message: t.noti_success,
+        description: '✅ Đã hủy kết bạn',
+        type: 'success',
+        systemNotification: true,
+        pushState: notification,
+        inapp: true
+      });
+
+      // Emit reload cho cả hai
+      socket.emit('friend:update', { userId: currentUserId });
+      socket.emit('friend:update', { userId: user._id });
+    } catch (err) {
+      console.error('❌ Lỗi khi hủy kết bạn:', err);
+      ToastAndroid.show('❌ Lỗi khi hủy kết bạn', ToastAndroid.SHORT);
+    }
   };
 
   return (
@@ -79,7 +91,7 @@ export default function ActiveUserItem({user}: Props) {
         <Image
           source={
             user.avatarUrl
-              ? {uri: user.avatarUrl}
+              ? { uri: user.avatarUrl }
               : require('../../../images/user.png')
           }
           style={styles.avatar}
@@ -104,13 +116,23 @@ export default function ActiveUserItem({user}: Props) {
             <View style={styles.separator} />
 
             <Pressable style={styles.modalButton} onPress={handleUnfriend}>
-              <Text style={[styles.modalText, {color: 'red'}]}>
+              <Text style={[styles.modalText, { color: 'red' }]}>
                 Hủy kết bạn
               </Text>
             </Pressable>
           </View>
         </Pressable>
-      </Modal>
+      </Modal> 
+      
+      <NotificationCustom
+        visible={modalNotificationCustomVisible}
+        setModalVisible={setModalNotificationCustomVisible}
+        onClose={() => setModalNotificationCustomVisible(false)}
+        contentNotification={`${t.noti_unfriend_confirm} ${user.displayName}`}
+        contentButtonNo={t.noti_confirm_no}
+        contentButtonYes={t.noti_confirm_yes}
+        onConfirm={handleUnfriendConfirm}
+      />
     </>
   );
 }

@@ -11,7 +11,7 @@ interface ButtonProps {
 
 const Button_Host_Time: React.FC<ButtonProps> = ({ icon: Icon, title, onPress }) => {
     return (
-        <TouchableOpacity style={styles.button} onPress={onPress}>
+        <TouchableOpacity onPress={onPress}>
             <LinearGradient
                 colors={["#6B50F6", "#CC8FED"]}
                 start={{ x: 0, y: 0 }}
@@ -27,9 +27,6 @@ const Button_Host_Time: React.FC<ButtonProps> = ({ icon: Icon, title, onPress })
 };
 
 const styles = StyleSheet.create({
-    button:{
-        marginTop: "10%",
-    },
     rowItem: {
         flexDirection: "row",
         alignSelf: "center",
