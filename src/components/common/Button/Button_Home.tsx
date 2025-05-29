@@ -32,7 +32,14 @@ const Button_Home: React.FC<ButtonProps> = ({
           {/* Khi có text */}
           {!isIconOnly && (
             <View style={styles.textContainer}>
-              <Text style={styles.buttonText}>{title}</Text>
+              <View>
+                <Text style={styles.buttonText}>{title}</Text>
+              </View>
+              {badgeCount > 0 && (
+                <View style={styles.badgeChallenge}>
+                  <Text style={styles.badgeText}>{badgeCount}</Text>
+                </View>
+              )}
             </View>
           )}
 
@@ -117,6 +124,19 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: -10,
     right: -3,
+    backgroundColor: "red",
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
+  },
+  badgeChallenge: {
+    position: "absolute",
+    top: -10,
+    right: -8,
     backgroundColor: "red",
     borderRadius: 10,
     minWidth: 18,

@@ -300,18 +300,18 @@ const PostScreen = ({ route, navigation }: Props) => {
                                     {isLiked ? (
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <LikeIcon width={22} height={22} />
-                                            <Text> {item.likes.length} {t.post_unlike}</Text>
+                                            <Text style={styles.like}> {item.likes.length} {t.post_unlike}</Text>
                                         </View>
                                     ) : isDark ? (
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <UnlikeDarkIcon width={22} height={22} />
-                                            <Text> {item.likes.length} {t.post_like}</Text>
+                                            <Text style={styles.like}> {item.likes.length} {t.post_like}</Text>
                                         </View>
 
                                     ) : (
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                             <UnlikeLightIcon width={22} height={22} />
-                                            <Text> {item.likes.length} {t.post_like}</Text>
+                                            <Text style={styles.like}> {item.likes.length} {t.post_like}</Text>
                                         </View>
                                     )}
                                 </TouchableOpacity>
@@ -320,7 +320,7 @@ const PostScreen = ({ route, navigation }: Props) => {
                                     onPress={() => navigation.navigate('PostDetail', { accountLogin, post: item })}
                                 >
                                     {isDark ? <CommentDarkIcon width={22} height={22} /> : <CommentLightIcon width={22} height={22} />}
-                                    <Text> {item.comments.length} {t.post_comment}</Text>
+                                    <Text style={styles.commnet}> {item.comments.length} {t.post_comment}</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -362,16 +362,6 @@ const lightStyles = StyleSheet.create({
         top: 28,
         zIndex: 10,
     },
-    headerText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    createPostButton: {
-        backgroundColor: '#1b74e4',
-        padding: 10,
-        borderRadius: 20,
-    },
     postContainer: {
         alignSelf: "center",
         backgroundColor: '#fff',
@@ -422,65 +412,22 @@ const lightStyles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#eee',
     },
-    commentSection: {
-        padding: 10,
-    },
-    commentHeader: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    comment: {
-        flexDirection: 'row',
-        marginBottom: 5,
-    },
-    commentUser: {
-        fontWeight: 'bold',
-    },
-    createPostContainer: {
-        padding: 10,
-        backgroundColor: '#fff',
-        margin: 10,
-        borderRadius: 8,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 10,
-        minHeight: 100,
-    },
-    imagePicker: {
-        padding: 10,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 8,
-        marginBottom: 10,
-        alignItems: 'center',
-    },
-    imagePickerText: {
-        color: '#333',
-    },
-    submitButton: {
-        backgroundColor: '#1b74e4',
-        padding: 10,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    submitButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
     postList: {
         paddingBottom: 20,
     },
     timeAgo: { fontSize: 12, color: '#666' },
+    like: {
+        fontSize: 14,
+    },
+    commnet: {
+        fontSize: 14,
+    }
 });
 
 const darkStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f0f2f5',
+        backgroundColor: '#535353',
     },
     header: {
         flex: 1,
@@ -490,22 +437,14 @@ const darkStyles = StyleSheet.create({
         top: 28,
         zIndex: 10,
     },
-    headerText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-    },
-    createPostButton: {
-        backgroundColor: '#1b74e4',
-        padding: 10,
-        borderRadius: 20,
-    },
     postContainer: {
         alignSelf: "center",
-        backgroundColor: '#fff',
+        backgroundColor: '#535353',
         marginTop: 15,
         width: "90%",
         padding: 10,
+        borderWidth: 1,
+        borderColor: 'white',
         borderRadius: 8,
         shadowColor: '#000',
         shadowOpacity: 0.1,
@@ -527,14 +466,16 @@ const darkStyles = StyleSheet.create({
     userName: {
         fontWeight: 'bold',
         fontSize: 16,
+        color: 'white'
     },
     caption: {
         fontSize: 14,
         marginBottom: 10,
+        color: 'white'
     },
     showMoreText: {
         fontSize: 14,
-        color: '#666',
+        color: '#999',
         marginBottom: 10,
     },
     postImage: {
@@ -550,59 +491,18 @@ const darkStyles = StyleSheet.create({
         borderTopWidth: 1,
         borderTopColor: '#eee',
     },
-    commentSection: {
-        padding: 10,
-    },
-    commentHeader: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    comment: {
-        flexDirection: 'row',
-        marginBottom: 5,
-    },
-    commentUser: {
-        fontWeight: 'bold',
-    },
-    createPostContainer: {
-        padding: 10,
-        backgroundColor: '#fff',
-        margin: 10,
-        borderRadius: 8,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        padding: 10,
-        marginBottom: 10,
-        minHeight: 100,
-    },
-    imagePicker: {
-        padding: 10,
-        backgroundColor: '#e0e0e0',
-        borderRadius: 8,
-        marginBottom: 10,
-        alignItems: 'center',
-    },
-    imagePickerText: {
-        color: '#333',
-    },
-    submitButton: {
-        backgroundColor: '#1b74e4',
-        padding: 10,
-        borderRadius: 8,
-        alignItems: 'center',
-    },
-    submitButtonText: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
     postList: {
         paddingBottom: 20,
     },
-    timeAgo: { fontSize: 12, color: '#666' },
+    timeAgo: { fontSize: 12, color: '#999' },
+    like: {
+        fontSize: 14,
+        color: 'white'
+    },
+    commnet: {
+        fontSize: 14,
+        color: 'white'
+    }
 });
 
 export default PostScreen;

@@ -199,6 +199,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         pushState: notification,
         inapp: true,
       });
+      //navigation.navigate('Host', { accountLogin:1, selectedTime: `${t.host_time_default} ${t.host_time_min}`, friend, match });
     }
   };
 
@@ -245,6 +246,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         pushState: notification,
         inapp: true,
       });
+      //navigation.navigate('Post', { accountLogin: 1 });
     }
   };
 
@@ -287,6 +289,37 @@ const HomeScreen = ({ route, navigation }: Props) => {
       socket.off('chat:list:refresh', handleChatUpdate);
     };
   }, [accountLogin?._id]);
+
+  // const [unacceptChallenge, setUnacceptChallenge] = useState(0);
+  // type Challenge = {
+  //   _id: string;
+  //   receiverId: string;
+  //   status: 'pending' | 'accepted' | 'declined';
+  // };
+
+  // useFocusEffect(
+  //   React.useCallback(() => {
+  //     const fetchUserAndUnacceptChallenge = async () => {
+  //       try {
+  //         if (accountLogin?._id) {
+  //           const freshUser = await getUserById(accountLogin._id);
+  //           setAccountLogin(freshUser);
+
+  //           // 🔍 Lọc các challenge chưa bị từ chối
+  //           const pendingChallenges = freshUser.challenges?.filter(
+  //             (challenge: Challenge) => challenge.status === 'pending'
+  //           );
+
+  //           setUnacceptChallenge(pendingChallenges.length || 0);
+  //         }
+  //       } catch (error) {
+  //         console.error('Lỗi khi tải lại user hoặc đếm challenges:', error);
+  //       }
+  //     };
+
+  //     fetchUserAndUnacceptChallenge();
+  //   }, [accountLogin?._id])
+  // );
 
   return (
     <ScrollView
@@ -383,6 +416,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
           title={t.home_host}
           Icon={HostIcon}
           onPress={() => handleHost(null, 1)}
+          badgeCount={3}
         />
         <Button_Home
           title={t.home_AI}
