@@ -69,7 +69,7 @@ useEffect(() => {
             userId: freshUser._id,
             userName: freshUser.displayName ?? 'Unknown',
             country: freshUser.nationality ?? 'VietNam',
-            matches: Math.floor(Math.random() * 100) + 1,
+            matches: freshUser.matchHistory.length,
             elo: freshUser.elo ?? 2200,
             userCountryImageURL:
               'https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg',
@@ -78,6 +78,7 @@ useEffect(() => {
               'https://example.com/default-avatar.jpg',
             rank: freshUser.rank ?? 4,
           };
+          console.log("Fresh User--------------",freshUser);
           setUser(userMapped);
         }
       } catch (error) {
