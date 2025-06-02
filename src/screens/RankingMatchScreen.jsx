@@ -68,6 +68,7 @@ console.log('Result (1=win, 0=lose, 0.5=draw):', result);
 console.log('Delta Elo:', delta);
   return delta;
 }
+
 function RenderResultPopup(
   timeWhite,
   timeBlack,
@@ -82,8 +83,17 @@ function RenderResultPopup(
   currentIntervalId,
    setTimeWhite, // 👈 thêm
   setTimeBlack , // 👈 thêm
-   hasSetTimeZero 
-) {
+   hasSetTimeZero, 
+   setFinalResult,
+   realEnd
+) { 
+  console.log("🧩 surrender =", surrender);
+console.log("🧩 isCurrentPlayerWhite =", isCurrentPlayerWhite);
+console.log("🧩 Máy hiện tại là:", isCurrentPlayerWhite ? "Trắng" : "Đen");
+console.log("🧩 Đầu hàng là:", surrender === 1 ? "Trắng" : surrender === 2 ? "Đen" : "Không ai");
+console.log("Is End",isEnd);
+console.log("Time Black",timeBlack);
+console.log("Time White", timeWhite);
  
   const yoursCore = isCurrentPlayerWhite ? whiteScore : blackScore;
   const opponentScore = isCurrentPlayerWhite ? blackScore : whiteScore;
@@ -123,50 +133,19 @@ gameResult.currentElo = yourElo + deltaElo;
       setTimeBlack('0:00');
       hasSetTimeZero.current = true;
     }
-  };
-  if (timeWhite == '0:00') {
-    clearInterval(currentIntervalId);
-    if (!isCurrentPlayerWhite) {
-      gameResult.resultText = 'Victory';
-setTimesOnce();
-      return (
-        <GameResultCard
-          gameResult={gameResult}
-          navigation={navigation}></GameResultCard>
-      );
-      //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
-    }
-    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
-    gameResult.resultText = 'Defeat';
-    setTimesOnce();
-    return (
-      <GameResultCard
-        gameResult={gameResult}
-        navigation={navigation}></GameResultCard>
-    );
-  }
-  if (timeBlack == '0:00') {
-    clearInterval(currentIntervalId);
-    if (isCurrentPlayerWhite) {
-      gameResult.resultText = 'Victory';
-      setTimesOnce();
-      return (
-        <GameResultCard
-          gameResult={gameResult}
-          navigation={navigation}></GameResultCard>
-      );
-      //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
-    }
-    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
-    gameResult.resultText = 'Defeat';
-    setTimesOnce();
-    return (
-      <GameResultCard
-        gameResult={gameResult}
-        navigation={navigation}></GameResultCard>
-    );
-  }
-  if (isEnd) {
+  }; 
+  console.log("Is Player win",isPlayerWin); 
+  if (surrender === 1 || surrender === 2) {
+  clearInterval(currentIntervalId);
+  
+  gameResult.resultText = isPlayerWin ? 'Victory' : 'Defeat';
+  setTimesOnce();
+  setFinalResult(gameResult);
+  realEnd.current=true;
+  console.log("Game Result.....................", gameResult);
+  return;
+} 
+if (isEnd) {
     clearInterval(currentIntervalId);
     if (
       (whiteScore > blackScore && isCurrentPlayerWhite) ||
@@ -174,11 +153,16 @@ setTimesOnce();
     ) {
       gameResult.resultText = 'Victory';
       setTimesOnce();
-      return (
+      setFinalResult(gameResult); 
+      realEnd.current=true;
+      
+      console.log("Is end setted!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+      console.log(whiteScore,blackScore);
+      return; /*(
         <GameResultCard
           gameResult={gameResult}
           navigation={navigation}></GameResultCard>
-      );
+      );*/
       //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={2}></ResultPopup>
     }
     if (
@@ -187,44 +171,72 @@ setTimesOnce();
     ) {
       gameResult.resultText = 'Defeat';
       setTimesOnce();
-      return (
+      setFinalResult(gameResult); 
+      realEnd.current=true;
+      return;/* (
         <GameResultCard
           gameResult={gameResult}
           navigation={navigation}></GameResultCard>
-      );
+      );*/
       //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={3}></ResultPopup>
     }
   }
-  if (
-    (surrender == 1 && isCurrentPlayerWhite) ||
-    (surrender == 2 && !isCurrentPlayerWhite)
-  ) {
+  if (timeWhite == '0:00') {
     clearInterval(currentIntervalId);
+    if (!isCurrentPlayerWhite) {
+      gameResult.resultText = 'Victory';
+setTimesOnce();
+setFinalResult(gameResult); 
+realEnd.current=true;
+console.log("Set Time Blackkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+      return 
+        {/*<GameResultCard
+          gameResult={gameResult}
+          navigation={navigation}></GameResultCard>*/}
+      
+      //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
+    }
+    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
+    gameResult.resultText = 'Defeat';
+    setTimesOnce(); 
+    setFinalResult(gameResult); 
+    realEnd.current=true; 
+    return; /*(
+      <GameResultCard
+        gameResult={gameResult}
+        navigation={navigation}></GameResultCard>
+    );*/
+  } 
+  
+  if (timeBlack == '0:00') {
+    clearInterval(currentIntervalId);
+    if (isCurrentPlayerWhite) {
+      gameResult.resultText = 'Victory';
+      setTimesOnce();
+      setFinalResult(gameResult);  
+      realEnd.current=true;
+      console.log("Set Time Whiteeeeeeeeeeeeeeeeeeeeeeeeee");
+      return /*(
+        <GameResultCard
+          gameResult={gameResult}
+          navigation={navigation}></GameResultCard>
+      );*/
+      //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={1}></ResultPopup>
+    }
+    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     gameResult.resultText = 'Defeat';
     setTimesOnce();
-    console.log(gameResult.playerBlack);
-    return (
+    setFinalResult(gameResult); 
+    realEnd.current=true;
+    return ;/*(
       <GameResultCard
         gameResult={gameResult}
         navigation={navigation}></GameResultCard>
-    );
-    //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={4}></ResultPopup>
-  }
-  if (
-    (surrender == 1 && !isCurrentPlayerWhite) ||
-    (surrender == 2 && isCurrentPlayerWhite)
-  ) {
-    clearInterval(currentIntervalId);
-    gameResult.resultText = 'Victory';
-    setTimesOnce();
-    console.log(gameResult.playerBlack);
-    return (
-      <GameResultCard
-        gameResult={gameResult}
-        navigation={navigation}></GameResultCard>
-    );
-    //return <ResultPopup result={"YOU WIN"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={5}></ResultPopup>
-  }
+    );*/
+  } 
+  
+  
+  
 }
 const RankingMatchScreen = ({navigation}) => {
   const {theme, toggleTheme} = useTheme();
@@ -237,7 +249,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [timeWhite, setTimeWhite] = useState('15:00');
   const [userId, setUserId] = useState(null); 
   const [opponentId, setOpponentId] = useState(null); 
-  const [currentIntervalId, setCurrentIntervalId] = useState();
+  const [currentIntervalId, setCurrentIntervalId] = useState(null);
   const [isCurrentPlayerWhite, setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore, setWhiteScore] = useState(2.5);
   const [blackScore, setBlackScore] = useState(0);
@@ -248,6 +260,12 @@ const RankingMatchScreen = ({navigation}) => {
   const [zoomMode, setZoomMode] = useState(false); // 👈 trạng thái zoom
   const hasSetTimeZero = useRef(false);
   const [accountLogin, setAccountLogin] = useState(null);
+  const [finalResult, setFinalResult] = useState(null);
+  const realEnd = useRef(false);
+  const coolDownSecond = useRef(30);
+  const coolDownInterval= useRef(null);
+  
+  
   const [playerBlack, setPlayerBlack] = useState({
     userId: 'user0010',
     userName: 'Searching',
@@ -259,6 +277,7 @@ const RankingMatchScreen = ({navigation}) => {
     userAvatarURL: default_avatar,
     rank: 10,
   });
+  
   const [playeWhite, setPlayerWhite] = useState({
     userId: 'user0010',
     userName: 'Searching',
@@ -275,9 +294,12 @@ const RankingMatchScreen = ({navigation}) => {
 useEffect(() => {
   return () => {
     // Khi rời khỏi màn hình (unmount)
+    if(realEnd.current==true) {
+      return;
+    }
     if (!isEnd && surrender === 0 && userId && opponentId) {
       console.log("👋 Người chơi đã thoát khỏi màn hình, gửi surrender");
-
+      console.log(isEnd,surrender,userId,opponentId);
       // Gửi tín hiệu đầu hàng cho người kia
       const surrenderMove = {
         fromUser: userId,
@@ -286,7 +308,33 @@ useEffect(() => {
       socket.emit("move:send", surrenderMove);
     }
   };
-}, [isEnd, surrender, userId, opponentId]);
+}, [ userId, opponentId]);
+
+useEffect(()=>{
+  
+  if(surrender!=0||isEnd) {
+  console.log("Render Result Popup");} 
+ 
+  RenderResultPopup(
+          timeWhite,
+          timeBlack,
+          navigation,
+          isCurrentPlayerWhite,
+          isEnd,
+          whiteScore,
+          blackScore,
+          surrender,
+          playerBlack,
+          playeWhite,
+          currentIntervalId,
+          setTimeWhite, // 👈 thêm
+  setTimeBlack,  // 👈 thêm,
+   hasSetTimeZero,
+   setFinalResult,
+   realEnd
+        );
+  
+},[timeWhite,timeBlack,isEnd,surrender]);
 
 function createMatchData(user, opponent) {
   const isCurrentPlayerWhite = opponent._id > user._id;
@@ -382,23 +430,26 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
       setBlackScore(0);
       setIsEnd(false);
       setSurrender(0);
+      realEnd.current=false;
+      coolDownSecond.current=30;
+      coolDownInterval.current=null;
   setIsStart(true);
+  const interval = setInterval(() => {
+          setTimeBlack((prev) => {
+            const next = decreaseTime(prev);
+            //console.log("⏱️ Đếm ngược đen:", next);
+            return next;
+          });
+        }, 1000);
 
+        setCurrentIntervalId(interval);
       console.log("⏳ Chờ 10s trước khi bắt đầu trận...");
       setTimeout(() => {
         console.log("🎯 Trận đấu bắt đầu!");
 
         
 
-        const interval = setInterval(() => {
-          setTimeBlack((prev) => {
-            const next = decreaseTime(prev);
-            console.log("⏱️ Đếm ngược đen:", next);
-            return next;
-          });
-        }, 1000);
-
-        setCurrentIntervalId(interval);
+        
       }, 1000);
     } catch (err) {
       console.error("❌ Lỗi trong quá trình ghép cặp:", err);
@@ -409,16 +460,70 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
 }, [isFocuse,accountLogin]);
 
 
-  const handleEvent = gameState => {
+  const handleEvent = gameState => { 
+    console.log("Handle Event--------------------------------------------");
+    console.log(currentIntervalId);
     clearInterval(currentIntervalId);
-
+    
+    
+    
     if (flag) {
+      console.log("It is black turn");
+      /*if(isCurrentPlayerWhite) {
+        coolDownInterval.current = setInterval(()=>{
+          if(coolDownSecond.current<=0) {
+            const surrenderMove = {
+            fromUser: userId,
+            move: "surrender",
+      }; 
+      console.log("Send surrenderpppppppppppppppppppppppppppppppppppppppppppppp");
+      socket.emit("move:send", surrenderMove);
+      
+      setSurrender(1); 
+      clearInterval(coolDownInterval.current);
+      return; 
+      
+          }
+        coolDownSecond.current=coolDownSecond.current-1;
+
+        },1000);
+      } 
+      else {
+        if(coolDownInterval.current!=null) {
+          clearInterval(coolDownInterval.current);
+        }
+        
+      }*/
       setCurrentIntervalId(
         setInterval(() => {
           setTimeBlack(prevTimeBlack => decreaseTime(prevTimeBlack));
         }, 1000),
       );
     } else {
+      console.log("It is white turn"); 
+      /*if(!isCurrentPlayerWhite) {
+        coolDownInterval.current = setInterval(()=>{
+          if(coolDownSecond.current<=0) { 
+            console.log("Send surrenderpppppppppppppppppppppppppppppppppppppppppppppp");
+            const surrenderMove = {
+            fromUser: userId,
+            move: "surrender",
+      };
+      socket.emit("move:send", surrenderMove); 
+      clearInterval(coolDownInterval.current);
+      setSurrender(1);
+      return;
+          }
+        coolDownSecond.current=coolDownSecond.current-1;
+
+        },1000);
+      } 
+      else {
+        if(coolDownInterval.current!=null) {
+          clearInterval(coolDownInterval.current);
+        }
+        
+      }*/
       setCurrentIntervalId(
         setInterval(() => {
           setTimeWhite(prevTimeWhite => decreaseTime(prevTimeWhite));
@@ -437,9 +542,11 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
     setIsEnd(true);
   };
   const handleSurrender = isWhite => {
+    console.log("Handle surrender",isWhite);
     if (isWhite) {
       setSurrender(1);
     } else {
+      console.log("Black Surrender");
       setSurrender(2);
     }
   };
@@ -462,22 +569,7 @@ const ChessBoard2Ref = useRef(
       <>
         <Header title="Gokuu" />
         {RenderSearchPopup(playerBlack.userName)}
-        {RenderResultPopup(
-          timeWhite,
-          timeBlack,
-          navigation,
-          isCurrentPlayerWhite,
-          isEnd,
-          whiteScore,
-          blackScore,
-          surrender,
-          playerBlack,
-          playeWhite,
-          currentIntervalId,
-          setTimeWhite, // 👈 thêm
-  setTimeBlack,  // 👈 thêm,
-   hasSetTimeZero 
-        )}
+        {finalResult?<GameResultCard gameResult={finalResult} navigation={navigation} surrender={surrender}></GameResultCard>:<></>}
       </>
     )}
 
@@ -512,7 +604,7 @@ const ChessBoard2Ref = useRef(
         handleEvent={handleEvent}
         flag={flag}
         handleIsEnd={handleIsEnd}
-        handleSurrender={handleSurrender}
+        handleSurrender={handleSurrender} 
         isCurrentPlayerWhite={isCurrentPlayerWhite}
         isStart={isStart}
         playerColor={isCurrentPlayerWhite ? "W" : "B"}

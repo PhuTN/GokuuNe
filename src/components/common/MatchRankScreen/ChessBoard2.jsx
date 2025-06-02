@@ -86,7 +86,8 @@ export default function ChessBoard2({
   isStart,
    userId,
    playerColor,
-   opponentId,
+   opponentId
+   
 }) {
 console.log("MAAAAAAM",playerColor)
 const [myColor] = useState(playerColor); 
@@ -103,6 +104,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
   const [blackSkip, setBlackSkip] = useState(false);
   const isEndedByOpponentRef = useRef(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
+  
   function calculateDeltaElo(eloA, eloB, resultA, K = 32) {
   const expectedA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
   const deltaA = Math.round(K * (resultA - expectedA)); // làm tròn
@@ -191,12 +193,17 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
   }
 
 async function onSurrender(isWhite) {
+  console.log("Current Player White",isWhite);
   gameState.calculateScore();
   playWinSound();
   setSurrender(isWhite ? 1 : 2);
-  setIsEnd(true); // kết thúc game khi có người đầu hàng
+  setIsEnd(true);
+    // kết thúc game khi có người đầu hàng
   handleSurrender?.(isWhite); // gọi callback nếu cần
-
+  console.log("Send to server...............",{
+    fromUser: userId,
+    move: "surrender"
+  })
   socket.emit("move:send", {
     fromUser: userId,
     move: "surrender"
@@ -311,10 +318,12 @@ setNewPosition([index,i,currentSide]);
       } */
   }
 function onReceiveMove(moveString, mover) {
+  console.log("Receive from enemy,...........",moveString);
 if (moveString === "end") {
   isEndedByOpponentRef.current = true; 
   console.log("📥 Nhận nước đi: END từ đối thủ");
   setIsEnd(true);
+  
   gameState.calculateScore();
   handleIsEnd?.(gameState);
   return;
@@ -387,11 +396,13 @@ if (moveString === "end") {
   }
   if (moveString === "surrender") {
     console.log("🏳️ Đối thủ đầu hàng");
+    console.log("Player Color.....................!!!!!!!!!!!!!!!!!!!!!!!!!!!1",playerColor);
 
     // nếu đối thủ là trắng → trắng đầu hàng → mình thắng
     setSurrender(playerColor === 'B' ? 1 : 2); 
+
     setIsEnd(true);
-    handleSurrender?.(playerColor === 'B' ? 1 : 2);
+    handleSurrender?.(playerColor === 'B');
     return;
   }
   const colLetter = moveString.substring(0, 1).toUpperCase(); // 'D'
@@ -402,7 +413,8 @@ if (moveString === "end") {
  console.log("11CAK",playerColor)
   // 👇 luôn đánh quân ngược với màu của mình
   const opponentColor = playerColor === 'B' ? 'W' : 'B';
-    console.log("CAK",playerColor)
+    console.log("CAK",playerColor);
+    console.log("Cal here without handle event................................");
   displayMoveToUI(index, i, opponentColor); // truyền màu quân
 }
 
@@ -552,7 +564,7 @@ console.log(payload)
     .catch(err => {
       console.error('❌ Failed to save match:', err);
     });
-}, [isEnd, surrender]);
+}, [isEnd/*, surrender*/]);
 
 useEffect(() => {
   socket.on("move:receive", ({ move, fromUser }) => {

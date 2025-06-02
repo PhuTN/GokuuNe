@@ -7,21 +7,22 @@ import {Result} from '../../../fake_data/Binh/fake_data';
 // import { playVictorySound } from '../../../untils/VictorySound';
 import {useSoundEffect} from '../../../asycnc_store/SoundAndMusicContext';
 
-const GameResultCard = ({gameResult, navigation}) => {
+const GameResultCard = ({gameResult, navigation, surrender}) => {
   const {playWinSound, playLoseSound} = useSoundEffect();
   const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
   const resText =
-    gameResult.resultText === 'Victory' ? t.win_text : t.lose_text;
+    gameResult?.resultText == 'Victory' ? t.win_text : t.lose_text;
   const resTextStyle = StyleSheet.create({
     title: {
       fontSize: 30,
       fontWeight: 'bold',
-      color: gameResult.resultText === 'Victory' ? '#FFC107' : 'red',
+      color: gameResult?.resultText === 'Victory' ? '#FFC107' : 'red',
     },
   });
   useEffect(() => {
-    if (gameResult.resultText === 'Victory') {
+    console.log("Result Text", gameResult);
+    if (gameResult?.resultText === 'Victory') {
       playWinSound();
     }
   }, []);
@@ -39,27 +40,27 @@ const GameResultCard = ({gameResult, navigation}) => {
             {/* Player 1 */}
             <View style={styles.player}>
               <Image
-                source={{uri: gameResult.playerWhite.userAvatarURL.uri}}
+                source={{uri: gameResult?.playerWhite.userAvatarURL.uri}}
                 style={styles.avatar}
               />
               <Text style={styles.playerName}>
-                {gameResult.playerWhite.userName}
+                {gameResult?.playerWhite.userName}
               </Text>
             </View>
 
             {/* Score */}
             <Text style={styles.score}>
-              {gameResult.whiteScore} - {gameResult.blackScore}
+              {surrender==0?gameResult?.whiteScore:""} - {surrender==0?gameResult?.blackScore:""}
             </Text>
 
             {/* Player 2 */}
             <View style={styles.player}>
               <Image
-                source={{uri: gameResult.playerBlack.userAvatarURL.uri}}
+                source={{uri: gameResult?.playerBlack.userAvatarURL.uri}}
                 style={styles.avatar}
               />
               <Text style={styles.playerName}>
-                {gameResult.playerBlack.userName}
+                {gameResult?.playerBlack.userName}
               </Text>
             </View>
           </View>
@@ -73,21 +74,21 @@ const GameResultCard = ({gameResult, navigation}) => {
             </Text> */}
             <Text style={styles.ratingTitle}>{t.elo_text}</Text>
           <Text style={styles.ratingValue}>
-  {gameResult.currentElo ?? '???'}{' '}
+  {gameResult?.currentElo ?? '???'}{' '}
   <Text
     style={[
       styles.ratingGain,
       {
         color:
-          gameResult.deltaElo > 0
+          gameResult?.deltaElo > 0
             ? 'green'
-            : gameResult.deltaElo < 0
+            : gameResult?.deltaElo < 0
             ? 'red'
             : 'gray',
       },
     ]}>
-    ({gameResult.deltaElo > 0 ? '+' : ''}
-    {gameResult.deltaElo})
+    ({gameResult?.deltaElo > 0 ? '+' : ''}
+    {gameResult?.deltaElo})
   </Text>
 </Text>
           </View>

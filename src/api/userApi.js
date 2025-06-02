@@ -130,3 +130,8 @@ export const unfriendUser = async (userId, friendId) => {
   return response.data;
 };
 
+export const getLeaderBoard = async ()=>{
+    const response = await api.get("/leaderboard");
+    return response.data;
+}
+

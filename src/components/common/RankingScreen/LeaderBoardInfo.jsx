@@ -1,6 +1,7 @@
 import { useTheme } from "../../../asycnc_store/ThemeContext";
 import { Text,View,Image, StyleSheet } from "react-native"; 
-export default function LeaderBoardInfo({info, index,isPlayer}) { 
+export default function LeaderBoardInfo({info, index,isPlayer}) {  
+    const avatar = require('../../../assets/images/Top1.png');
    const {theme, toggleTheme} = useTheme();
    const isDark = theme==='dark';
    const style = isDark?darkStyle:whiteStyle;
@@ -22,7 +23,15 @@ export default function LeaderBoardInfo({info, index,isPlayer}) {
         <View style={viewStyle.container}>
             <View style={style.subContainer}>
             <Text style={style.boldText}>{index}</Text> 
-            <Image style={style.image} source={{uri:info.userAvatarURL}}></Image> 
+            <Image
+  source={
+    info.userAvatarURL && info.userAvatarURL.trim() !== ""
+      ? { uri: info.userAvatarURL }
+      : avatar
+  }
+  style={style.image}
+  resizeMode="cover"
+/>
             <Text style={style.boldText}>{info.userName}</Text>
             </View>
             <Text style={style.eloText}>{info.elo}</Text>

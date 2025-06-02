@@ -1,9 +1,11 @@
 import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 import { Text,View,StyleSheet,Image } from "react-native";
 export default function Top1Avatar({topInfo}) {
-    console.log(topInfo.avatarURL);
+    
     const avatar = require('../../../assets/images/Top1.png');
-    const crown = require('../../../assets/images/Crown.png');
+    const crown = require('../../../assets/images/Crown.png'); 
+    
+   console.log(topInfo.userAvatarURL);
     return (
 
         <View style={styles.container}>
@@ -11,11 +13,14 @@ export default function Top1Avatar({topInfo}) {
           <View style={styles.circle}>
             {/* Profile image */}
             <Image
-              source={{
-                uri:topInfo.userAvatarURL
-              }} // Replace with your image URL
-              style={styles.image}
-            />
+  source={
+    topInfo.userAvatarURL && topInfo.userAvatarURL.trim() !== ""
+      ? { uri: topInfo.userAvatarURL }
+      : avatar
+  }
+  style={styles.image}
+  resizeMode="cover"
+/>
             {
               generateCrown(topInfo.rank,crown)
             }
