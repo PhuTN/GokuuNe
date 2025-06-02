@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import { TouchableOpacity, View, Text, StyleSheet, Image } from "react-native";
 import Header from "../components/common/Header";
 import Dot from "../components/common/MatchRankScreen/Dot";
@@ -8,6 +8,7 @@ import { useLanguage } from "../asycnc_store/LanguageContext";
 import { translations } from "../untils/i18n";
 import { getMatchById } from "../api/matchApi";
 import { da } from "date-fns/locale";
+import { getUserById } from "../api/userApi";
 const blackPiece = require('../assets/images/pieceBlack.png');
 const whitePiece = require('../assets/images/pieceWhite.png');
 
@@ -22,6 +23,12 @@ export default function HistoryDetail({ route }) {
     const styles = isDark ? blackStyle : whiteStyle;
     const { language, toggleLanguage } = useLanguage();
     const t = translations[language];
+    const [matchData, setMatchData] = useState(null);
+    const [playerBlack, setPlayerBlack] = useState(null);
+    const [playerWhite, setPlayerWhite] = useState(null);
+    const currentPositionInIndexArray = useRef(-1);
+    const [blackSkip, setBlackSkip] = useState(false);
+    const [whiteSkip, setWhiteSkip] = useState(false);
     useEffect(() => {
         loadBoardFromGameState(historyDetails.detail[0]);
         console.log("Load");
@@ -89,7 +96,15 @@ export default function HistoryDetail({ route }) {
             try {
                 const data = await getMatchById(matchId);  // 🔥 Gọi API
               
-                console.log("Matchdata",data)
+                console.log("Matchdata",data);
+                setMatchData(data);
+                const playerBlackData = await getUserById(data.playerBlack._id);
+                const playerWhiteData = await getUserById(data.playerWhite._id);
+                
+                setPlayerBlack(playerBlackData);
+                console.log(playerBlackData);
+                console.log(playerWhiteData);
+                setPlayerWhite(playerWhiteData);
             } catch (error) {
                 console.error('❌ Lỗi lấy chi tiết trận đấu:', error);
             }
@@ -104,9 +119,9 @@ export default function HistoryDetail({ route }) {
         <Header title="History"></Header>
 
         <View style={styles.player_container}>
-            <Image source={{ uri: historyDetails.playerBlack.avatar }} style={styles.avatar} />
+            <Image source={{ uri: playerBlack==null?"":playerBlack.avatarUrl }} style={styles.avatar} />
             <View style={styles.info}>
-                <Text style={styles.name}>{historyDetails.playerBlack.username}</Text>
+                <Text style={styles.name}>{playerBlack==null?"":playerBlack.displayName}</Text>
                 <Text style={styles.score}>
                     {t.score}: {blackScore}
                 </Text>
@@ -161,9 +176,9 @@ export default function HistoryDetail({ route }) {
             <View></View>
         </View>
         <View style={styles.player_container}>
-            <Image source={{ uri: historyDetails.playerWhite.avatar }} style={styles.avatar} />
+            <Image source={{ uri: playerWhite==null?"":playerWhite.avatarUrl }} style={styles.avatar} />
             <View style={styles.info}>
-                <Text style={styles.name}>{historyDetails.playerWhite.username}</Text>
+                <Text style={styles.name}>{playerWhite==null?"":playerWhite.displayName}</Text>
                 <Text style={styles.score}>
                     {t.score}: {whiteScore}
                 </Text>
