@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getUserConversations} from '../api/messageApi';
 import {useFocusEffect} from '@react-navigation/native';
 import {socket} from '../untils/socket';
+import {ScrollView} from 'react-native';
 
 export default function ChatScreen({navigation}) {
   const {theme} = useTheme();
@@ -68,15 +69,17 @@ export default function ChatScreen({navigation}) {
         f.status === 'friend' &&
         f.friendId &&
         f.friendId.onlineStatus === 'online',
-    ) // ✅ thêm check online
+    )
     .map(f => f.friendId)
     .filter(
-      user =>
+      (user, index, self) =>
         user?.displayName &&
         user.displayName
           .trim()
           .toLowerCase()
-          .includes(searchQuery.trim().toLowerCase()),
+          .includes(searchQuery.trim().toLowerCase()) &&
+        user._id && // ✅ đảm bảo có _id
+        self.findIndex(u => u._id === user._id) === index, // ✅ lọc trùng
     );
 
   // 🟢 Giữ nguyên nếu bạn vẫn dùng recentChats (hoặc thay sau)
@@ -252,49 +255,56 @@ export default function ChatScreen({navigation}) {
     }, [currentUser]),
   );
 
-  const renderContent = () => (
-    <>
-      <ChatHeader />
-      {/* <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader> */}
-      {/* <ChatHeader /> */}
-      <SearchBar onSearch={setSearchQuery} value={searchQuery} />
+  const renderContent = () => {
+    console.log(
+      '👀 filteredUsers ID:',
+      filteredUsers.map(u => u._id),
+    ); // ✅ Log kiểm tra ID
 
-      {/* Currently Active Section */}
-      <View style={styles.sectionWrapper}>
-        <View style={styles.labelContainer}>
-          <Text style={styles.label}>{t.currently_active}</Text>
-          <View style={styles.dot} />
+    return (
+      <>
+        <ChatHeader />
+        {/* <ScreenHeader screenName={'Chat'} navigation={navigation}></ScreenHeader> */}
+        {/* <ChatHeader /> */}
+        <SearchBar onSearch={setSearchQuery} value={searchQuery} />
+
+        {/* Currently Active Section */}
+        <View style={styles.sectionWrapper}>
+          <View style={styles.labelContainer}>
+            <Text style={styles.label}>{t.currently_active}</Text>
+            <View style={styles.dot} />
+          </View>
+
+          {filteredUsers.length === 0 ? (
+            <Text style={styles.noUserText}>{t.no_user_found}</Text>
+          ) : (
+            <FlatList
+              data={filteredUsers}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.activeList}
+              keyExtractor={item => item._id}
+              renderItem={({item}) => <ActiveUserItem user={item} />}
+            />
+          )}
         </View>
 
-        {filteredUsers.length === 0 ? (
-          <Text style={styles.noUserText}>{t.no_user_found}</Text>
-        ) : (
+        {/* Recent Chats Section */}
+        <View style={styles.scrollArea}>
+          <SectionLabel label={t.recents} iconType="clock" />
           <FlatList
-            data={filteredUsers}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.activeList}
-            keyExtractor={item => Math.random().toString()}
-            renderItem={({item}) => <ActiveUserItem user={item} />}
+            data={filteredChats}
+            keyExtractor={item => item.conversationId} // hoặc item._id nếu trường này là unique
+            renderItem={({item}) => (
+              <ChatCardItem chat={item} currentUserId={currentUser._id} />
+            )}
+            contentContainerStyle={styles.chatList}
+            showsVerticalScrollIndicator={false}
           />
-        )}
-      </View>
-
-      {/* Recent Chats Section */}
-      <View style={styles.scrollArea}>
-        <SectionLabel label={t.recents} iconType="clock" />
-        <FlatList
-          data={filteredChats}
-          keyExtractor={item => item.id}
-          renderItem={({item}) => (
-            <ChatCardItem chat={item} currentUserId={currentUser._id} />
-          )}
-          contentContainerStyle={styles.chatList}
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </>
-  );
+        </View>
+      </>
+    );
+  };
 
   return isDark ? (
     <ImageBackground

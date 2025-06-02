@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   View,
   Text,
@@ -10,14 +10,14 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import { unfriendUser } from '../../../api/userApi';
-import { socket } from '../../../untils/socket';
+import {unfriendUser} from '../../../api/userApi';
+import {socket} from '../../../untils/socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NotificationCustom from '../Notification/Notification_Custom';
-import { useLanguage } from '../../../asycnc_store/LanguageContext';
-import { translations } from '../../../untils/i18n';
-import { notify } from '../../../untils/Notify';
-import { useNotification } from '../../../asycnc_store/NotificationContext';
+import {useLanguage} from '../../../asycnc_store/LanguageContext';
+import {translations} from '../../../untils/i18n';
+import {notify} from '../../../untils/Notify';
+import {useNotification} from '../../../asycnc_store/NotificationContext';
 
 type Props = {
   user: {
@@ -28,14 +28,15 @@ type Props = {
   };
 };
 
-export default function ActiveUserItem({ user }: Props) {
-  const { language, toggleLanguage } = useLanguage();
+export default function ActiveUserItem({user}: Props) {
+  const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
-  const { notification, toggleNotification } = useNotification();
+  const {notification, toggleNotification} = useNotification();
 
   const [modalVisible, setModalVisible] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [modalNotificationCustomVisible, setModalNotificationCustomVisible] = useState(false);
+  const [modalNotificationCustomVisible, setModalNotificationCustomVisible] =
+    useState(false);
 
   // 🔁 Lấy currentUserId từ AsyncStorage
   React.useEffect(() => {
@@ -55,7 +56,7 @@ export default function ActiveUserItem({ user }: Props) {
   const handleUnfriend = () => {
     setModalVisible(true);
     setModalNotificationCustomVisible(true);
-  }
+  };
 
   const handleUnfriendConfirm = async (confirmed: boolean) => {
     setModalVisible(false);
@@ -71,12 +72,12 @@ export default function ActiveUserItem({ user }: Props) {
         type: 'success',
         systemNotification: true,
         pushState: notification,
-        inapp: true
+        inapp: true,
       });
 
       // Emit reload cho cả hai
-      socket.emit('friend:update', { userId: currentUserId });
-      socket.emit('friend:update', { userId: user._id });
+      socket.emit('friend:update', {userId: currentUserId});
+      socket.emit('friend:update', {userId: user._id});
     } catch (err) {
       console.error('❌ Lỗi khi hủy kết bạn:', err);
       ToastAndroid.show('❌ Lỗi khi hủy kết bạn', ToastAndroid.SHORT);
@@ -91,7 +92,7 @@ export default function ActiveUserItem({ user }: Props) {
         <Image
           source={
             user.avatarUrl
-              ? { uri: user.avatarUrl }
+              ? {uri: user.avatarUrl}
               : require('../../../images/user.png')
           }
           style={styles.avatar}
@@ -116,14 +117,14 @@ export default function ActiveUserItem({ user }: Props) {
             <View style={styles.separator} />
 
             <Pressable style={styles.modalButton} onPress={handleUnfriend}>
-              <Text style={[styles.modalText, { color: 'red' }]}>
+              <Text style={[styles.modalText, {color: 'red'}]}>
                 Hủy kết bạn
               </Text>
             </Pressable>
           </View>
         </Pressable>
-      </Modal> 
-      
+      </Modal>
+
       <NotificationCustom
         visible={modalNotificationCustomVisible}
         setModalVisible={setModalNotificationCustomVisible}
