@@ -19,9 +19,24 @@ export default function HistoryScreen({ navigation }) {
         const fetchData = async () => {
             try {
                 const storedUser = await AsyncStorage.getItem('currentUser');
+                
                 if (storedUser) {
                     const parsedUser = JSON.parse(storedUser);
-                    setUser(parsedUser);
+                    console.log(parsedUser);
+                    const mapUser = {
+                        userId: parsedUser._id,
+            userName: parsedUser.displayName ?? 'Unknown',
+            country: parsedUser.nationality ?? 'VietNam',
+            matches: parsedUser.matchHistory.length,
+            elo: parsedUser.elo ?? 2200,
+            userCountryImageURL:
+              'https://www.shutterstock.com/image-vector/vietnam-flag-made-vectors-260nw-1928345522.jpg',
+            userAvatarURL:
+              parsedUser.avatarUrl ??
+              'https://example.com/default-avatar.jpg',
+            rank: parsedUser.rank ?? 4,
+                    }
+                    setUser(mapUser);
 
                     const apiData = await getMatchesByUserId(parsedUser._id);
                     console.log('📥 Lịch sử từ API:', apiData);
@@ -77,14 +92,14 @@ export default function HistoryScreen({ navigation }) {
             <ScrollView style={styles.scroll} scrollEnabled={true}>
                 {history.length > 0 ? (
                     history.map((item, index) => (
-                       history.map((item, index) => (
+                       
     <HistoryTag 
       key={`History${index}`} 
       history={item} 
       navigation={navigation}
       matchId={item._id}   // 🔥 Thêm ID của trận đấu
     />
-))
+
                     ))
                 ) : (
                     <Text style={{ textAlign: 'center', marginTop: 20 }}>Chưa có trận đấu nào</Text>

@@ -17,7 +17,7 @@ export default function UserNameCountry({user}) {
 return (
   <View style={styles.container}>
 
-    <Text style={styles.text}>{displayUserName(user.userName)}</Text>
+    <Text style={styles.text}>{displayUserName(user?.userName)}</Text>
 
     {/* <Country user={user}></Country> */}
   </View>
