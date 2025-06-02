@@ -116,12 +116,17 @@ const isPlayerWin = (() => {
   if (!isEnd) return false;
 
   // Kết thúc do hết lượt chơi
+  console.log("End by pass---------------------------------------"); 
   if (whiteScore > blackScore) return isCurrentPlayerWhite;
   if (blackScore > whiteScore) return !isCurrentPlayerWhite;
 
   return false; // Hoà → không ai thắng
 })();
-let result = isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0;
+let result; 
+result= !isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0; 
+if(surrender!=0) {
+  result = isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0;
+}
 const deltaElo = calculateDeltaElo(yourElo, opponentElo, result);
 gameResult.deltaElo = deltaElo;
 
