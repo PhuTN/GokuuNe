@@ -557,7 +557,7 @@ useEffect(() => {
     deltaElo: 0,
   };
 console.log(payload);
-if((winner=='white'&&isCurrentPlayerWhite)||(winner=='black'&&!isCurrentPlayerWhite)) {
+if((winner=='white'&&!isCurrentPlayerWhite)||(winner=='black'&&isCurrentPlayerWhite)) {
   return;
 }
   createMatch(payload)
