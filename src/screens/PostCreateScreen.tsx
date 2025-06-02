@@ -52,7 +52,15 @@ const PostCreateScreen = ({ route, navigation }: Props) => {
     };
 
     const handleCreatePost = () => {
-        if (!caption.trim() && !image) {
+        if (!caption.trim()) {
+            notify({
+                message: t.noti_warning,
+                description: t.post_caption_require,
+                type: 'warning',
+                systemNotification: true,
+                pushState: notification,
+                inapp: true,
+            });
             return;
         }
 
@@ -112,7 +120,7 @@ const PostCreateScreen = ({ route, navigation }: Props) => {
                     <TextInput
                         style={styles.input}
                         placeholder={t.post_create_caption_placeholder}
-                        placeholderTextColor={isDark ? '#888' : '#666'}
+                        placeholderTextColor={isDark ? '#999' : '#666'}
                         value={caption}
                         onChangeText={setCaption}
                         multiline
@@ -245,15 +253,17 @@ const lightStyles = StyleSheet.create({
 const darkStyles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#1a1a1a',
+        backgroundColor: '#535353',
     },
     scrollContainer: {
         padding: 10,
     },
     createPostContainer: {
-        backgroundColor: '#2c2c2c',
+        backgroundColor: '#535353',
         borderRadius: 8,
         padding: 15,
+        borderWidth: 1,
+        borderColor: 'white',
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 5,
@@ -282,13 +292,13 @@ const darkStyles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#444',
+        borderColor: 'white',
         borderRadius: 8,
         padding: 10,
         marginBottom: 15,
         minHeight: 60,
         fontSize: 16,
-        color: '#fff',
+        color: 'white',
     },
     imagePicker: {
         padding: 15,

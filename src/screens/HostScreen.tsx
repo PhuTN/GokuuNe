@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {RootStackParamList} from '../navigation/AppNavigator';
-import {useLanguage} from '../asycnc_store/LanguageContext';
-import {useTheme} from '../asycnc_store/ThemeContext';
-import {translations} from '../untils/i18n';
-import {notify} from '../untils/Notify';
-import {useNotification} from '../asycnc_store/NotificationContext';
-import {FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { useLanguage } from '../asycnc_store/LanguageContext';
+import { useTheme } from '../asycnc_store/ThemeContext';
+import { translations } from '../untils/i18n';
+import { notify } from '../untils/Notify';
+import { useNotification } from '../asycnc_store/NotificationContext';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import Header from '../components/common/Header';
 import ButtonHostTime from '../components/common/HostScreen/Button_Host_Time';
 import RapidTimeIcon from '../assets/icons/rapid_time_icon.svg';
@@ -19,6 +19,8 @@ import ButtonHostFriend from '../components/common/HostScreen/Button_Host_Friend
 import Button_Save from '../components/common/Button/Button_Save';
 import SwordIcon from '../assets/icons/sword_icon.svg';
 import { TouchableOpacity } from 'react-native';
+import HostMoreFunctionModal from '../components/common/HostScreen/HostMoreFunctionModal';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 // Mock data for challenges
@@ -62,7 +64,10 @@ const HostScreen = ({ route, navigation }: Props) => {
   const [selectedTime, setSelectedTime] = useState<string>(route.params?.selectedTime ?? null);
   const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
 
+  const [modalMoreFunctionVisible, setMoreFunctionVisible] = useState(false);
+
   const [challenges] = useState(mockChallenges);
+  const [selectedChallenge, setSelectedChallenge] = useState();
 
   useEffect(() => {
     return () => {
@@ -165,24 +170,8 @@ const HostScreen = ({ route, navigation }: Props) => {
   };
 
   const handleChallengePress = (challenge: any) => {
-    // Placeholder: Accept challenge or navigate to match screen
-    // notify({
-    //   message: t.noti_info,
-    //   description: `${challenge.user.displayName} ${t.host_challenge_accepted}`,
-    //   type: 'info',
-    //   systemNotification: true,
-    //   pushState: notification,
-    //   inapp: true,
-    // });
-    // Example: Navigate to HostMatch with challenge user as friend
-    navigation.navigate('HostMatch', {
-      accountLogin,
-      friend: challenge.user,
-      selectedTime,
-      isRankingMode,
-      selectedPiece,
-      match,
-    });
+    setMoreFunctionVisible(true);
+    setSelectedChallenge(challenge);
   };
 
   const renderChallenge = ({ item }: { item: typeof mockChallenges[0] }) => (
@@ -197,6 +186,24 @@ const HostScreen = ({ route, navigation }: Props) => {
       </View>
     </TouchableOpacity>
   );
+
+  const [roomId, setRoomId] = useState('');
+
+  const handleJoinRoom = () => {
+    if (!roomId.trim()) {
+      notify({
+        message: t.noti_warning,
+        description: t.host_room_id_required,
+        type: 'warning',
+        systemNotification: true,
+        pushState: notification,
+        inapp: true,
+      });
+      return;
+    }
+    //Tiếp tục code chức năng tham gia phòng
+  };
+
 
   return (
     <ScrollView
@@ -214,13 +221,45 @@ const HostScreen = ({ route, navigation }: Props) => {
         </TextInput>
       </View>
 
+      {/* Join Room */}
+      <View style={styles.divider} />
+      <View>
+        <View style={styles.ranking_mode}>
+          <Text style={styles.ranking_mode_title}>{t.host_join_room}</Text>
+          <TextInput
+            style={styles.input}
+            value={roomId}
+            onChangeText={setRoomId}
+            placeholder={t.host_enter_room_id}
+            placeholderTextColor={isDark ? '#999' : '#aaa'}
+          />
+        </View>
+
+        <TouchableOpacity onPress={handleJoinRoom}>
+          <LinearGradient
+            colors={["#6B50F6", "#CC8FED"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.buttonJoin}
+          >
+            <Text style={styles.buttonJoinText}>{t.host_join}</Text>
+          </LinearGradient>
+        </TouchableOpacity>
+      </View>
+
       {/* Choose Friend */}
       <View style={styles.divider} />
       {/* <ButtonHostFriend accountFriend={friend} onPress={handleFriend} /> */}
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Image source={accountLogin.avatarUrl ? { uri: accountLogin.avatarUrl } : require('../images/user.png')} style={styles.avatar} />
+      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+          <Image source={accountLogin.avatarUrl ? { uri: accountLogin.avatarUrl } : require('../images/user.png')} style={styles.avatar} />
+          <Text style={styles.ranking_mode_title}>{accountLogin?.displayName || t.home_guest}</Text>
+        </View>
         <SwordIcon width={60} height={60} style={{ marginHorizontal: '10%' }} />
-        <Image source={friend?.avatarFriend || require('../images/user_question_mark.png')} style={styles.avatar} />
+        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
+          <Image source={friend?.avatarFriend || require('../images/user_question_mark.png')} style={styles.avatar} />
+          <Text style={styles.ranking_mode_title}>{friend?.displayName || t.home_guest}</Text>
+        </View>
       </View>
 
       {/* Button Time Setting */}
@@ -287,7 +326,12 @@ const HostScreen = ({ route, navigation }: Props) => {
           <Text style={styles.noChallengesText}>{t.host_no_challenges}</Text>
         )}
       </View>
-
+      <HostMoreFunctionModal
+        visible={modalMoreFunctionVisible}
+        setModalVisible={setMoreFunctionVisible}
+        onClose={() => setMoreFunctionVisible(false)}
+        challenge={selectedChallenge}
+      />
     </ScrollView>
   );
 };
@@ -334,12 +378,13 @@ const lightStyles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    paddingVertical: 2,
+    padding: 5,
     color: '#000',
     borderRadius: 5,
     borderWidth: 1,
     marginLeft: 50,
-    borderColor: '#000'
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
   },
   avatar: {
     width: 70,
@@ -367,7 +412,7 @@ const lightStyles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: '5%',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -395,6 +440,18 @@ const lightStyles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
+  },
+  buttonJoin: {
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: '5%',
+    width: '100%',
+  },
+  buttonJoinText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 
@@ -443,7 +500,7 @@ const darkStyles = StyleSheet.create({
     flex: 1,
     marginLeft: 50,
     fontSize: 16,
-    paddingVertical: 2,
+    padding: 5,
     color: 'white',
     borderRadius: 5,
     borderWidth: 1,
@@ -472,10 +529,12 @@ const darkStyles = StyleSheet.create({
   challengeContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2c2c2c',
+    backgroundColor: '#535353',
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: 'white',
+    marginBottom: '5%',
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -497,12 +556,24 @@ const darkStyles = StyleSheet.create({
   },
   challengeTitle: {
     fontSize: 14,
-    color: '#aaa',
+    color: 'white',
   },
   noChallengesText: {
     fontSize: 14,
     color: '#aaa',
     textAlign: 'center',
+  },
+  buttonJoin: {
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: '5%',
+    width: '100%',
+  },
+  buttonJoinText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
 

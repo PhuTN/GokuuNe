@@ -102,6 +102,7 @@ export const translations = {
     post_create_caption_placeholder: "What are you thinking?",
     post_create_add_photo: "Add a photo",
     post_create_submit: "Post",
+    post_caption_require: "Please enter your thoughts",
 
     signin_button: "Register",
     home_guest: "Guest",
@@ -144,6 +145,10 @@ export const translations = {
 
     host: "Host",
     host_room_id: "Room ID",
+    host_join_room: "Join Room",
+    host_enter_room_id: "Enter room id",
+    host_join: "Join",
+    host_room_id_required: "Please enter room id!",
     host_ranking_mode: "Ranking mode",
     host_ranking_mode_on: "Ranking mode is on",
     host_ranking_mode_off: "Ranking mode is off",
@@ -153,6 +158,8 @@ export const translations = {
     host_challenges: "List of challenges",
     host_challenge_title: "Want to challenge your!",
     host_no_challenges: "No challenge yet!",
+    host_challenge_accept:"Accpet",
+    host_challenge_deny:"Deny",
 
     host_time: "Time",
     host_time_default: "10",
@@ -370,6 +377,7 @@ export const translations = {
     post_create_caption_placeholder: "Bạn đang nghĩ gì?",
     post_create_add_photo: "Thêm 1 bức ảnh",
     post_create_submit: "Đăng",
+    post_caption_require: "Vui lòng nhập suy nghĩ của bạn!",
 
     signin_button: "Đăng ký",
     home_guest: "Khách",
@@ -417,6 +425,10 @@ export const translations = {
 
     host: "Tạo phòng",
     host_room_id: "Mã phòng",
+    host_join_room: "Tham gia phòng",
+    host_enter_room_id: "Nhập mã phòng",
+    host_join: "Tham gia",
+    host_room_id_required: "Vui lòng nhập mã phòng",
     host_ranking_mode: "Chế độ xếp hạng",
     host_ranking_mode_on: "Chế độ xếp hạng đã bật",
     host_ranking_mode_off: "Chế độ xếp hạng đã tắt",
@@ -426,6 +438,8 @@ export const translations = {
     host_challenges: "Danh sách thách đấu",
     host_challenge_title: "Muốn thách đầu bạn!",
     host_no_challenges: "Chưa có lời thách đầu nào!",
+    host_challenge_accept:"Chấp nhận",
+    host_challenge_deny:"Từ chối",
 
     host_time: "Thời gian",
     host_time_default: "10",
