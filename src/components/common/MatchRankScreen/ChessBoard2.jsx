@@ -535,10 +535,10 @@ const move = "pass";
 
 useEffect(() => {
   if (!isEnd && surrender === 0) return;
- if (isEndedByOpponentRef.current) {
+ /*if (isEndedByOpponentRef.current) {
     console.log("⛔ Không lưu trận vì kết thúc bởi đối thủ.");
     return;
-  }
+  }*/
   const winner =
     surrender === 1 ? 'black' :
     surrender === 2 ? 'white' :
@@ -556,7 +556,10 @@ useEffect(() => {
       `Score - White: ${gameState.whiteScore}, Black: ${gameState.blackScore}`,
     deltaElo: 0,
   };
-console.log(payload)
+console.log(payload);
+if((winner=='white'&&isCurrentPlayerWhite)||(winner=='black'&&!isCurrentPlayerWhite)) {
+  return;
+}
   createMatch(payload)
     .then(res => {
       console.log('✅ Match saved to server:', res);
