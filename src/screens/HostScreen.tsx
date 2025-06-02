@@ -1,12 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { useLanguage } from '../asycnc_store/LanguageContext';
-import { useTheme } from '../asycnc_store/ThemeContext';
-import { translations } from '../untils/i18n';
-import { notify } from '../untils/Notify';
-import { useNotification } from '../asycnc_store/NotificationContext';
-import { FlatList, Image, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../navigation/AppNavigator';
+import {useLanguage} from '../asycnc_store/LanguageContext';
+import {useTheme} from '../asycnc_store/ThemeContext';
+import {translations} from '../untils/i18n';
+import {notify} from '../untils/Notify';
+import {useNotification} from '../asycnc_store/NotificationContext';
+import {
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import Header from '../components/common/Header';
 import ButtonHostTime from '../components/common/HostScreen/Button_Host_Time';
 import RapidTimeIcon from '../assets/icons/rapid_time_icon.svg';
@@ -18,41 +26,52 @@ import RandomIcon from '../assets/icons/random_icon.svg';
 import ButtonHostFriend from '../components/common/HostScreen/Button_Host_Friend';
 import Button_Save from '../components/common/Button/Button_Save';
 import SwordIcon from '../assets/icons/sword_icon.svg';
-import { TouchableOpacity } from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import HostMoreFunctionModal from '../components/common/HostScreen/HostMoreFunctionModal';
 import LinearGradient from 'react-native-linear-gradient';
-
 
 // Mock data for challenges
 const mockChallenges = [
   {
     id: 'ch1',
-    user: { _id: 'userid1', displayName: 'Nguyen Van A', avatar: require('../images/avatar_01.jpg') },
+    user: {
+      _id: 'userid1',
+      displayName: 'Nguyen Van A',
+      avatar: require('../images/avatar_01.jpg'),
+    },
     createdAt: '2025-05-28T13:00:00.000+00:00',
   },
   {
     id: 'ch2',
-    user: { _id: 'userid2', displayName: 'Tran Thi B', avatar: require('../images/avatar_02.jpg') },
+    user: {
+      _id: 'userid2',
+      displayName: 'Tran Thi B',
+      avatar: require('../images/avatar_02.jpg'),
+    },
     createdAt: '2025-05-28T12:30:00.000+00:00',
   },
   {
     id: 'ch3',
-    user: { _id: 'userid3', displayName: 'Le Van C', avatar: require('../images/avatar_03.jpg') },
+    user: {
+      _id: 'userid3',
+      displayName: 'Le Van C',
+      avatar: require('../images/avatar_03.jpg'),
+    },
     createdAt: '2025-05-28T12:00:00.000+00:00',
   },
 ];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Host'>;
 
-const HostScreen = ({ route, navigation }: Props) => {
-  const { language, toggleLanguage } = useLanguage();
+const HostScreen = ({route, navigation}: Props) => {
+  const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
 
-  const { theme, toggleTheme } = useTheme();
+  const {theme, toggleTheme} = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : lightStyles;
 
-  const { notification, toggleNotification } = useNotification();
+  const {notification, toggleNotification} = useNotification();
 
   const [accountLogin, setAccountLogin] = useState(
     route.params?.accountLogin ?? null,
@@ -61,7 +80,9 @@ const HostScreen = ({ route, navigation }: Props) => {
   const [match, setMatch] = useState(route.params?.match ?? null);
 
   const [isRankingMode, setIsRankingMode] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string>(route.params?.selectedTime ?? null);
+  const [selectedTime, setSelectedTime] = useState<string>(
+    route.params?.selectedTime ?? null,
+  );
   const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
 
   const [modalMoreFunctionVisible, setMoreFunctionVisible] = useState(false);
@@ -78,13 +99,17 @@ const HostScreen = ({ route, navigation }: Props) => {
     };
   }, []);
 
-
   const handleMoreTimeSetting = () => {
-    navigation.replace('HostTimeSetting', { accountLogin, friend, selectedTime, match });
+    navigation.replace('HostTimeSetting', {
+      accountLogin,
+      friend,
+      selectedTime,
+      match,
+    });
   };
 
   const handleFriend = () => {
-    navigation.replace('HostFriend', { accountLogin, selectedTime, match });
+    navigation.replace('HostFriend', {accountLogin, selectedTime, match});
   };
 
   const handleRankingMode = () => {
@@ -151,7 +176,7 @@ const HostScreen = ({ route, navigation }: Props) => {
         type: 'warning',
         systemNotification: true,
         pushState: notification,
-        inapp: true
+        inapp: true,
       });
       return;
     }
@@ -161,7 +186,7 @@ const HostScreen = ({ route, navigation }: Props) => {
       selectedTime,
       isRankingMode,
       selectedPiece,
-      match
+      match,
     }); // Tạo màn hình custom
     setSelectedTime(t.host_time_default + ' ' + t.host_time_min);
     setFriend(null);
@@ -174,8 +199,10 @@ const HostScreen = ({ route, navigation }: Props) => {
     setSelectedChallenge(challenge);
   };
 
-  const renderChallenge = ({ item }: { item: typeof mockChallenges[0] }) => (
-    <TouchableOpacity style={styles.challengeContainer} onPress={() => handleChallengePress(item)}>
+  const renderChallenge = ({item}: {item: (typeof mockChallenges)[0]}) => (
+    <TouchableOpacity
+      style={styles.challengeContainer}
+      onPress={() => handleChallengePress(item)}>
       <Image
         source={item.user.avatar || require('../images/user.png')}
         style={styles.challengeAvatar}
@@ -204,21 +231,19 @@ const HostScreen = ({ route, navigation }: Props) => {
     //Tiếp tục code chức năng tham gia phòng
   };
 
-
   return (
     <ScrollView
       style={styles.scrollView}
-      contentContainerStyle={{ alignItems: 'center' }}>
+      contentContainerStyle={{alignItems: 'center'}}>
       {/* Header */}
       <Header title={t.host} />
 
       {/* Id Room */}
-      <View style={[styles.ranking_mode, { marginTop: "10%" }]}>
+      <View style={[styles.ranking_mode, {marginTop: '10%'}]}>
         <Text style={styles.ranking_mode_title}>{t.host_room_id}</Text>
         <TextInput
           style={styles.input}
-          value={"Thay bằng match._id"}>
-        </TextInput>
+          value={'Thay bằng match._id'}></TextInput>
       </View>
 
       {/* Join Room */}
@@ -237,11 +262,10 @@ const HostScreen = ({ route, navigation }: Props) => {
 
         <TouchableOpacity onPress={handleJoinRoom}>
           <LinearGradient
-            colors={["#6B50F6", "#CC8FED"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.buttonJoin}
-          >
+            colors={['#6B50F6', '#CC8FED']}
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 1}}
+            style={styles.buttonJoin}>
             <Text style={styles.buttonJoinText}>{t.host_join}</Text>
           </LinearGradient>
         </TouchableOpacity>
@@ -250,15 +274,38 @@ const HostScreen = ({ route, navigation }: Props) => {
       {/* Choose Friend */}
       <View style={styles.divider} />
       {/* <ButtonHostFriend accountFriend={friend} onPress={handleFriend} /> */}
-      <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignSelf: 'center' }}>
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <Image source={accountLogin.avatarUrl ? { uri: accountLogin.avatarUrl } : require('../images/user.png')} style={styles.avatar} />
-          <Text style={styles.ranking_mode_title}>{accountLogin?.displayName || t.home_guest}</Text>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignSelf: 'center',
+        }}>
+        <View style={{flexDirection: 'column', alignItems: 'center'}}>
+          <Image
+            source={
+              accountLogin.avatarUrl
+                ? {uri: accountLogin.avatarUrl}
+                : require('../images/user.png')
+            }
+            style={styles.avatar}
+          />
+          <Text style={styles.ranking_mode_title}>
+            {accountLogin?.displayName || t.home_guest}
+          </Text>
         </View>
-        <SwordIcon width={60} height={60} style={{ marginHorizontal: '10%' }} />
-        <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-          <Image source={friend?.avatarFriend || require('../images/user_question_mark.png')} style={styles.avatar} />
-          <Text style={styles.ranking_mode_title}>{friend?.displayName || t.home_guest}</Text>
+        <SwordIcon width={60} height={60} style={{marginHorizontal: '10%'}} />
+        <View style={{flexDirection: 'column', alignItems: 'center'}}>
+          <Image
+            source={
+              friend?.avatarFriend ||
+              require('../images/user_question_mark.png')
+            }
+            style={styles.avatar}
+          />
+          <Text style={styles.ranking_mode_title}>
+            {friend?.displayName || t.home_guest}
+          </Text>
         </View>
       </View>
 
@@ -313,12 +360,14 @@ const HostScreen = ({ route, navigation }: Props) => {
       {/* List of Challenges */}
       <View style={styles.divider} />
       <View style={styles.challengesSection}>
-        <Text style={styles.challengesTitle}>{t.host_challenges} ({challenges.length})</Text>
+        <Text style={styles.challengesTitle}>
+          {t.host_challenges} ({challenges.length})
+        </Text>
         {challenges.length > 0 ? (
           <FlatList
             data={challenges}
             renderItem={renderChallenge}
-            keyExtractor={(item) => item.id}
+            keyExtractor={item => item.id}
             contentContainerStyle={styles.challengesList}
             scrollEnabled={false}
           />
@@ -504,7 +553,7 @@ const darkStyles = StyleSheet.create({
     color: 'white',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: 'white'
+    borderColor: 'white',
   },
   avatar: {
     width: 70,
