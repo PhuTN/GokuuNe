@@ -159,7 +159,7 @@ const whiteStyle = StyleSheet.create({
 });
 const darkStyle = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#535353',
   },
   heading: {
     textAlign: 'center',

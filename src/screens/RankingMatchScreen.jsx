@@ -692,7 +692,9 @@ const ChessBoard2Ref = useRef(
 
 };
 const whiteStyles = StyleSheet.create({
-  container: {},
+  container: {
+    
+  },
   buttonContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -743,7 +745,7 @@ const whiteStyles = StyleSheet.create({
 });
 const darkStyles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#535353',
   },
   buttonContainer: {
     display: 'flex',

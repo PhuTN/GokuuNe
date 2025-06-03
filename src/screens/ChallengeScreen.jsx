@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 
 import Header from "../components/common/Header";
-import { View,Text, StyleSheet,ScrollView, TouchableOpacity,Image } from "react-native";
-import { useTheme } from "../asycnc_store/ThemeContext"; 
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
+import { useTheme } from "../asycnc_store/ThemeContext";
 import PlayButton from "../components/common/Button/PlayButton";
 import { useLanguage } from "../asycnc_store/LanguageContext";
 import { translations } from "../untils/i18n";
@@ -10,45 +10,45 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useIsFocused } from "@react-navigation/native";
 
 const lockImage = require('../assets/images/lock.png');
-export default function ChallengeScreen({navigation}) {  
-    const {theme,toggleThem} = useTheme();
-    const isDark = theme==='dark';
-    const styles = isDark?blackStyle:whiteStyle;
-    const {language, toggleLanguage} = useLanguage();
-    const  t = translations[language];
-    const [currentLevel, setCurrentLevel] = useState(1);
-    const levels = Array.from({ length: 10 }, (_, i) => i + 1);
-    const [currentPassLevel, setCurrentPassLevel] = useState(1); 
-    const isFocused = useIsFocused();
-    async function loadCurrentPassLevel() {
-        let currentPassLevel = await AsyncStorage.getItem("current_pass_level");
-        if(currentPassLevel==null) {
-          currentPassLevel="1";
-          AsyncStorage.setItem("current_pass_level",currentPassLevel);
-        } 
-        setCurrentPassLevel(parseInt(currentPassLevel));
-      }
-    
-    useEffect(()=>{
-      
-      loadCurrentPassLevel();
-    },[isFocused])
-const LevelButton = ({ level }) => (
-  <TouchableOpacity style={level!=currentLevel?styles.levelButton:styles.levelSelectedButton} onPress={(e)=>{
-    e.preventDefault();
-    if(level>currentPassLevel) {
-      return;
+export default function ChallengeScreen({ navigation }) {
+  const { theme, toggleThem } = useTheme();
+  const isDark = theme === 'dark';
+  const styles = isDark ? blackStyle : whiteStyle;
+  const { language, toggleLanguage } = useLanguage();
+  const t = translations[language];
+  const [currentLevel, setCurrentLevel] = useState(1);
+  const levels = Array.from({ length: 10 }, (_, i) => i + 1);
+  const [currentPassLevel, setCurrentPassLevel] = useState(1);
+  const isFocused = useIsFocused();
+  async function loadCurrentPassLevel() {
+    let currentPassLevel = await AsyncStorage.getItem("current_pass_level");
+    if (currentPassLevel == null) {
+      currentPassLevel = "1";
+      AsyncStorage.setItem("current_pass_level", currentPassLevel);
     }
-    setCurrentLevel(level);
-    AsyncStorage.setItem("challenge_level",level+"");
-  }}>
-    {level<=currentPassLevel?<Text style={styles.levelText}>{t.level_text} {level}</Text>:<Image style={styles.image} source={lockImage}></Image>}
-  </TouchableOpacity>
-);
-useEffect(()=>{
-AsyncStorage.setItem("challenge_level","1");
-},[])
-  
+    setCurrentPassLevel(parseInt(currentPassLevel));
+  }
+
+  useEffect(() => {
+
+    loadCurrentPassLevel();
+  }, [isFocused])
+  const LevelButton = ({ level }) => (
+    <TouchableOpacity style={level != currentLevel ? styles.levelButton : styles.levelSelectedButton} onPress={(e) => {
+      e.preventDefault();
+      if (level > currentPassLevel) {
+        return;
+      }
+      setCurrentLevel(level);
+      AsyncStorage.setItem("challenge_level", level + "");
+    }}>
+      {level <= currentPassLevel ? <Text style={styles.levelText}>{t.level_text} {level}</Text> : <Image style={styles.image} source={lockImage}></Image>}
+    </TouchableOpacity>
+  );
+  useEffect(() => {
+    AsyncStorage.setItem("challenge_level", "1");
+  }, [])
+
   const renderRows = () => {
     const rows = [];
     for (let i = 0; i < levels.length; i += 2) {
@@ -60,32 +60,32 @@ AsyncStorage.setItem("challenge_level","1");
       );
     }
     return rows;
-  }; 
-    
-    return (
-        <View>
-            <Header title="Challenge"></Header>
-            <Text style={styles.text}>{t.choose_level_text}</Text> 
-            <ScrollView contentContainerStyle={styles.levelContainer}>
+  };
+
+  return (
+    <View style={styles.container}>
+      <Header title="Challenge"></Header>
+      <Text style={styles.text}>{t.choose_level_text}</Text>
+      <ScrollView contentContainerStyle={styles.levelContainer}>
         {renderRows()}
       </ScrollView>
       <PlayButton navigation={navigation} destination={"ChallengeDetail"}></PlayButton>
-        </View>
-    )
+    </View>
+  )
 }
 const whiteStyle = StyleSheet.create({
-    container: {
+  container: {
 
-    },
-    text:{
-        color:"#FFC107",
-        fontSize:40,
-        textAlign:'center',
-        fontWeight:'bold',
-        paddingTop:20
-    },
-    levelContainer: {
-        marginTop:40,
+  },
+  text: {
+    color: "#FFC107",
+    fontSize: 40,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingTop: 20
+  },
+  levelContainer: {
+    marginTop: 40,
     paddingHorizontal: 20,
   },
   row: {
@@ -105,23 +105,25 @@ const whiteStyle = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'white',
-  }, 
-  levelSelectedButton:{
+  },
+  levelSelectedButton: {
     backgroundColor: 'rgba(188, 44, 255, 0.5)',
     paddingVertical: 20,
     paddingHorizontal: 30,
     borderRadius: 10,
     width: '45%',
     alignItems: 'center',
-    borderWidth:5,
-    borderColor:'#FFC107'
+    borderWidth: 5,
+    borderColor: '#FFC107'
   },
   image: {
-    width:40,
-    height:40,
-    alignSelf:'center'
+    width: 40,
+    height: 40,
+    alignSelf: 'center'
   }
 });
 const blackStyle = StyleSheet.create({
-
+  container: {
+    backgroundColor: '#535353'
+  },
 })

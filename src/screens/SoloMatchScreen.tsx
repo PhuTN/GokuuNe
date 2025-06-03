@@ -445,7 +445,7 @@ buttonRow: {
     fontSize: 16,
   },
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#535353',
   },
   buttonContainer: {
     display: 'flex',

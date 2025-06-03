@@ -440,6 +440,9 @@ const whiteStyles = StyleSheet.create({
   },
 });
 const darkStyles = StyleSheet.create({
+  container: {
+    backgroundColor: '#535353',
+  },
   resultContainer: {
     alignItems: 'center',
     justifyContent: 'center',
