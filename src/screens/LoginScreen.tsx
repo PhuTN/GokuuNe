@@ -63,6 +63,7 @@ const LoginScreen = ({navigation}: Props) => {
 
       // ✅ Lưu token vào AsyncStorage
       if (data.token) {
+        console.log("Tokennnnnn", data.token);
         await AsyncStorage.setItem('token', data.token);
       }
       // ✅ Lưu user vào AsyncStorage
