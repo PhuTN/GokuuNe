@@ -58,12 +58,14 @@ const LoginScreen = ({navigation}: Props) => {
           systemNotification: true,
           pushState: notification,
         });
-
-        // 👉 Bạn có thể chọn return hoặc tiếp tục login tùy logic
-        return; // nếu bạn muốn chặn luôn login
+        return; // Nếu muốn chặn luôn login
       }
 
-      // ✅ Lưu thông tin user vào AsyncStorage
+      // ✅ Lưu token vào AsyncStorage
+      if (data.token) {
+        await AsyncStorage.setItem('token', data.token);
+      }
+      // ✅ Lưu user vào AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
 
       // ✅ Kết nối socket + emit user online
@@ -78,7 +80,7 @@ const LoginScreen = ({navigation}: Props) => {
         type: 'success',
         systemNotification: true,
         pushState: notification,
-        inapp: true
+        inapp: true,
       });
 
       // ✅ Navigate qua Home
@@ -136,6 +138,12 @@ const LoginScreen = ({navigation}: Props) => {
         });
         return;
       }
+
+      // ✅ Lưu token vào AsyncStorage nếu có
+      if (data.token) {
+        await AsyncStorage.setItem('token', data.token);
+      }
+      // ✅ Lưu user vào AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
 
       if (!socket.connected) {
