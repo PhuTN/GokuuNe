@@ -87,13 +87,13 @@ function RenderResultPopup(
    setFinalResult,
    realEnd
 ) { 
-  console.log("🧩 surrender =", surrender);
+  /*console.log("🧩 surrender =", surrender);
 console.log("🧩 isCurrentPlayerWhite =", isCurrentPlayerWhite);
 console.log("🧩 Máy hiện tại là:", isCurrentPlayerWhite ? "Trắng" : "Đen");
 console.log("🧩 Đầu hàng là:", surrender === 1 ? "Trắng" : surrender === 2 ? "Đen" : "Không ai");
 console.log("Is End",isEnd);
 console.log("Time Black",timeBlack);
-console.log("Time White", timeWhite);
+console.log("Time White", timeWhite);*/
  
   const yoursCore = isCurrentPlayerWhite ? whiteScore : blackScore;
   const opponentScore = isCurrentPlayerWhite ? blackScore : whiteScore;
@@ -254,7 +254,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [timeWhite, setTimeWhite] = useState('15:00');
   const [userId, setUserId] = useState(null); 
   const [opponentId, setOpponentId] = useState(null); 
-  const [currentIntervalId, setCurrentIntervalId] = useState(null);
+  const currentIntervalId= useRef(null);
   const [isCurrentPlayerWhite, setIsCurrentPlayerWhite] = useState(true);
   const [whiteScore, setWhiteScore] = useState(2.5);
   const [blackScore, setBlackScore] = useState(0);
@@ -267,8 +267,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [accountLogin, setAccountLogin] = useState(null);
   const [finalResult, setFinalResult] = useState(null);
   const realEnd = useRef(false);
-  const coolDownSecond = useRef(30);
-  const coolDownInterval= useRef(null);
+  
   
   
   const [playerBlack, setPlayerBlack] = useState({
@@ -296,6 +295,7 @@ const RankingMatchScreen = ({navigation}) => {
   });
 
   const [flag, setFlag] = useState(false);
+  const flagRef = useRef(false);
 useEffect(() => {
   return () => {
     // Khi rời khỏi màn hình (unmount)
@@ -431,15 +431,15 @@ setUserId(userId);
   : matchInfo.playerWhite.userId;
 setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
       setFlag(false);
+      flagRef.current=false;
       setWhiteScore(6.5);
       setBlackScore(0);
       setIsEnd(false);
       setSurrender(0);
       realEnd.current=false;
-      coolDownSecond.current=30;
-      coolDownInterval.current=null;
+      
   setIsStart(true);
-  const interval = setInterval(() => {
+  currentIntervalId.current = setInterval(() => {
           setTimeBlack((prev) => {
             const next = decreaseTime(prev);
             //console.log("⏱️ Đếm ngược đen:", next);
@@ -447,7 +447,7 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
           });
         }, 1000);
 
-        setCurrentIntervalId(interval);
+        
       console.log("⏳ Chờ 10s trước khi bắt đầu trận...");
       setTimeout(() => {
         console.log("🎯 Trận đấu bắt đầu!");
@@ -467,74 +467,29 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
 
   const handleEvent = gameState => { 
     console.log("Handle Event--------------------------------------------");
-    console.log(currentIntervalId);
-    clearInterval(currentIntervalId);
+    console.log(currentIntervalId.current);
+    clearInterval(currentIntervalId.current);
     
     
     
-    if (flag) {
+    if (flagRef.current) {
       console.log("It is black turn");
-      /*if(isCurrentPlayerWhite) {
-        coolDownInterval.current = setInterval(()=>{
-          if(coolDownSecond.current<=0) {
-            const surrenderMove = {
-            fromUser: userId,
-            move: "surrender",
-      }; 
-      console.log("Send surrenderpppppppppppppppppppppppppppppppppppppppppppppp");
-      socket.emit("move:send", surrenderMove);
       
-      setSurrender(1); 
-      clearInterval(coolDownInterval.current);
-      return; 
       
-          }
-        coolDownSecond.current=coolDownSecond.current-1;
-
-        },1000);
-      } 
-      else {
-        if(coolDownInterval.current!=null) {
-          clearInterval(coolDownInterval.current);
-        }
-        
-      }*/
-      setCurrentIntervalId(
-        setInterval(() => {
+       currentIntervalId.current= setInterval(() => {
           setTimeBlack(prevTimeBlack => decreaseTime(prevTimeBlack));
-        }, 1000),
-      );
+        }, 1000);
+      
     } else {
       console.log("It is white turn"); 
-      /*if(!isCurrentPlayerWhite) {
-        coolDownInterval.current = setInterval(()=>{
-          if(coolDownSecond.current<=0) { 
-            console.log("Send surrenderpppppppppppppppppppppppppppppppppppppppppppppp");
-            const surrenderMove = {
-            fromUser: userId,
-            move: "surrender",
-      };
-      socket.emit("move:send", surrenderMove); 
-      clearInterval(coolDownInterval.current);
-      setSurrender(1);
-      return;
-          }
-        coolDownSecond.current=coolDownSecond.current-1;
-
-        },1000);
-      } 
-      else {
-        if(coolDownInterval.current!=null) {
-          clearInterval(coolDownInterval.current);
-        }
-        
-      }*/
-      setCurrentIntervalId(
-        setInterval(() => {
+      
+      
+        currentIntervalId.current=setInterval(() => {
           setTimeWhite(prevTimeWhite => decreaseTime(prevTimeWhite));
-        }, 1000),
-      );
+        }, 1000);
+      
     }
+    flagRef.current=!flagRef.current;
     setFlag(prevF => !prevF);
     setWhiteScore(gameState.whiteScore);
     setBlackScore(gameState.blackScore);

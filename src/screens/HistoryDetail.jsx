@@ -9,6 +9,9 @@ import { translations } from "../untils/i18n";
 import { getMatchById } from "../api/matchApi";
 import { da } from "date-fns/locale";
 import { getUserById } from "../api/userApi";
+import { ResponseToGameState } from "../untils/ResponseToGameState";
+import { ScrollView } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/native";
 const blackPiece = require('../assets/images/pieceBlack.png');
 const whitePiece = require('../assets/images/pieceWhite.png');
 
@@ -29,38 +32,33 @@ export default function HistoryDetail({ route }) {
     const currentPositionInIndexArray = useRef(-1);
     const [blackSkip, setBlackSkip] = useState(false);
     const [whiteSkip, setWhiteSkip] = useState(false);
+    const isFocuse = useIsFocused;
     useEffect(() => {
-        loadBoardFromGameState(historyDetails.detail[0]);
+        loadBoardFromGameState(historyDetails.detail[0].boardData);
+        setCurrentIndex(0);
         console.log("Load");
-    }, []);
+    }, [isFocuse]);
     function loadBoardFromGameState(historyDetail) {
-        const boardData = historyDetail.boardData;
+        const boardData = historyDetail;
+        const tempPArr=pArr;
         for (let i = 0; i < 19; i++) {
             for (let j = 0; j < 19; j++) {
                 if (boardData[i][j] == 'B') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = blackPiece;
-                        return pArr;
-                    });
+                    tempPArr[19*i+j]= blackPiece;
                     continue;
                 }
                 if (boardData[i][j] == 'W') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = whitePiece;
-                        return pArr;
-                    });
+                    tempPArr[19*i+j]=whitePiece;
                     continue;
                 }
                 if (boardData[i][j] == '') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = null;
-                        return pArr;
-                    });
+                   tempPArr[19*i+j]=null;
                 }
             }
         };
         setBlackScore(historyDetail.blackScore);
         setWhiteScore(historyDetail.whiteScore);
+        setPArr(tempPArr);
     }
     function renderImageRow() {
         let res = [];
@@ -97,7 +95,9 @@ export default function HistoryDetail({ route }) {
                 const data = await getMatchById(matchId);  // 🔥 Gọi API
               
                 console.log("Matchdata",data);
-                setMatchData(data);
+                const matchDataMoves = ResponseToGameState(data.moves);
+                console.log("Match Data moves",matchDataMoves);
+                setMatchData(matchDataMoves);
                 const playerBlackData = await getUserById(data.playerBlack._id);
                 const playerWhiteData = await getUserById(data.playerWhite._id);
                 
@@ -117,7 +117,7 @@ export default function HistoryDetail({ route }) {
 
     return <View style={styles.background}>
         <Header title="History"></Header>
-
+        <ScrollView>
         <View style={styles.player_container}>
             <Image source={{ uri: playerBlack==null?"":playerBlack.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerBlack.avatarUrl}} style={styles.avatar} />
             <View style={styles.info}>
@@ -203,7 +203,9 @@ export default function HistoryDetail({ route }) {
                     {t.score}: {whiteScore}
                 </Text>
             </View>
-        </View>
+        </View> 
+
+        </ScrollView>
 
     </View>
 }
