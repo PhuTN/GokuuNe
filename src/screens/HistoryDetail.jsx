@@ -51,7 +51,7 @@ export default function HistoryDetail({ route }) {
                     tempPArr[19*i+j]=whitePiece;
                     continue;
                 }
-                if (boardData[i][j] == '') {
+                if (boardData[i][j] == '0') {
                    tempPArr[19*i+j]=null;
                 }
             }
@@ -127,16 +127,16 @@ export default function HistoryDetail({ route }) {
                 </Text>
             </View>
         </View>
-        {blackSkip&&<Text>Black Skip</Text>}
+        {blackSkip&&<Text style={styles.skipText}>{t.black_skip_text}</Text>}
         <View style={styles.button_container}>
             <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex > 0 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
                 e.preventDefault();
                 if (currentIndex > 0) {
                     let i = currentIndex - 1;
                     setCurrentIndex(currentIndex => currentIndex - 1);
-                    if(matchData[i].move=="Black pass") {
+                    if(matchData[i]=="Black pass") {
                         setBlackSkip(true);
-                    } else if(matchData[i].move=="White pass") {
+                    } else if(matchData[i]=="White pass") {
                         setWhiteSkip(true);
                     }
                     else {
@@ -146,14 +146,14 @@ export default function HistoryDetail({ route }) {
                     }
                 }
             }}>{currentIndex > 0 && <Text style={styles.nav_button_text}>{t.prev}</Text>}</TouchableOpacity>
-            <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex < historyDetails.detail.length - 1 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
+            <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex < matchData?.length - 1 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
                 e.preventDefault();
                 if (currentIndex < matchData.length - 1) {
                     let i = currentIndex + 1;
                     setCurrentIndex(currentIndex => currentIndex + 1);
-                    if(matchData[i].move=="Black pass") {
+                    if(matchData[i]=="Black pass") {
                         setBlackSkip(true);
-                    } else if(matchData[i].move=="White pass") {
+                    } else if(matchData[i]=="White pass") {
                         setWhiteSkip(true);
                     }
                     else {
@@ -162,7 +162,7 @@ export default function HistoryDetail({ route }) {
                         loadBoardFromGameState(matchData[i]);
                     }
                 }
-            }}>{(currentIndex < historyDetails.detail.length - 1) && <Text style={styles.nav_button_text}>{t.next}</Text>}</TouchableOpacity>
+            }}>{(currentIndex < matchData?.length - 1) && <Text style={styles.nav_button_text}>{t.next}</Text>}</TouchableOpacity>
         </View>
         <View>
             <View style={styles.chessBoardBackGround}>
@@ -194,7 +194,7 @@ export default function HistoryDetail({ route }) {
 
             <View></View>
         </View>
-        {whiteSkip&&<Text>White Skip</Text>}
+        {whiteSkip&&<Text style={styles.skipText}>{t.white_skip_text}</Text>}
         <View style={styles.player_container}>
             <Image source={{ uri: playerWhite==null?"":playerWhite.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerWhite.avatarUrl }} style={styles.avatar} />
             <View style={styles.info}>
@@ -334,6 +334,12 @@ const whiteStyle = StyleSheet.create({
         fontSize: 14,
         color: '#555',
     },
+    skipText: {
+        alignSelf:'center',
+        marginTop:20,
+        fontSize:20,
+        fontWeight:2000
+    }
 });
 const blackStyle = StyleSheet.create({
     background: {
@@ -444,6 +450,13 @@ const blackStyle = StyleSheet.create({
     score: {
         fontSize: 14,
         color: '#EEE',
-    },
+    }, 
+    skipText: {
+        alignSelf:'center',
+        marginTop:20,
+        fontSize:20,
+        fontWeight:2000,
+        color:'white'
+    }
 });
 

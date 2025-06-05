@@ -318,13 +318,16 @@ setNewPosition([index,i,currentSide]);
       } */
   }
 function onReceiveMove(moveString, mover) {
-  console.log("Receive from enemy,...........",moveString);
+  console.log("Receive from enemy,...........",moveString); 
+  
 if (moveString === "end") {
   isEndedByOpponentRef.current = true; 
-  console.log("📥 Nhận nước đi: END từ đối thủ");
+  console.log("📥 Nhận nước đi: END từ đối thủ"); 
+  gameState.calculateScore();
+  
   setIsEnd(true);
   
-  gameState.calculateScore();
+  
   handleIsEnd?.(gameState);
   return;
 }

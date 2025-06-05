@@ -4,6 +4,7 @@ export  function ResponseToGameState(moveStringArr) {
     const res =[];
     let isBlackTurn=true;
     const gameState = new GameState();
+    res.push(copyPosArrayToAnotherArray(gameState.posArray));
     for(let i=0;i<moveStringArr.length;i++) {
         if(moveStringArr[i].move=="Black pass") {
             res.push("Black pass");

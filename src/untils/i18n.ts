@@ -73,6 +73,8 @@ export const translations = {
     player2_Text: 'Player 2',
     try_again_text: 'Try again',
     next_level_text: 'Next level',
+    white_skip_text:"White Skip",
+    black_skip_text:"Black skip",
     //dien
     noti_permission_deny:
       'You have previously denied Notifications. Please go to settings to enable',
@@ -348,7 +350,9 @@ export const translations = {
     choose_level_text: 'Chọn màn chơi',
     level_text: 'Màn',
     try_again_text: 'Thử lại',
-    next_level_text: 'Màn kế tiếp',
+    next_level_text: 'Màn kế tiếp', 
+    white_skip_text:"Trắng bỏ lượt",
+    black_skip_text:"Đen bỏ lượt",
 
     //dien
     noti_permission_deny:
