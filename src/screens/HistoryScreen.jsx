@@ -73,6 +73,10 @@ export default function HistoryScreen({ navigation }) {
                     console.warn('🚨 Không tìm thấy user trong AsyncStorage');
                 }
             } catch (error) {
+                console.log(error+"");
+                if(error=="AxiosError: Request failed with status code 404") {
+                    return;
+                }
                 console.error('❌ Lỗi lấy user hoặc lịch sử đấu:', error);
             }
         };

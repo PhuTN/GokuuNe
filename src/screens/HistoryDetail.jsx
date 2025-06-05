@@ -9,6 +9,9 @@ import { translations } from "../untils/i18n";
 import { getMatchById } from "../api/matchApi";
 import { da } from "date-fns/locale";
 import { getUserById } from "../api/userApi";
+import { ResponseToGameState } from "../untils/ResponseToGameState";
+import { ScrollView } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/native";
 const blackPiece = require('../assets/images/pieceBlack.png');
 const whitePiece = require('../assets/images/pieceWhite.png');
 
@@ -29,38 +32,33 @@ export default function HistoryDetail({ route }) {
     const currentPositionInIndexArray = useRef(-1);
     const [blackSkip, setBlackSkip] = useState(false);
     const [whiteSkip, setWhiteSkip] = useState(false);
+    const isFocuse = useIsFocused;
     useEffect(() => {
-        loadBoardFromGameState(historyDetails.detail[0]);
+        loadBoardFromGameState(historyDetails.detail[0].boardData);
+        setCurrentIndex(0);
         console.log("Load");
-    }, []);
+    }, [isFocuse]);
     function loadBoardFromGameState(historyDetail) {
-        const boardData = historyDetail.boardData;
+        const boardData = historyDetail;
+        const tempPArr=pArr;
         for (let i = 0; i < 19; i++) {
             for (let j = 0; j < 19; j++) {
                 if (boardData[i][j] == 'B') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = blackPiece;
-                        return pArr;
-                    });
+                    tempPArr[19*i+j]= blackPiece;
                     continue;
                 }
                 if (boardData[i][j] == 'W') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = whitePiece;
-                        return pArr;
-                    });
+                    tempPArr[19*i+j]=whitePiece;
                     continue;
                 }
-                if (boardData[i][j] == '') {
-                    setPArr(pArr => {
-                        pArr[i * 19 + j] = null;
-                        return pArr;
-                    });
+                if (boardData[i][j] == '0') {
+                   tempPArr[19*i+j]=null;
                 }
             }
         };
         setBlackScore(historyDetail.blackScore);
         setWhiteScore(historyDetail.whiteScore);
+        setPArr(tempPArr);
     }
     function renderImageRow() {
         let res = [];
@@ -97,7 +95,9 @@ export default function HistoryDetail({ route }) {
                 const data = await getMatchById(matchId);  // 🔥 Gọi API
               
                 console.log("Matchdata",data);
-                setMatchData(data);
+                const matchDataMoves = ResponseToGameState(data.moves);
+                console.log("Match Data moves",matchDataMoves);
+                setMatchData(matchDataMoves);
                 const playerBlackData = await getUserById(data.playerBlack._id);
                 const playerWhiteData = await getUserById(data.playerWhite._id);
                 
@@ -117,9 +117,9 @@ export default function HistoryDetail({ route }) {
 
     return <View style={styles.background}>
         <Header title="History"></Header>
-
+        <ScrollView>
         <View style={styles.player_container}>
-            <Image source={{ uri: playerBlack==null?"":playerBlack.avatarUrl }} style={styles.avatar} />
+            <Image source={{ uri: playerBlack==null?"":playerBlack.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerBlack.avatarUrl}} style={styles.avatar} />
             <View style={styles.info}>
                 <Text style={styles.name}>{playerBlack==null?"":playerBlack.displayName}</Text>
                 <Text style={styles.score}>
@@ -127,23 +127,42 @@ export default function HistoryDetail({ route }) {
                 </Text>
             </View>
         </View>
+        {blackSkip&&<Text style={styles.skipText}>{t.black_skip_text}</Text>}
         <View style={styles.button_container}>
             <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex > 0 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
                 e.preventDefault();
                 if (currentIndex > 0) {
                     let i = currentIndex - 1;
                     setCurrentIndex(currentIndex => currentIndex - 1);
-                    loadBoardFromGameState(historyDetails.detail[i]);
+                    if(matchData[i]=="Black pass") {
+                        setBlackSkip(true);
+                    } else if(matchData[i]=="White pass") {
+                        setWhiteSkip(true);
+                    }
+                    else {
+                        setBlackSkip(false);
+                        setWhiteSkip(false);
+                        loadBoardFromGameState(matchData[i]);
+                    }
                 }
             }}>{currentIndex > 0 && <Text style={styles.nav_button_text}>{t.prev}</Text>}</TouchableOpacity>
-            <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex < historyDetails.detail.length - 1 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
+            <TouchableOpacity style={[styles.nav_button, { backgroundColor: currentIndex < matchData?.length - 1 ? 'rgba(188, 44, 255, 0.5)' : 'transparent' }]} onPress={(e) => {
                 e.preventDefault();
-                if (currentIndex < historyDetails.detail.length - 1) {
+                if (currentIndex < matchData.length - 1) {
                     let i = currentIndex + 1;
                     setCurrentIndex(currentIndex => currentIndex + 1);
-                    loadBoardFromGameState(historyDetails.detail[i]);
+                    if(matchData[i]=="Black pass") {
+                        setBlackSkip(true);
+                    } else if(matchData[i]=="White pass") {
+                        setWhiteSkip(true);
+                    }
+                    else {
+                        setBlackSkip(false);
+                        setWhiteSkip(false);
+                        loadBoardFromGameState(matchData[i]);
+                    }
                 }
-            }}>{(currentIndex < historyDetails.detail.length - 1) && <Text style={styles.nav_button_text}>{t.next}</Text>}</TouchableOpacity>
+            }}>{(currentIndex < matchData?.length - 1) && <Text style={styles.nav_button_text}>{t.next}</Text>}</TouchableOpacity>
         </View>
         <View>
             <View style={styles.chessBoardBackGround}>
@@ -151,7 +170,7 @@ export default function HistoryDetail({ route }) {
                     {board.map((item, index) => {
                         return (<View style={styles.row} key={'Row' + index}>
                             {item.map((cell, i) => {
-                                return <View>
+                                return <View key={"Col "+i+",Row "+index}>
                                     {cell}
                                     {/*<Dot index={index * 19 + i}></Dot>*/}
                                 </View>
@@ -175,15 +194,18 @@ export default function HistoryDetail({ route }) {
 
             <View></View>
         </View>
+        {whiteSkip&&<Text style={styles.skipText}>{t.white_skip_text}</Text>}
         <View style={styles.player_container}>
-            <Image source={{ uri: playerWhite==null?"":playerWhite.avatarUrl }} style={styles.avatar} />
+            <Image source={{ uri: playerWhite==null?"":playerWhite.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerWhite.avatarUrl }} style={styles.avatar} />
             <View style={styles.info}>
                 <Text style={styles.name}>{playerWhite==null?"":playerWhite.displayName}</Text>
                 <Text style={styles.score}>
                     {t.score}: {whiteScore}
                 </Text>
             </View>
-        </View>
+        </View> 
+
+        </ScrollView>
 
     </View>
 }
@@ -312,6 +334,12 @@ const whiteStyle = StyleSheet.create({
         fontSize: 14,
         color: '#555',
     },
+    skipText: {
+        alignSelf:'center',
+        marginTop:20,
+        fontSize:20,
+        fontWeight:2000
+    }
 });
 const blackStyle = StyleSheet.create({
     background: {
@@ -422,6 +450,13 @@ const blackStyle = StyleSheet.create({
     score: {
         fontSize: 14,
         color: '#EEE',
-    },
+    }, 
+    skipText: {
+        alignSelf:'center',
+        marginTop:20,
+        fontSize:20,
+        fontWeight:2000,
+        color:'white'
+    }
 });
 
