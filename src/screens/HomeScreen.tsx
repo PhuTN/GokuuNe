@@ -209,8 +209,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
         message: t.noti_info,
         description: t.noti_go_chat,
         type: 'info',
-        systemNotification: true,
-        pushState: notification,
+   
+      
         inapp: true,
       });
       navigation.navigate('Chat', { accountLogin });

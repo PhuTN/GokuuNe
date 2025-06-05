@@ -59,7 +59,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
   }, [route.params]);
 
   const handleWhiteArmy = () => {
-    setSelectedPiece('white');
+    setSelectedPiece('W');
     // notify({
     //     message: t.noti_info,
     //     description: t.noti_ai_white_army,
@@ -70,7 +70,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
   };
 
   const handleBlackArmy = () => {
-    setSelectedPiece('black');
+    setSelectedPiece('B');
     // notify({
     //     message: t.noti_info,
     //     description: t.noti_ai_black_army,
@@ -103,7 +103,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
   };
 
   const handleMediumMode = () => {
-    setSelectedMode('medium');
+    setSelectedMode('normal');
     // notify({
     //     message: t.noti_info,
     //     description: t.noti_ai_medium_mode,
@@ -142,7 +142,16 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
       systemNotification: true,
       pushState: notification,
     });
-    navigation.navigate('AiMatchSolo', {accountLogin, selectedPiece, selectedMode}); // Tạo màn hình chơi với AI
+   const randomColor = Math.random() < 0.5 ? 'B' : 'W';
+
+navigation.navigate('AiMatchSolo', {
+  accountLogin,
+  selectedPiece: selectedPiece === 'random' ? randomColor : selectedPiece,
+  selectedMode,
+});
+
+
+    console.log("MODECO",selectedPiece, selectedMode  )
     setSelectedMode(null);
     setSelectedPiece(null);
   };
@@ -172,7 +181,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
           Icon={WhiteArmyIcon}
           color="black"
           onPress={handleWhiteArmy}
-          isSelected={selectedPiece === 'white'}
+          isSelected={selectedPiece === 'W'}
         />
         <Button_AIChallenge_Chess_Piece
           Icon={RandomIcon}
@@ -184,7 +193,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
           Icon={BlackArmyIcon}
           color="white"
           onPress={handleBlackArmy}
-          isSelected={selectedPiece === 'black'}
+          isSelected={selectedPiece === 'B'}
         />
       </View>
 
@@ -207,7 +216,7 @@ const AIChallengeScreen = ({route, navigation}: Props) => {
           Icon2={CrownLightIcon}
           Icon3={CrownBlackIcon}
           onPress={handleMediumMode}
-          isSelected={selectedMode === 'medium'}
+          isSelected={selectedMode === 'normal'}
         />
         <Button_AIChallenge_Mode
           title={t.ai_challenge_easy}

@@ -28,7 +28,7 @@ const default_avatar = require('../assets/images/default_avatar.jpg');
 const messageIcon = require('../assets/images/message.png');
 const noteIcon = require('../assets/images/note.png');
 
-const AiMatchSoloScreen = ({navigation}) => {
+const AiMatchSoloScreen = ({navigation, route}) => {
   const {theme} = useTheme();
   const isDark = theme === 'dark';
   const styles = isDark ? darkStyles : whiteStyles;
@@ -48,6 +48,11 @@ const AiMatchSoloScreen = ({navigation}) => {
   const [flag, setFlag] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [accountLogin, setAccountLogin] = useState<any>(null);
+
+
+    const {selectedPiece, selectedMode} = route.params || {};
+console.log("HEE",selectedPiece, selectedMode)
+    const [playerColor, setPlayerColor] = useState('B'); // mặc định là đen
   useEffect(() => {
     const loadAccountLogin = async () => {
       const acc = await AsyncStorage.getItem('currentUser');
@@ -113,38 +118,47 @@ const AiMatchSoloScreen = ({navigation}) => {
   });
 
   useEffect(() => {
-    setWhiteScore(6.5);
-    setBlackScore(0);
-    setIsEnd(false);
-    setSurrender(0);
-    setIsStart(true);
-    setIsCurrentPlayerWhite(true);
+  setWhiteScore(6.5);
+  setBlackScore(0);
+  setIsEnd(false);
+  setSurrender(0);
+  setIsStart(true);
+  setIsCurrentPlayerWhite(selectedPiece === 'W'); // nếu người chơi là trắng thì bắt đầu là trắng
 
-    const initAIMatch = async () => {
-      try {
-        const userStr = await AsyncStorage.getItem('currentUser');
-        if (!userStr) return;
+  const initAIMatch = async () => {
+    try {
+      const userStr = await AsyncStorage.getItem('currentUser');
+      if (!userStr) return;
 
-        const user = JSON.parse(userStr);
-        const userId = 'guest_' + Math.floor(Math.random() * 1000000);
-        setUserId(userId);
-        await startAIMatch({
-          userId,
-          difficulty: 'normal',
-          playerColor: 'B',
-          boardSize: 19,
-        });
-        console.log('✅ Phiên AI đã bắt đầu cho', userId);
-        setTimeout(() => {
-          setIsReady(true);
-        }, 10000);
-      } catch (err) {
-        console.error('❌ Lỗi khi khởi tạo AI:', err);
-      }
-    };
+      const user = JSON.parse(userStr);
+      const userId = 'guest_' + Math.floor(Math.random() * 1000000);
+      setUserId(userId);
 
-    initAIMatch();
-  }, [isFocused]);
+      // Gửi API tạo trận với AI
+      await startAIMatch({
+        userId,
+        difficulty: selectedMode,
+        playerColor: selectedPiece,
+        boardSize: 19,
+      });
+
+      console.log('✅ Phiên AI đã bắt đầu cho', userId);
+
+      // Cập nhật màu quân cho người chơi
+      setPlayerColor(selectedPiece); // 'B' hoặc 'W'
+
+      // Cờ sẵn sàng sau vài giây
+      setTimeout(() => {
+        setIsReady(true);
+      }, 10000);
+    } catch (err) {
+      console.error('❌ Lỗi khi khởi tạo AI:', err);
+    }
+  };
+
+  initAIMatch();
+}, [isFocused]);
+
 
   const handleEvent = gameState => {
     setWhiteScore(gameState.whiteScore);
@@ -252,16 +266,17 @@ const AiMatchSoloScreen = ({navigation}) => {
                 playerName={'AI'}
                 avatar={'https://typli.ai/ai-text-generator.png'}></AIPlayerTag>
               <ChessBoard3
-                handleEvent={handleEvent}
-                flag={flag}
-                handleIsEnd={handleIsEnd}
-                handleSurrender={handleSurrender}
-                isCurrentPlayerWhite={isCurrentPlayerWhite}
-                isStart={isStart}
-                playerColor={'B'}
-                userId={userId}
-                isReady={isReady}
-              />
+  handleEvent={handleEvent}
+  flag={flag}
+  handleIsEnd={handleIsEnd}
+  handleSurrender={handleSurrender}
+  isCurrentPlayerWhite={isCurrentPlayerWhite}
+  isStart={isStart}
+  playerColor={playerColor} // 👈 màu người chơi
+ 
+  userId={userId}
+  isReady={isReady}
+/>
               <AIPlayerTag
                 playerName={user?.userName}
                 avatar={user?.userAvatarURL}></AIPlayerTag>

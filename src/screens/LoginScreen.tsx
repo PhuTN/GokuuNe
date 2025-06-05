@@ -80,8 +80,8 @@ const LoginScreen = ({navigation}: Props) => {
         message: t.noti_success,
         description: t.noti_login_success,
         type: 'success',
-        systemNotification: true,
-        pushState: notification,
+       
+       
         inapp: true,
       });
 
@@ -95,8 +95,8 @@ const LoginScreen = ({navigation}: Props) => {
         message: t.noti_danger,
         description: error.response?.data?.error || t.noti_login_faile,
         type: 'danger',
-        systemNotification: true,
-        pushState: notification,
+       
+
       });
     }
   };
