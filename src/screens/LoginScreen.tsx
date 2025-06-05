@@ -65,6 +65,8 @@ const LoginScreen = ({navigation}: Props) => {
       if (data.token) {
         console.log("Tokennnnnn", data.token);
         await AsyncStorage.setItem('token', data.token);
+        const savedToken = await AsyncStorage.getItem('token');
+        console.log('--- [LOGIN] Token vừa lưu:', savedToken);
       }
       // ✅ Lưu user vào AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
@@ -143,6 +145,8 @@ const LoginScreen = ({navigation}: Props) => {
       // ✅ Lưu token vào AsyncStorage nếu có
       if (data.token) {
         await AsyncStorage.setItem('token', data.token);
+        const savedToken = await AsyncStorage.getItem('token');
+        console.log('--- [GOOGLE LOGIN] Token vừa lưu:', savedToken);
       }
       // ✅ Lưu user vào AsyncStorage
       await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));

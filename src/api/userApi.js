@@ -41,13 +41,9 @@ export const getUserById = async id => {
 // 🟢 Update user
 export const updateUser = async (id, userData) => {
   const token = await AsyncStorage.getItem('token');
-  const response = await api.put(
-    `/${id}`,
-    {
-      headers: {Authorization: `Bearer ${token}`},
-    },
-    userData,
-  );
+  const response = await api.put(`/${id}`, userData, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
   return response.data;
 };
 
@@ -65,10 +61,10 @@ export const addFriend = async (userId, friendId) => {
   const token = await AsyncStorage.getItem('token');
   const response = await api.post(
     `/${userId}/friends`,
+    {friendId},
     {
       headers: {Authorization: `Bearer ${token}`},
     },
-    {friendId},
   );
   return response.data;
 };
@@ -78,10 +74,10 @@ export const updateFriendStatus = async (userId, friendId, status) => {
   const token = await AsyncStorage.getItem('token');
   const response = await api.patch(
     `/${userId}/friends`,
+    {friendId, status},
     {
       headers: {Authorization: `Bearer ${token}`},
     },
-    {friendId, status},
   );
   return response.data;
 };
@@ -92,11 +88,11 @@ export const sendChallenge = async (userId, challengerId, receiverId) => {
   const response = await api.post(
     `/${userId}/challenges/send`,
     {
-      headers: {Authorization: `Bearer ${token}`},
-    },
-    {
       challengerId,
       receiverId,
+    },
+    {
+      headers: {Authorization: `Bearer ${token}`},
     },
   );
   return response.data;
@@ -176,10 +172,10 @@ export const sendFriendRequest = async (fromUserId, toUserId) => {
   const token = await AsyncStorage.getItem('token');
   const response = await api.post(
     `/friends/request`,
+    {fromUserId, toUserId},
     {
       headers: {Authorization: `Bearer ${token}`},
     },
-    {fromUserId, toUserId},
   );
   return response.data;
 };
@@ -194,12 +190,12 @@ export const respondToFriendRequest = async (
   const response = await api.post(
     `/friends/respond`,
     {
-      headers: {Authorization: `Bearer ${token}`},
-    },
-    {
       fromUserId,
       toUserId,
       accepted,
+    },
+    {
+      headers: {Authorization: `Bearer ${token}`},
     },
   );
   return response.data;
