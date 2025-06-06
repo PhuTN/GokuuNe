@@ -86,7 +86,11 @@ export default function ChessBoard2({
   isStart,
    userId,
    playerColor,
-   opponentId
+   opponentId,
+   timeWhite,
+   timeBlack,
+   realEnd
+   
    
 }) {
 console.log("MAAAAAAM",playerColor)
@@ -191,6 +195,23 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
     }
     return res;
   }
+useEffect(()=>{
+  if(realEnd.current==true) {
+    return;
+  }
+  if(timeWhite=="0:00") {
+    if(isCurrentPlayerWhite) {
+      onSurrender(true);
+
+    }
+  } 
+  if(timeBlack=="0:00") {
+    if(!isCurrentPlayerWhite) {
+      onSurrender(false);
+      
+    }
+  }
+},[timeWhite,timeBlack])
 
 async function onSurrender(isWhite) {
   console.log("Current Player White",isWhite);
@@ -566,6 +587,7 @@ handleIsEnd(gameState);
 if((winner=='white'&&!isCurrentPlayerWhite)||(winner=='black'&&isCurrentPlayerWhite)) {
   return;
 }
+
   createMatch(payload)
     .then(res => {
       console.log('✅ Match saved to server:', res);

@@ -85,7 +85,7 @@ function RenderResultPopup(
   setTimeBlack , // 👈 thêm
    hasSetTimeZero, 
    setFinalResult,
-   realEnd
+   realEnd,setTimeRef
 ) { 
   /*console.log("🧩 surrender =", surrender);
 console.log("🧩 isCurrentPlayerWhite =", isCurrentPlayerWhite);
@@ -127,6 +127,8 @@ result= !isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0;
 if(surrender!=0) {
   result = isPlayerWin ? 1 : whiteScore === blackScore ? 0.5 : 0;
 }
+
+
 const deltaElo = calculateDeltaElo(yourElo, opponentElo, result);
 gameResult.deltaElo = deltaElo;
 
@@ -188,11 +190,18 @@ if (isEnd) {
     }
   }
   if (timeWhite == '0:00') {
-    clearInterval(currentIntervalId);
-    if (!isCurrentPlayerWhite) {
+    
+    clearInterval(currentIntervalId); 
+    setTimesOnce();
+    /*if(setTimeRef.current==true) {
+      return;
+    }*/
+    setTimeRef.current=true;
+    if (result==1) {
       gameResult.resultText = 'Victory';
-setTimesOnce();
-setFinalResult(gameResult); 
+      
+
+setFinalResult(gameResult);
 realEnd.current=true;
 console.log("Set Time Blackkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
       return 
@@ -204,7 +213,7 @@ console.log("Set Time Blackkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
     }
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     gameResult.resultText = 'Defeat';
-    setTimesOnce(); 
+    
     setFinalResult(gameResult); 
     realEnd.current=true; 
     return; /*(
@@ -216,9 +225,15 @@ console.log("Set Time Blackkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
   
   if (timeBlack == '0:00') {
     clearInterval(currentIntervalId);
-    if (isCurrentPlayerWhite) {
+    setTimesOnce();
+    /*if(setTimeRef.current==true) {
+      return;
+    }*/
+    setTimeRef.current=true;
+    if (result==1) {
       gameResult.resultText = 'Victory';
-      setTimesOnce();
+     
+      
       setFinalResult(gameResult);  
       realEnd.current=true;
       console.log("Set Time Whiteeeeeeeeeeeeeeeeeeeeeeeeee");
@@ -231,7 +246,7 @@ console.log("Set Time Blackkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
     }
     //return <ResultPopup result={"YOU LOSE"} navigation={navigation} yourScore={yoursCore} opponentScore={opponentScore} state={0}></ResultPopup>
     gameResult.resultText = 'Defeat';
-    setTimesOnce();
+    
     setFinalResult(gameResult); 
     realEnd.current=true;
     return ;/*(
@@ -251,8 +266,8 @@ const RankingMatchScreen = ({navigation}) => {
   const isFocuse = useIsFocused();
   const messageIcon = require('../assets/images/message.png');
   const noteIcon = require('../assets/images/note.png');
-  const [timeBlack, setTimeBlack] = useState('15:00');
-  const [timeWhite, setTimeWhite] = useState('15:00');
+  const [timeBlack, setTimeBlack] = useState('1:00');
+  const [timeWhite, setTimeWhite] = useState('1:00');
   const [userId, setUserId] = useState(null); 
   const [opponentId, setOpponentId] = useState(null); 
   const currentIntervalId= useRef(null);
@@ -268,6 +283,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [accountLogin, setAccountLogin] = useState(null);
   const [finalResult, setFinalResult] = useState(null);
   const realEnd = useRef(false);
+  const setTimeRef= useRef(false);
   
   const [resultKey, setResultKey] = useState(0); // 👈 NEW
   
@@ -332,12 +348,12 @@ useEffect(()=>{
           surrender,
           playerBlack,
           playeWhite,
-          currentIntervalId,
+          currentIntervalId.current,
           setTimeWhite, // 👈 thêm
   setTimeBlack,  // 👈 thêm,
    hasSetTimeZero,
    setFinalResult,
-   realEnd
+   realEnd,setTimeRef
         );
   
 },[timeWhite,timeBlack,isEnd,surrender]);
@@ -433,10 +449,12 @@ setUserId(userId);
 setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
       setFlag(false);
       flagRef.current=false;
+      setTimeRef.current=false;
       setWhiteScore(6.5);
       setBlackScore(0);
       setIsEnd(false);
       setSurrender(0);
+      
       realEnd.current=false;
       
   setIsStart(true);
@@ -520,7 +538,7 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
   setTimeBlack,  // 👈 thêm,
    hasSetTimeZero,
    setFinalResult,
-   realEnd
+   realEnd,setTimeRef
         );
     
   };
@@ -544,6 +562,8 @@ const ChessBoard2Ref = useRef(
    
     isStart={isStart}
       userId={userId}
+      timeBlack={timeBlack} 
+      timeWhite={timeWhite}
   />
 );
  return (
@@ -592,7 +612,11 @@ const ChessBoard2Ref = useRef(
         isStart={isStart}
         playerColor={isCurrentPlayerWhite ? "W" : "B"}
         userId={userId}
-        opponentId={opponentId}
+        opponentId={opponentId} 
+        timeBlack={timeBlack} 
+        timeWhite={timeWhite}
+        realEnd={realEnd}
+        
       />
     </ZoomWrapper>
   </View>
