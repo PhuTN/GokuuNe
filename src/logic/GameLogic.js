@@ -323,7 +323,10 @@ export class GameState {
             }
         }
     }
-    calculateScore() {
+    calculateScore(realEnd) { 
+        if(realEnd) {
+            return;
+        }
         this.clearDeathTechnique();
         const isVisited = new Array(19);
         for (let i = 0; i < 19; i++) {
@@ -344,9 +347,11 @@ export class GameState {
                         const cornerSum = corner[0] + corner[1] + corner[2] + corner[3];
                         if (cornerSum < 3) {
                             if (touch.black == true && touch.white == false) {
+                                console.log("Plus for black",res.length);
                                 this.blackScore += res.length;
                             }
-                            if (touch.black == false && touch.white == true) {
+                            if (touch.black == false && touch.white == true) { 
+                                console.log("Plus for white", res.length);
                                 this.whiteScore += res.length;
                             }
                         }

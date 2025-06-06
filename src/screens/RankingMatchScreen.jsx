@@ -498,7 +498,7 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
              const [renderTrigger, setRenderTrigger] = useState(0);                                           
   const handleIsEnd = gameState => {
     console.log("CALLL HANDLE IS END");
-    gameState.calculateScore();
+    gameState.calculateScore(realEnd);
     setWhiteScore(gameState.whiteScore);
     setBlackScore(gameState.blackScore);                   
     console.log('Black Score', gameState.blackScore);
