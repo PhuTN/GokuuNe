@@ -6,6 +6,8 @@ import UserInfo from '../components/common/RankingScreen/UserInfo';
 import { useTheme } from '../asycnc_store/ThemeContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getMatchesByUserId } from '../api/matchApi'; // API mới
+import { translations } from '../untils/i18n';
+import { useLanguage } from '../asycnc_store/LanguageContext';
 
 export default function HistoryScreen({ navigation }) {
     const { theme } = useTheme();
@@ -83,6 +85,8 @@ export default function HistoryScreen({ navigation }) {
         fetchData();
     }, []);
     console.log("HISTORY", history)
+  const { language, toggleLanguage } = useLanguage();
+     
     return (
         <View style={styles.background}>
             <Header title="History" />

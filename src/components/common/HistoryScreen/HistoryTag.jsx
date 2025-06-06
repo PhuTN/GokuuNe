@@ -16,6 +16,8 @@ export default function HistoryTag({ navigation, history , matchId }) {
         if (mode == 'AI-Medium') return t.ai_medium;
         if (mode == 'AI-Easy') return t.ai_easy;
     }
+
+    console.log("HISTORY", history)
     return (
         <TouchableOpacity style={styles.card} onPress={(e) => {
             e.preventDefault();

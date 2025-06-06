@@ -94,9 +94,9 @@ const GameResultCard = ({gameResult, navigation, surrender}) => {
           </View>
 
           {/* Buttons */}
-          <TouchableOpacity style={styles.primaryButton}>
+          {/* <TouchableOpacity style={styles.primaryButton}>
             <Text style={styles.primaryButtonText}>{t.report_text}</Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.buttonRow}>
             <TouchableOpacity
@@ -107,14 +107,14 @@ const GameResultCard = ({gameResult, navigation, surrender}) => {
               }}>
               <Text>{t.rematch_text}</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               style={styles.secondaryButton}
               onPress={e => {
                 e.preventDefault();
                 navigation.replace('RankingMatch');
               }}>
               <Text style={styles.button_text}>{t.new_text}</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>

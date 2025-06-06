@@ -3,13 +3,13 @@ import { Text,View ,Image, StyleSheet} from "react-native";
 import UserNameCountry from "./Username_Country";
 
 export default function UserInfo({user}) { 
-    
+    console.log("USER",user)
     return (
     <View style={styles.container}>
      <Image
   source={
-    user?.avatarUrl
-      ? { uri: user.avatarUrl }
+    user?.userAvatarURL
+      ? { uri: user.userAvatarURL }
       : require('../../../images/user.png') // ảnh mặc định nếu user hoặc avatar null
   }
   style={styles.image}

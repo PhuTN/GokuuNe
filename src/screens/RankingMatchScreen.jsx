@@ -146,6 +146,7 @@ gameResult.currentElo = yourElo + deltaElo;
   gameResult.resultText = isPlayerWin ? 'Victory' : 'Defeat';
   setTimesOnce();
   setFinalResult(gameResult);
+  
   realEnd.current=true;
   console.log("Game Result.....................", gameResult);
   return;
@@ -268,7 +269,7 @@ const RankingMatchScreen = ({navigation}) => {
   const [finalResult, setFinalResult] = useState(null);
   const realEnd = useRef(false);
   
-  
+  const [resultKey, setResultKey] = useState(0); // 👈 NEW
   
   const [playerBlack, setPlayerBlack] = useState({
     userId: 'user0010',
@@ -494,14 +495,34 @@ setOpponentId(opponentIdCalc); // ✅ lưu lại opponentId
     setWhiteScore(gameState.whiteScore);
     setBlackScore(gameState.blackScore);
   };
-
+             const [renderTrigger, setRenderTrigger] = useState(0);                                           
   const handleIsEnd = gameState => {
     console.log("CALLL HANDLE IS END");
     gameState.calculateScore();
     setWhiteScore(gameState.whiteScore);
-    setBlackScore(gameState.blackScore);
+    setBlackScore(gameState.blackScore);                   
     console.log('Black Score', gameState.blackScore);
+     setRenderTrigger(prev => prev + 1);
     setIsEnd(true);
+ RenderResultPopup(
+          timeWhite,
+          timeBlack,
+          navigation,
+          isCurrentPlayerWhite,
+          isEnd,
+          whiteScore,
+          blackScore,
+          surrender,
+          playerBlack,
+          playeWhite,
+          currentIntervalId,
+          setTimeWhite, // 👈 thêm
+  setTimeBlack,  // 👈 thêm,
+   hasSetTimeZero,
+   setFinalResult,
+   realEnd
+        );
+    
   };
   const handleSurrender = isWhite => {
     console.log("Handle surrender",isWhite);
@@ -531,7 +552,7 @@ const ChessBoard2Ref = useRef(
       <>
         <Header title="Gokuu" />
         {RenderSearchPopup(playerBlack.userName)}
-        {finalResult?<GameResultCard gameResult={finalResult} navigation={navigation} surrender={surrender}></GameResultCard>:<></>}
+        {finalResult?<GameResultCard   key={renderTrigger} gameResult={finalResult} navigation={navigation} surrender={surrender}></GameResultCard>:<></>}
       </>
     )}
 
@@ -601,7 +622,7 @@ const ChessBoard2Ref = useRef(
   )
 )}
 
-        {!zoomMode && (
+        {/* {!zoomMode && (
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.touchable}>
               <LinearGradient
@@ -622,7 +643,7 @@ const ChessBoard2Ref = useRef(
               </LinearGradient>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         
       </View>

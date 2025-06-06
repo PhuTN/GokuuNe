@@ -20,6 +20,7 @@ import {translations} from '../untils/i18n';
 import {registerUser} from '../api/userApi';
 import {notify} from '../untils/Notify';
 import {useNotification} from '../asycnc_store/NotificationContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signin'>;
 
@@ -65,7 +66,7 @@ const SigninScreen = ({navigation}: Props) => {
         systemNotification: true,
         pushState: notification,
       });
-
+  await AsyncStorage.setItem('currentUser', JSON.stringify(data.user));
       navigation.navigate('Home', {accountLogin: data.user});
     } catch (err: any) {
       notify({

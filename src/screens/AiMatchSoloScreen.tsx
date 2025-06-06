@@ -48,7 +48,7 @@ const AiMatchSoloScreen = ({navigation, route}) => {
   const [flag, setFlag] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [accountLogin, setAccountLogin] = useState<any>(null);
-
+ const [aiMove, setAiMove] = useState('');
 
     const {selectedPiece, selectedMode} = route.params || {};
 console.log("HEE",selectedPiece, selectedMode)
@@ -135,13 +135,20 @@ console.log("HEE",selectedPiece, selectedMode)
       setUserId(userId);
 
       // Gửi API tạo trận với AI
-      await startAIMatch({
-        userId,
-        difficulty: selectedMode,
-        playerColor: selectedPiece,
-        boardSize: 19,
-      });
+ const matchResponse = await startAIMatch({
+    userId,
+    difficulty: selectedMode,
+    playerColor: selectedPiece,
+    boardSize:19
+  });
 
+  // In ra dữ liệu phản hồi sau khi bắt đầu trận đấu AI
+  console.log('Trận đấu AI đã được bắt đầu:', matchResponse);
+     const aiMove = matchResponse.aiMove?.trim(); // ví dụ: "R6"
+      console.log('🤖 AI đánh:', aiMove);
+
+      // Lưu nước đi của AI vào state
+      setAiMove(aiMove);
       console.log('✅ Phiên AI đã bắt đầu cho', userId);
 
       // Cập nhật màu quân cho người chơi
@@ -152,7 +159,9 @@ console.log("HEE",selectedPiece, selectedMode)
         setIsReady(true);
       }, 10000);
     } catch (err) {
-      console.error('❌ Lỗi khi khởi tạo AI:', err);
+      setTimeout(() => {
+        setIsReady(true);
+      }, 10000);
     }
   };
 
@@ -276,6 +285,7 @@ console.log("HEE",selectedPiece, selectedMode)
  
   userId={userId}
   isReady={isReady}
+  aiMove={aiMove}
 />
               <AIPlayerTag
                 playerName={user?.userName}
@@ -283,7 +293,7 @@ console.log("HEE",selectedPiece, selectedMode)
             </ZoomWrapper>
           </View>
 
-          {!zoomMode && (
+          {/* {!zoomMode && (
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.touchable}>
                 <LinearGradient
@@ -304,7 +314,7 @@ console.log("HEE",selectedPiece, selectedMode)
                 </LinearGradient>
               </TouchableOpacity>
             </View>
-          )}
+          )} */}
         </View>
       </ScrollView>
 

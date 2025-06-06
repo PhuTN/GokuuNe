@@ -194,7 +194,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
 
 async function onSurrender(isWhite) {
   console.log("Current Player White",isWhite);
-  gameState.calculateScore();
+  //gameState.calculateScore();
   playWinSound();
   setSurrender(isWhite ? 1 : 2);
   setIsEnd(true);
@@ -321,14 +321,14 @@ function onReceiveMove(moveString, mover) {
   console.log("Receive from enemy,...........",moveString); 
   
 if (moveString === "end") {
-  isEndedByOpponentRef.current = true; 
+ // isEndedByOpponentRef.current = true; 
   console.log("📥 Nhận nước đi: END từ đối thủ"); 
-  gameState.calculateScore();
+  //gameState.calculateScore();
   
   setIsEnd(true);
   
   
-  handleIsEnd?.(gameState);
+  //handleIsEnd(gameState);
   return;
 }
 
@@ -346,9 +346,9 @@ if (moveString === "end") {
     move: moveText,
   };
   setMoveHistory(prev => [...prev, newMove]);
-        gameState.calculateScore();
+        //gameState.calculateScore();
         setIsEnd(true);
-        handleIsEnd(gameState);
+        //handleIsEnd(gameState);
           socket.emit("move:send", {
     fromUser: userId,
     move: "end",
@@ -375,10 +375,10 @@ if (moveString === "end") {
     move: moveText,
   };
   setMoveHistory(prev => [...prev, newMove]);
-        gameState.calculateScore();
+       // gameState.calculateScore();
         
         setIsEnd(true);
-        handleIsEnd(gameState);
+        //handleIsEnd(gameState);
           socket.emit("move:send", {
     fromUser: userId,
     move: "end",
@@ -484,9 +484,9 @@ function displayPieceSource(index,i) {
     setWhiteSkip(true);
     if (blackSkip) {
       console.log("✅ Cả 2 cùng bỏ lượt → kết thúc");
-      gameState.calculateScore();
+      //gameState.calculateScore();
       setIsEnd(true);
-      handleIsEnd(gameState);
+      //handleIsEnd(gameState);
         socket.emit("move:send", {
     fromUser: userId,
     move: "end",
@@ -501,9 +501,9 @@ function displayPieceSource(index,i) {
     setBlackSkip(true);
     if (whiteSkip) {
       console.log("✅ Cả 2 cùng bỏ lượt → kết thúc");
-      gameState.calculateScore();
+     // gameState.calculateScore();
       setIsEnd(true);
-      handleIsEnd(gameState);
+      //handleIsEnd(gameState);
         socket.emit("move:send", {
     fromUser: userId,
     move: "end",
@@ -538,6 +538,7 @@ const move = "pass";
 
 useEffect(() => {
   if (!isEnd && surrender === 0) return;
+  gameState.calculateScore()
  /*if (isEndedByOpponentRef.current) {
     console.log("⛔ Không lưu trận vì kết thúc bởi đối thủ.");
     return;
@@ -560,6 +561,8 @@ useEffect(() => {
     deltaElo: 0,
   };
 console.log(payload);
+
+handleIsEnd(gameState);
 if((winner=='white'&&!isCurrentPlayerWhite)||(winner=='black'&&isCurrentPlayerWhite)) {
   return;
 }

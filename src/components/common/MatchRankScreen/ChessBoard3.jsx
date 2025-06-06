@@ -87,6 +87,7 @@ export default function ChessBoard3({
   playerColor = 'B',
   userId,
   isReady,
+  aiMove
 }) {
   const isMyTurnSelf =
     (playerColor === 'B' && !flag) || (playerColor === 'W' && flag);
@@ -176,6 +177,24 @@ export default function ChessBoard3({
     }
     return res;
   }
+useEffect(() => {
+  if (!aiMove || typeof aiMove !== 'string') return;
+
+  const move = aiMove.trim().toUpperCase(); // ví dụ: D4
+  if (move === 'PASS' || move === 'RESIGN') {
+    onReceiveAIMove(move);
+    return;
+  }
+
+  const col = move[0].charCodeAt(0) - 65;
+  const row = 19 - parseInt(move.slice(1));
+
+  if (!isNaN(row) && !isNaN(col)) {
+    displayMoveToUI(row, col);
+  } else {
+    console.warn('⚠️ aiMove không hợp lệ:', aiMove);
+  }
+}, [aiMove]);
 
   async function onSurrender(isWhite) {
     gameState.calculateScore();
