@@ -1,10 +1,14 @@
 import React from 'react';
-import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, Image, TouchableOpacity, StyleSheet, ToastAndroid} from 'react-native';
 import {useLanguage} from '../../../asycnc_store/LanguageContext';
 import {translations} from '../../../untils/i18n';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../../../navigation/AppNavigator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { sendChallengeDirect } from '../../../api/userApi';
+import { notify } from '../../../untils/Notify';
+import { socket } from '../../../untils/socket';
 
 export default function ChatDetailHeader({user}: {user: any}) {
   const {language} = useLanguage();
@@ -19,8 +23,40 @@ export default function ChatDetailHeader({user}: {user: any}) {
     : language === 'vi'
     ? 'Ngoại tuyến'
     : 'Offline';
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+
+  const sendChallengeFromIconFight = async () => {
+    try {
+      const userJson = await AsyncStorage.getItem('currentUser');
+      const currentUser = userJson ? JSON.parse(userJson) : null;
+
+
+      await sendChallengeDirect(currentUser._id, user._id);
+
+      notify({
+        message: language === 'vi' ? 'Thách đấu thành công' : 'Challenge sent',
+        description: `${user.displayName}`,
+        type: 'success',
+        inapp: true,
+       
+        systemNotification: true,
+      });
+
+      socket.emit('challenge:refresh', user._id);
+      console.log('📤 challenge:refresh →', user._id);
+
+      navigation.navigate('Host', {
+        accountLogin: currentUser,
+        friend: user,
+        selectedTime: null,
+        match: null,
+      });
+    } catch (err) {
+      console.error('❌ Lỗi gửi thách đấu:', err);
+      ToastAndroid.show('❌ Gửi thách đấu thất bại', ToastAndroid.SHORT);
+    }
+  };
   return (
     <View style={styles.wrapper}>
       {/* Back button */}
@@ -53,14 +89,17 @@ export default function ChatDetailHeader({user}: {user: any}) {
       </View>
 
       {/* Right icons */}
-      <View style={styles.iconContainer}>
-        <TouchableOpacity style={styles.iconLeft}>
-          <Image
-            source={require('../../../assets/images/ChatDetailScreen/fightIcon.png')}
-            style={styles.iconImage}
-          />
-        </TouchableOpacity>
-      </View>
+{isOnline && (
+  <View style={styles.iconContainer}>
+    <TouchableOpacity style={styles.iconLeft} onPress={sendChallengeFromIconFight}>
+      <Image
+        source={require('../../../assets/images/ChatDetailScreen/fightIcon.png')}
+        style={styles.iconImage}
+      />
+    </TouchableOpacity>
+  </View>
+)}
+
     </View>
   );
 }

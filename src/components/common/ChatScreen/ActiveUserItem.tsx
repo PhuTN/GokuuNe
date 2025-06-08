@@ -10,7 +10,7 @@ import {
   Alert,
   ToastAndroid,
 } from 'react-native';
-import {unfriendUser} from '../../../api/userApi';
+import {sendChallengeDirect, unfriendUser} from '../../../api/userApi';
 import {socket} from '../../../untils/socket';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NotificationCustom from '../Notification/Notification_Custom';
@@ -18,6 +18,7 @@ import {useLanguage} from '../../../asycnc_store/LanguageContext';
 import {translations} from '../../../untils/i18n';
 import {notify} from '../../../untils/Notify';
 import {useNotification} from '../../../asycnc_store/NotificationContext';
+import { useNavigation } from '@react-navigation/native';
 
 type Props = {
   user: {
@@ -32,7 +33,7 @@ export default function ActiveUserItem({user}: Props) {
   const {language, toggleLanguage} = useLanguage();
   const t = translations[language];
   const {notification, toggleNotification} = useNotification();
-
+ const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [modalNotificationCustomVisible, setModalNotificationCustomVisible] =
@@ -48,10 +49,43 @@ export default function ActiveUserItem({user}: Props) {
     getCurrentUser();
   }, []);
 
-  const handleChallenge = () => {
-    setModalVisible(false);
-    console.log('Thách đấu với:', user.displayName);
-  };
+const handleChallenge = async () => {
+  setModalVisible(false);
+
+  try {
+    if (!currentUserId) {
+      ToastAndroid.show('❌ Không tìm thấy người dùng hiện tại', ToastAndroid.SHORT);
+      return;
+    }
+
+    await sendChallengeDirect(currentUserId, user._id);
+
+    notify({
+      message: language === 'vi' ? 'Thách đấu thành công' : 'Challenge sent',
+      description: `${user.displayName}`,
+      type: 'success',
+      inapp: true,
+      pushState: notification,
+      systemNotification: true,
+    });
+
+    socket.emit('challenge:refresh', user._id);
+    console.log('📤 challenge:refresh →', user._id);
+
+    // 👇 Sửa tại đây - truyền đúng params
+    navigation.navigate('Host', {
+      accountLogin: currentUserId,
+      friend: user,
+      selectedTime: null, // hoặc defaultTime
+      match: null,
+    });
+
+  } catch (err) {
+    console.error('❌ Lỗi khi gửi thách đấu:', err);
+    ToastAndroid.show('❌ Lỗi khi gửi thách đấu', ToastAndroid.SHORT);
+  }
+};
+
 
   const handleUnfriend = () => {
     setModalVisible(true);
@@ -83,7 +117,7 @@ export default function ActiveUserItem({user}: Props) {
       ToastAndroid.show('❌ Lỗi khi hủy kết bạn', ToastAndroid.SHORT);
     }
   };
-
+console.log("HELLLO",user)
   return (
     <>
       <TouchableOpacity
@@ -111,15 +145,18 @@ export default function ActiveUserItem({user}: Props) {
           onPress={() => setModalVisible(false)}>
           <View style={styles.modalContent}>
             <Pressable style={styles.modalButton} onPress={handleChallenge}>
-              <Text style={styles.modalText}>Thách đấu</Text>
+              <Text style={styles.modalText}>
+  {language === 'vi' ? 'Thách đấu' : 'Challenge'}
+</Text>
             </Pressable>
 
             <View style={styles.separator} />
 
             <Pressable style={styles.modalButton} onPress={handleUnfriend}>
-              <Text style={[styles.modalText, {color: 'red'}]}>
-                Hủy kết bạn
-              </Text>
+             
+<Text style={[styles.modalText, { color: 'red' }]}>
+  {language === 'vi' ? 'Hủy kết bạn' : 'Unfriend'}
+</Text>
             </Pressable>
           </View>
         </Pressable>

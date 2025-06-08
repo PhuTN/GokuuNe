@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from '../navigation/AppNavigator';
 import {useLanguage} from '../asycnc_store/LanguageContext';
@@ -29,37 +29,13 @@ import SwordIcon from '../assets/icons/sword_icon.svg';
 import {TouchableOpacity} from 'react-native';
 import HostMoreFunctionModal from '../components/common/HostScreen/HostMoreFunctionModal';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import api from '../api/api';
+import { getUserById, outChallenge } from '../api/userApi';
+import { socket } from '../untils/socket';
 
 // Mock data for challenges
-const mockChallenges = [
-  {
-    id: 'ch1',
-    user: {
-      _id: 'userid1',
-      displayName: 'Nguyen Van A',
-      avatar: require('../images/avatar_01.jpg'),
-    },
-    createdAt: '2025-05-28T13:00:00.000+00:00',
-  },
-  {
-    id: 'ch2',
-    user: {
-      _id: 'userid2',
-      displayName: 'Tran Thi B',
-      avatar: require('../images/avatar_02.jpg'),
-    },
-    createdAt: '2025-05-28T12:30:00.000+00:00',
-  },
-  {
-    id: 'ch3',
-    user: {
-      _id: 'userid3',
-      displayName: 'Le Van C',
-      avatar: require('../images/avatar_03.jpg'),
-    },
-    createdAt: '2025-05-28T12:00:00.000+00:00',
-  },
-];
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Host'>;
 
@@ -87,8 +63,122 @@ const HostScreen = ({route, navigation}: Props) => {
 
   const [modalMoreFunctionVisible, setMoreFunctionVisible] = useState(false);
 
-  const [challenges] = useState(mockChallenges);
+
   const [selectedChallenge, setSelectedChallenge] = useState();
+
+  const [challenges, setChallenges] = useState([]);
+
+  const [waitUserId, setWaitUserId] = useState<string | null>(null);
+const [waitUser, setWaitUser] = useState<any>(null);
+
+const fetchUser = useCallback(async () => {
+  try {
+    console.log('🔁 Đang refresh dữ liệu từ challenge:refresh...');
+
+    const userJson = await AsyncStorage.getItem('currentUser');
+    const currentUser = userJson ? JSON.parse(userJson) : null;
+    if (!currentUser?._id) return;
+
+    const userData = await getUserById(currentUser._id);
+    setAccountLogin(userData);
+console.log("1",userData)
+    const formattedChallenges = userData.challenges?.map((challenge: any) => ({
+      id: challenge._id,
+      user: {
+        _id: challenge.challengerId._id,
+        displayName: challenge.challengerId.displayName,
+        avatar: challenge.challengerId.avatarUrl,
+      },
+      createdAt: challenge.createdAt,
+    })) || [];
+ setWaitUser(userData.waitId);
+    setChallenges(formattedChallenges);
+    setWaitUserId(userData.waitId);
+    if (userData.waitId) setWaitUser(userData.waitId); // nếu đã populate sẵn
+  } catch (err) {
+    console.error('❌ Lỗi khi fetchUser trong socket:', err);
+  }
+}, []);
+
+
+useEffect(() => {
+  const handleRefresh = (userId: string) => {
+    console.log('📥 Nhận challenge:refresh từ socket:', userId);
+    // Gọi lại logic fetch user hoặc challenges
+    fetchUser(); // nhớ khai báo hàm này bên ngoài useEffect hoặc dùng useCallback
+  };
+
+  socket.on('challenge:refresh', handleRefresh);
+
+  return () => {
+    socket.off('challenge:refresh', handleRefresh); // cleanup khi component unmount
+  };
+}, []);
+
+useFocusEffect(
+  React.useCallback(() => {
+    let currentUserId = '';
+    let currentWaitUserId = '';
+
+    const fetchUser = async () => {
+      try {
+        const userJson = await AsyncStorage.getItem('currentUser');
+        const currentUser = userJson ? JSON.parse(userJson) : null;
+        if (!currentUser?._id) return;
+
+        currentUserId = currentUser._id;
+
+        const userData = await getUserById(currentUser._id);
+        setAccountLogin(userData);
+
+        const formattedChallenges = userData.challenges?.map((challenge: any) => ({
+          id: challenge._id,
+          user: {
+            _id: challenge.challengerId._id,
+            displayName: challenge.challengerId.displayName,
+            avatar: challenge.challengerId.avatarUrl,
+          },
+          createdAt: challenge.createdAt,
+        })) || [];
+        setChallenges(formattedChallenges);
+
+        if (userData.waitId && typeof userData.waitId === 'object') {
+          setWaitUser(userData.waitId);
+          setWaitUserId(userData.waitId._id);
+          currentWaitUserId = userData.waitId._id;
+        } else {
+          setWaitUser(null);
+          setWaitUserId(null);
+        }
+      } catch (err) {
+        console.error('❌ Lỗi khi fetch user:', err);
+      }
+    };
+
+    fetchUser();
+
+    return () => {
+      const clearChallenge = async () => {
+        try {
+          if (currentUserId) {
+            await outChallenge(currentUserId);
+            socket.emit('challenge:refresh', currentUserId);
+            console.log("MEEEEE", currentUserId,currentWaitUserId)
+            if (currentWaitUserId) {
+              socket.emit('challenge:refresh', currentWaitUserId);
+            }
+            console.log('🧹 Đã gọi outChallenge và emit refresh');
+          }
+        } catch (err) {
+          console.error('❌ Lỗi khi gọi outChallenge:', err);
+        }
+      };
+
+      clearChallenge();
+    };
+  }, [])
+);
+
 
   useEffect(() => {
     return () => {
@@ -167,46 +257,69 @@ const HostScreen = ({route, navigation}: Props) => {
     //     pushState: notification,
     // });
   };
+const handlePlay = () => {
+  if (!waitUser || waitUser.waitId !== accountLogin._id) return;
 
-  const handlePlay = () => {
-    if (selectedPiece === null) {
-      notify({
-        message: t.noti_warning,
-        description: t.host_no_challenger,
-        type: 'warning',
-        systemNotification: true,
-        pushState: notification,
-        inapp: true,
-      });
-      return;
-    }
-    navigation.navigate('HostMatch', {
-      accountLogin,
-      friend,
-      selectedTime,
-      isRankingMode,
-      selectedPiece,
-      match,
-    }); // Tạo màn hình custom
-    setSelectedTime(t.host_time_default + ' ' + t.host_time_min);
-    setFriend(null);
-    setIsRankingMode(false);
-    setSelectedPiece(null);
+  const fromUser = accountLogin._id;
+  const toUser = waitUser._id;
+console.log(fromUser,toUser)
+
+  socket.emit("custom:play", {
+    fromUser,
+    toUser,
+  });
+
+  console.log("📤 Gửi lời mời custom play tới:", toUser);
+
+  // 👉 Tự chuyển màn hình luôn (người mời)
+  navigation.navigate("HostMatch", {
+    user: fromUser,
+    opponent: toUser,
+  });
+};
+
+
+useEffect(() => {
+  const handlePlay = ({ fromUser }: { fromUser: string }) => {
+    const userId = accountLogin?._id;
+    if (!userId || !fromUser) return;
+
+    console.log("🎮 Nhận custom play từ:", fromUser);
+
+    navigation.navigate("HostMatch", {
+      user: userId,
+      opponent: fromUser,
+    });
   };
+
+  socket.on("custom:play", handlePlay);
+
+  return () => {
+    socket.off("custom:play", handlePlay);
+  };
+}, [accountLogin, navigation]);
+
+ 
+
 
   const handleChallengePress = (challenge: any) => {
     setMoreFunctionVisible(true);
     setSelectedChallenge(challenge);
   };
 
-  const renderChallenge = ({item}: {item: (typeof mockChallenges)[0]}) => (
+
+ const renderChallenge = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.challengeContainer}
       onPress={() => handleChallengePress(item)}>
-      <Image
-        source={item.user.avatar || require('../images/user.png')}
-        style={styles.challengeAvatar}
-      />
+    <Image
+      source={
+        item.user.avatar && item.user.avatar.startsWith('http')
+          ? { uri: item.user.avatar }
+          : require('../images/user.png')
+      }
+      style={styles.challengeAvatar}
+    />
       <View style={styles.challengeInfo}>
         <Text style={styles.challengeUserName}>{item.user.displayName}</Text>
         <Text style={styles.challengeTitle}>{t.host_challenge_title}</Text>
@@ -239,15 +352,15 @@ const HostScreen = ({route, navigation}: Props) => {
       <Header title={t.host} />
 
       {/* Id Room */}
-      <View style={[styles.ranking_mode, {marginTop: '10%'}]}>
+      {/* <View style={[styles.ranking_mode, {marginTop: '10%'}]}>
         <Text style={styles.ranking_mode_title}>{t.host_room_id}</Text>
         <TextInput
           style={styles.input}
           value={'Thay bằng match._id'}></TextInput>
-      </View>
+      </View> */}
 
       {/* Join Room */}
-      <View style={styles.divider} />
+      {/* <View style={styles.divider} />
       <View>
         <View style={styles.ranking_mode}>
           <Text style={styles.ranking_mode_title}>{t.host_join_room}</Text>
@@ -269,10 +382,10 @@ const HostScreen = ({route, navigation}: Props) => {
             <Text style={styles.buttonJoinText}>{t.host_join}</Text>
           </LinearGradient>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       {/* Choose Friend */}
-      <View style={styles.divider} />
+      <View style= {{marginTop:50}}/>
       {/* <ButtonHostFriend accountFriend={friend} onPress={handleFriend} /> */}
       <View
         style={{
@@ -297,15 +410,18 @@ const HostScreen = ({route, navigation}: Props) => {
         <SwordIcon width={60} height={60} style={{marginHorizontal: '10%'}} />
         <View style={{flexDirection: 'column', alignItems: 'center'}}>
           <Image
-            source={
-              friend?.avatarFriend ||
-              require('../images/user_question_mark.png')
-            }
-            style={styles.avatar}
-          />
-          <Text style={styles.ranking_mode_title}>
-            {friend?.displayName || t.home_guest}
-          </Text>
+  source={
+    waitUser?.avatarUrl
+      ? {uri: waitUser.avatarUrl}
+      : require('../images/user_question_mark.png')
+  }
+  style={styles.avatar}
+/>
+<Text style={styles.ranking_mode_title}>
+  {waitUser?.displayName || t.home_guest}
+</Text>
+
+         
         </View>
       </View>
 
@@ -354,8 +470,23 @@ const HostScreen = ({route, navigation}: Props) => {
       </View> */}
 
       {/* Play Button */}
-      <View style={styles.divider} />
-      <Button_Save text={t.ai_button} onPress={handlePlay} />
+<Button_Save
+  text={
+    !waitUser
+      ? language === 'vi'
+        ? 'Chưa có đối thủ'
+        : 'No opponent yet'
+      : waitUser.waitId !== accountLogin._id
+        ? language === 'vi'
+          ? 'Đối phương chưa chấp nhận'
+          : "Opponent hasn't accepted"
+        : t.ai_button
+  }
+  onPress={handlePlay}
+  disabled={!waitUser || waitUser.waitId !== accountLogin._id}
+/>
+
+
 
       {/* List of Challenges */}
       <View style={styles.divider} />
@@ -375,12 +506,17 @@ const HostScreen = ({route, navigation}: Props) => {
           <Text style={styles.noChallengesText}>{t.host_no_challenges}</Text>
         )}
       </View>
-      <HostMoreFunctionModal
-        visible={modalMoreFunctionVisible}
+
+    
+   <HostMoreFunctionModal
+     visible={modalMoreFunctionVisible}
         setModalVisible={setMoreFunctionVisible}
         onClose={() => setMoreFunctionVisible(false)}
         challenge={selectedChallenge}
-      />
+  userId={accountLogin._id}
+  opponentId={selectedChallenge?.user._id}
+/>
+
     </ScrollView>
   );
 };

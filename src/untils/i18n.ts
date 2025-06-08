@@ -391,7 +391,7 @@ export const translations = {
     home_ranking: 'ĐẤU XẾP HẠNG',
     home_AI: 'ĐẤU MÁY',
     home_friends: '1 vs 1',
-    home_host: 'TẠO PHÒNG',
+    home_host: 'PHÒNG',
     home_solve_puzzles: 'GIẢI CÂU ĐỐ',
 
     login: 'ĐĂNG NHẬP',
@@ -430,7 +430,7 @@ export const translations = {
     friends_unfriend: 'Hủy kết bạn',
     friends_no_user_found: 'Không tìm thấy người dùng nào',
 
-    host: 'Tạo phòng',
+    host: 'Phòng',
     host_room_id: 'Mã phòng',
     host_join_room: 'Tham gia phòng',
     host_enter_room_id: 'Nhập mã phòng',
