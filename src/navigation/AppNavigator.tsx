@@ -55,7 +55,10 @@ export type RootStackParamList = {
   Host: { accountLogin: any; friend: any; selectedTime: any ; match: any} | undefined;
   HostTimeSetting: { accountLogin: any; friend: any; selectedTime: any, match: any } | undefined;
   HostFriend: { accountLogin: any; selectedTime: any, match: any } | undefined;
-  HostMatch: { accountLogin: any; selectedTime: any; friend: any; isRankingMode: any; selectedPiece: any, match: any } | undefined;
+ HostMatch: {
+  user: any;
+  opponent: any;
+};
   History: { accountLogin: any } | undefined;
   HistoryDetail: { accountLogin: any; matchId: string } | undefined;
   AiMatchSolo: { accountLogin: any; selectedPiece: any; selectedMode: any } | undefined;

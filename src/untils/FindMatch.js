@@ -44,15 +44,19 @@
 
 import { socket } from "./socket";
 
-export default function FindMatch(userId) {
+export default function FindMatch(userId, opponentId = null) {
   return new Promise((resolve, reject) => {
     if (!socket || !socket.connected) {
       console.log("❌ Socket chưa kết nối.");
       return reject("❌ Socket chưa kết nối.");
     }
 
-    console.log("📡 Gửi yêu cầu rank:find với userId:", userId);
-    socket.emit("rank:find", userId);
+    const payload = opponentId
+      ? { userId, opponentId } // ✅ nếu có đối thủ xác định
+      : { userId };            // ✅ nếu tìm ngẫu nhiên
+
+    console.log("📡 Gửi yêu cầu rank:find với payload:", payload);
+    socket.emit("rank:find", payload);
 
     const onMatched = (data) => {
       console.log("✅ Nhận rank:matched:", data);
@@ -61,7 +65,7 @@ export default function FindMatch(userId) {
       socket.off("rank:matched", onMatched);
       clearTimeout(timeoutId);
 
-      resolve(opponent); // chỉ trả về opponent
+      resolve(opponent); // ✅ trả về opponent
     };
 
     socket.on("rank:matched", onMatched);

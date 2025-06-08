@@ -240,14 +240,13 @@ const ProfileScreen = ({route, navigation}: Props) => {
             keyboardType="email-address"
           />
 
-          <Text style={styles.label}>{t.profile_password}</Text>
+          {/* <Text style={styles.label}>{t.profile_password}</Text>
           <TextInput
             style={styles.input}
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-          />
-
+          /> */}
           {/* Birthdate Picker */}
           <Text style={styles.label}>{t.profile_birth}</Text>
           <TouchableOpacity

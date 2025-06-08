@@ -222,3 +222,59 @@ export const getLeaderBoard = async () => {
   const response = await api.get('/leaderboard');
   return response.data;
 };
+
+
+// Gửi thách đấu trực tiếp
+export const sendChallengeDirect = async (myId, opponentId) => {
+  const token = await AsyncStorage.getItem('token');
+  const response = await api.post(
+    '/challenges/direct/send',
+    { myId, opponentId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+// Chấp nhận thách đấu trực tiếp
+export const acceptChallengeDirect = async (myId, opponentId) => {
+  const token = await AsyncStorage.getItem('token');
+  const response = await api.post(
+    '/challenges/direct/accept',
+    { myId, opponentId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+// Từ chối thách đấu trực tiếp
+export const declineChallengeDirect = async (myId, opponentId) => {
+  const token = await AsyncStorage.getItem('token');
+  const response = await api.post(
+    '/challenges/direct/decline',
+    { myId, opponentId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+// Thoát khỏi thách đấu
+export const outChallenge = async userId => {
+  const token = await AsyncStorage.getItem('token');
+  const response = await api.post(
+    '/challenges/out',
+    { userId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};
+
+// Xử lý khi offline (xóa waitId và tất cả challenge liên quan)
+export const offlineChallenge = async userId => {
+  const token = await AsyncStorage.getItem('token');
+  const response = await api.post(
+    '/challenges/offline',
+    { userId },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return response.data;
+};

@@ -128,12 +128,14 @@ export default function ChatCardItem({ chat, currentUserId }) {
           style={styles.modalOverlay}
           onPress={() => setModalVisible(false)}>
           <View style={[styles.modalContent, isDark && { backgroundColor: '#2c2c2c' }]}>
-            <Pressable style={styles.modalButton} onPress={handleChallenge}>
+            {/* <Pressable style={styles.modalButton} onPress={handleChallenge}>
               <Text style={[styles.modalText, isDark && { color: '#fff' }]}>Thách đấu</Text>
-            </Pressable>
-            <View style={[styles.separator, isDark && { backgroundColor: '#444' }]} />
+            </Pressable> */}
+            {/* <View style={[styles.separator, isDark && { backgroundColor: '#444' }]} /> */}
             <Pressable style={styles.modalButton} onPress={handleUnfriend}>
-              <Text style={[styles.modalText, { color: 'red' }]}>Hủy kết bạn</Text>
+       <Text style={[styles.modalText, { color: 'red' }]}>
+  {language === 'vi' ? 'Hủy kết bạn' : 'Unfriend'}
+</Text>
             </Pressable>
           </View>
         </Pressable>

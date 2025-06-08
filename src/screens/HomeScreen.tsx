@@ -282,8 +282,20 @@ const HomeScreen = ({ route, navigation }: Props) => {
           .catch(console.error);
       }
     };
-
+  const handleChallengeRefresh = async () => {
+    console.log('📥 Nhận challenge:refresh → reload HomeScreen');
+    if (accountLogin?._id) {
+      try {
+        const freshUser = await getUserById(accountLogin._id);
+        setAccountLogin(freshUser);
+      } catch (err) {
+        console.error('❌ Lỗi khi load user từ challenge:refresh:', err);
+      }
+    }
+  };
     socket.on('chat:list:refresh', handleChatUpdate);
+
+    socket.on('challenge:refresh', handleChallengeRefresh);
 
     return () => {
       socket.off('chat:list:refresh', handleChatUpdate);
@@ -412,12 +424,16 @@ const HomeScreen = ({ route, navigation }: Props) => {
           Icon={RankingIcon}
           onPress={handleRanking}
         />
-        <Button_Home
-          title={t.home_host}
-          Icon={HostIcon}
-          onPress={() => handleHost(null, 1)}
-          badgeCount={3}
-        />
+    <Button_Home
+  title={t.home_host}
+  Icon={HostIcon}
+  onPress={() => handleHost(null, 1)}
+  badgeCount={
+    accountLogin?.challenges?.length > 0
+      ? accountLogin.challenges.length
+      : undefined
+  }
+/>
         <Button_Home
           title={t.home_AI}
           Icon={AIChallengeIcon}
