@@ -22,6 +22,7 @@ import { AnimatedImage } from 'react-native-reanimated/lib/typescript/component/
 import ZoomWrapper from '../../ZoomWrapper';
 import { createMatch } from '../../../api/matchApi';
 import { socket } from '../../../untils/socket';
+import { notify } from '../../../untils/Notify';
 
 const blackPiece = require('../../../assets/images/pieceBlack.png');
 const whitePiece = require('../../../assets/images/pieceWhite.png');
@@ -93,6 +94,42 @@ export default function ChessBoard2({
    
    
 }) {
+
+  const timeoutRef = useRef(null);
+  const warningRef = useRef(null);
+
+const startMoveTimeout = () => {
+  clearMoveTimeout(); // Xoá timeout cũ nếu có
+
+
+  console.log("⏱️ Bắt đầu đếm 30s không đánh...");
+warningRef.current = setTimeout(() => {
+    console.log("⚠️ Còn 10 giây để đi!");
+
+    notify({
+      message: '⚠️ Gần hết thời gian!',
+      description: 'Bạn còn 10 giây để đi nước tiếp theo!',
+      type: 'danger',
+      systemNotification: true,
+      pushState: null, // hoặc truyền gì đó nếu cần điều hướng
+    });
+  }, 19000);
+  timeoutRef.current = setTimeout(() => {
+    console.log("💥 Bạn không đánh trong 30s => đầu hàng!");
+    onSurrender(isCurrentPlayerWhite);
+  }, 30000);
+};
+const clearMoveTimeout = () => {
+  if (timeoutRef.current) {
+    clearTimeout(timeoutRef.current);
+    timeoutRef.current = null;
+  }
+  if (warningRef.current) {
+    clearTimeout(warningRef.current);
+    warningRef.current = null;
+  }
+};
+
 console.log("MAAAAAAM",playerColor)
 const [myColor] = useState(playerColor); 
 const [isEnd, setIsEnd] = useState(false);
@@ -130,6 +167,9 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
     loadBoardFromGameState(gameState);
     setBlackSkip(false);
     setWhiteSkip(false);
+    if(!isCurrentPlayerWhite){
+       startMoveTimeout();
+    }
   }, [isFocuse]);
 
   /*useEffect(()=>{
@@ -162,6 +202,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
   onPress={e => {
     e.preventDefault();
     onSkip(isCurrentPlayerWhite);
+    clearMoveTimeout();
   }}
 >
   <Text style={style.text}>{t.skip_text}</Text>
@@ -172,6 +213,7 @@ const [surrender, setSurrender] = useState(0); // 0: chưa đầu hàng, 1: tr�
           onPress={e => {
             e.preventDefault();
             onSurrender(isCurrentPlayerWhite);
+            clearMoveTimeout(); 
           }}>
           <Text style={style.text}>{t.surrender_text}</Text>
         </TouchableOpacity>
@@ -212,6 +254,11 @@ useEffect(()=>{
     }
   }
 },[timeWhite,timeBlack])
+useEffect(() => {
+  return () => {
+    clearMoveTimeout(); // 🔚 Unmount thì huỷ luôn timeout
+  };
+}, []);
 
 async function onSurrender(isWhite) {
   console.log("Current Player White",isWhite);
@@ -339,6 +386,7 @@ setNewPosition([index,i,currentSide]);
       } */
   }
 function onReceiveMove(moveString, mover) {
+  startMoveTimeout();
   console.log("Receive from enemy,...........",moveString); 
   
 if (moveString === "end") {
@@ -461,6 +509,7 @@ function displayPieceSource(index,i) {
     e.preventDefault();
     // Chỉ cho phép đánh khi đúng lượt (playerColor === lượt hiện tại)
     if ((playerColor === 'B' && !flag) || (playerColor === 'W' && flag)) {
+      clearMoveTimeout();
   const result = onMove(index, i); // thực hiện đánh
   if (result?.movePosition) {
     socket.emit('move:send', {
@@ -584,6 +633,7 @@ useEffect(() => {
 console.log(payload);
 
 handleIsEnd(gameState);
+clearMoveTimeout();
 if((winner=='white'&&!isCurrentPlayerWhite)||(winner=='black'&&isCurrentPlayerWhite)) {
   return;
 }

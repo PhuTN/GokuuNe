@@ -601,7 +601,7 @@ const ChessBoard2Ref = useRef(
 )}
 
 {isStart && userId && (
-  <View style={{ height: 600, alignItems: 'center', justifyContent: 'center' }}>
+  <View style={{ height: 500, alignItems: 'center', justifyContent: 'center' }}>
     <ZoomWrapper isZoom={zoomMode}>
       <ChessBoard2
         handleEvent={handleEvent}

@@ -67,7 +67,7 @@ useEffect(() => {
           const freshUser = await getUserById(accountLogin._id);
           const userMapped = {
             userId: freshUser._id,
-            userName: freshUser.displayName ?? 'Unknown',
+            userName: freshUser.username ?? 'Unknown',
             country: freshUser.nationality ?? 'VietNam',
             matches: freshUser.matchHistory.length,
             elo: freshUser.elo ?? 2200,

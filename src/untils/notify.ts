@@ -102,7 +102,7 @@ export const notify = ({
   inapp = false,
   type = 'info',
 }: NotifyOptions) => {
-  if (!enabled || !inapp) return;
+  // if (!enabled || !inapp) return;
 
   playSound();
   Toast.show({

@@ -215,14 +215,14 @@ const HomeScreen = ({ route, navigation }: Props) => {
       });
       navigation.navigate('Chat', { accountLogin });
     } else {
-      notify({
-        message: t.noti_warning,
-        description: t.noti_login_require,
-        type: 'warning',
-        systemNotification: true,
-        pushState: notification,
-        inapp: true,
-      });
+      // notify({
+      //   message: t.noti_warning,
+      //   description: t.noti_login_require,
+      //   type: 'warning',
+      //   systemNotification: true,
+      //   pushState: notification,
+      //   inapp: true,
+      // });
     }
   };
 

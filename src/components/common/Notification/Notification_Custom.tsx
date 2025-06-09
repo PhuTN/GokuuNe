@@ -59,7 +59,7 @@ const NotificationCustom: React.FC<Props> = ({
                 <Text style={styles.message}>{contentNotification}</Text>
               </View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleNo}>
+                <TouchableOpacity onPress={handleNo}style={{ marginRight: -12 }} >
                   <LinearGradient
                     colors={['#ccc', '#aaa']}
                     start={{ x: 0, y: 0 }}
@@ -68,7 +68,7 @@ const NotificationCustom: React.FC<Props> = ({
                     <Text style={styles.cancelText}>{contentButtonNo}</Text>
                   </LinearGradient>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={handleYes}>
+                <TouchableOpacity onPress={handleYes} style={{ marginRight: 60 }}>
                   <LinearGradient
                     colors={['#6B50F6', '#CC8FED']}
                     start={{ x: 0, y: 0 }}
@@ -173,11 +173,14 @@ const darkStyles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    gap: 30,
-  },
+buttonContainer: {
+  flexDirection: 'row',
+  justifyContent: 'center', // căn giữa các button
+  alignItems: 'center',
+  gap: 20, // khoảng cách giữa 2 button
+  marginTop: 12,
+},
+
   cancelButton: {
     paddingVertical: 10,
     paddingHorizontal: 20,

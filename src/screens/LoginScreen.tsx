@@ -54,9 +54,8 @@ const LoginScreen = ({navigation}: Props) => {
         notify({
           message: t.noti_info,
           description: 'Tài khoản này đang online trên thiết bị khác!',
-          type: 'info',
-          systemNotification: true,
-          pushState: notification,
+          type: 'warning',
+       
         });
         return; // Nếu muốn chặn luôn login
       }
@@ -94,7 +93,7 @@ const LoginScreen = ({navigation}: Props) => {
 
       notify({
         message: t.noti_danger,
-        description: error.response?.data?.error || t.noti_login_faile,
+        description: "Sai mật khẩu hoặc tên đăng nhập",
         type: 'danger',
        
 

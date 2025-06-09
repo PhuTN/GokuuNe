@@ -231,10 +231,13 @@ const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
                 onPress={handleAvatar}>
                 <CameraIcon width={40} height={40} />
               </TouchableOpacity>
+
+           
             </View>
+            
           )}
         </View>
-
+   <Text style={styles.usernameText}>{accountLogin?.username}</Text>
         {/* Form */}
         <View style={styles.form}>
           <Text style={styles.label}>{t.profile_name}</Text>
@@ -367,6 +370,14 @@ const lightStyles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  usernameText: {
+  fontSize: 18,
+  fontWeight: '600',
+  marginTop: 12,
+  color:  '#000',
+ 
+},
+
   avatarContainer: {
     alignItems: 'center',
     marginTop: 50,
@@ -470,6 +481,13 @@ const lightStyles = StyleSheet.create({
 });
 
 const darkStyles = StyleSheet.create({
+  usernameText: {
+  fontSize: 18,
+  fontWeight: '600',
+  marginTop: 12,
+  color:  '#fff' ,
+},
+
   scrollView: {
     flex: 1,
     backgroundColor: '#535353',

@@ -27,7 +27,7 @@ export const translations = {
     success: 'Success', // "Thành công"
     register_success: 'Registration successful!', // "Đăng ký thành công!"
     // 📥 Thêm vào en:
-    forgot_password_title: 'FORGOT PASSWORD',
+    forgot_password_title: 'Forgot Password',
     forgot_password_heading: 'Reset your password',
     send_code_button: 'SEND CODE',
     enter_code_label: 'Verification Code',
@@ -116,7 +116,7 @@ export const translations = {
     home_host: 'HOST',
     home_solve_puzzles: 'SOLVE PUZZLES',
 
-    login: 'LOGIN',
+    login: 'Login',
     login_title: 'Login',
     login_username: 'Username',
     login_username_placeholder: 'Enter username',
@@ -285,7 +285,7 @@ export const translations = {
     playAgain: 'Đấu tiếp',
     whiteScore: 'Điểm trắng',
     blackScore: 'Điểm đen',
-    register_title: 'ĐĂNG KÝ',
+    register_title: 'Đăng Ký',
     create_account: 'Tạo tài khoản',
     login_email: 'Email',
     login_email_placeholder: 'Nhập email',
@@ -303,7 +303,7 @@ export const translations = {
     toggle_language: 'Chuyển ngôn ngữ',
 
     // 📥 Thêm vào vi:
-    forgot_password_title: 'QUÊN MẬT KHẨU',
+    forgot_password_title: 'Quên Mật Khẩu',
     forgot_password_heading: 'Đặt lại mật khẩu',
     send_code_button: 'GỬI MÃ',
     enter_code_label: 'Mã xác thực',
@@ -396,7 +396,7 @@ export const translations = {
     home_host: 'PHÒNG',
     home_solve_puzzles: 'GIẢI CÂU ĐỐ',
 
-    login: 'ĐĂNG NHẬP',
+    login: 'Đăng nhập',
     login_title: 'Đăng nhập',
     login_username: 'Tên đăng nhập',
     login_username_placeholder: 'Nhập tên đăng nhập',
@@ -472,7 +472,7 @@ export const translations = {
     host_friend_search: 'Tìm...',
     host_friend_not_found: 'Không tìm thấy bạn bè, tìm hoặc mời họ!',
 
-    setting: 'Cài đặt',
+    setting: 'Cài Đặt',
     setting_guest: 'Khách',
     setting_account: 'Tài khoản',
     setting_profile: 'Hồ sơ',
