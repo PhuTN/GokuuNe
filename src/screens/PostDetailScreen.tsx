@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useLanguage } from '../asycnc_store/LanguageContext';
@@ -12,6 +12,7 @@ import FullScreenImageModal from '../components/common/PostScreen/PostFullScreen
 import NoCommnetLightIcon from '../assets/icons/no_comment_light_icon.svg';
 import NoCommnetDarkIcon from '../assets/icons/no_comment_dark_icon.svg';
 import SendMessageIcon from '../assets/icons/send_message_icon.svg';
+import { commentOnPost, getPostById } from '../api/postApi';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PostDetail'>;
 
@@ -65,24 +66,21 @@ const PostDetailScreen = ({ route, navigation }: Props) => {
         }
     };
 
-    const handleSubmitComment = () => {
-        if (commentText.trim()) {
-            // Add logic to submit the comment to your backend or update the post state
-            // For example, append to post.comments array
-            const newComment = {
-                avatar: accountLogin?.avatar || require('../images/user.png'),
-                displayName: accountLogin?.displayName || 'Anonymous',
-                text: commentText,
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-            };
-            setPost({
-                ...post,
-                comments: [...(post.comments || []), newComment],
-            });
-            setCommentText(''); // Clear input after submission
+   const handleSubmitComment = async () => {
+    if (commentText.trim()) {
+        try {
+            await commentOnPost(post._id, commentText); // Gọi API gửi comment
+            setCommentText(''); // Clear input
+
+            const updatedPost = await getPostById(post._id); // Gọi lại API để lấy bài viết mới nhất
+            setPost(updatedPost); // Cập nhật lại bài viết
+        } catch (error) {
+            console.error("❌ Lỗi khi gửi bình luận:", error);
         }
-    };
+    }
+};
+
+
 
     const sortedComments = [...(post.comments || [])].sort((a, b) => {
         const timeA = new Date(a.updatedAt).getTime();
@@ -90,6 +88,23 @@ const PostDetailScreen = ({ route, navigation }: Props) => {
         return commentOrder === 'newest' ? timeB - timeA : timeA - timeB;
     });
 
+    console.log(post)
+
+
+    useEffect(() => {
+    const fetchPostDetail = async () => {
+        try {
+            const data = await getPostById(route.params?.post._id);
+            setPost(data);
+        } catch (error) {
+            console.error("❌ Lỗi khi lấy chi tiết bài viết:", error);
+        }
+    };
+
+    if (route.params?.post?._id) {
+        fetchPostDetail();
+    }
+}, [route.params?.post?._id]);
     return (
         <SafeAreaView style={styles.container}>
             <Header title={t.post_detail} />
@@ -102,7 +117,7 @@ const PostDetailScreen = ({ route, navigation }: Props) => {
                 <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
                     <View style={styles.postContainer}>
                         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                            <Image source={post.user.avatar || require('../images/user.png')} style={styles.avatar} />
+                            <Image source={post.user.avatarUrl ? { uri: post.user.avatarUrl } : require('../images/user.png')} />
                             <View style={{ flexDirection: 'column', flex: 1 }}>
                                 <View style={styles.userInfo}>
                                     <Text style={styles.userName}>{post.user.displayName}</Text>
@@ -114,11 +129,11 @@ const PostDetailScreen = ({ route, navigation }: Props) => {
                             </View>
                         </View>
                         <Text style={styles.caption}>{post.caption}</Text>
-                        {post.image && (
-                            <TouchableOpacity onPress={() => handleImagePress(post.image)}>
-                                <Image source={post.image} style={styles.postImage} />
-                            </TouchableOpacity>
-                        )}
+                       {post.imageUrl && (
+    <TouchableOpacity onPress={() => handleImagePress(post.image)}>
+        <Image source={{ uri: post.imageUrl }} style={styles.postImage} />
+    </TouchableOpacity>
+)}
                     </View>
                     <View style={styles.postContainer}>
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginHorizontal: 15, marginBottom: 10 }}>
@@ -131,11 +146,12 @@ const PostDetailScreen = ({ route, navigation }: Props) => {
                         {sortedComments.length > 0 ? (
                             sortedComments.map((comment, index) => (
                                 <View key={index} style={styles.commentContainer}>
-                                    <Image source={comment.avatar} style={styles.commentAvatar} />
+                                  <Image  style={styles.commentAvatar} source={comment.user.avatarUrl ? { uri: comment.user.avatarUrl } : require('../images/user.png')} />
+
                                     <View style={styles.commentContent}>
-                                        <Text style={styles.commentAuthor}>{comment.displayName}</Text>
-                                        <Text style={styles.commentText}>{comment.text}</Text>
-                                        <Text style={styles.commentTime}>{getTimeAgo(comment.updatedAt)}</Text>
+                                        <Text style={styles.commentAuthor}>{comment.user.displayName}</Text>
+                                        <Text style={styles.commentText}>{comment.content}</Text>
+                                        <Text style={styles.commentTime}>{getTimeAgo(comment.createdAt)}</Text>
                                     </View>
                                 </View>
                             ))
