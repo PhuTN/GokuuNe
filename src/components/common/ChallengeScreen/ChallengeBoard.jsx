@@ -190,8 +190,8 @@ const styles = StyleSheet.create({
   },
   board: {
     backgroundColor: '#f2dfb1', // vàng gỗ
-    width: boardLength,
-    height: boardLength,
+    width: boardLength+10,
+    height: boardLength+10,
     borderWidth: 4,
     borderColor: '#b87a2d', // viền gỗ nâu
   },
