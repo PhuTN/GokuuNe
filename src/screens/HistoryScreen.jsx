@@ -16,6 +16,7 @@ export default function HistoryScreen({ navigation }) {
 
     const [user, setUser] = useState(null);
     const [history, setHistory] = useState([]);
+    
 
     useEffect(() => {
         const fetchData = async () => {
@@ -86,16 +87,17 @@ export default function HistoryScreen({ navigation }) {
     }, []);
     console.log("HISTORY", history)
   const { language, toggleLanguage } = useLanguage();
+  const t= translations[language];
      
     return (
         <View style={styles.background}>
-            <Header title="History" />
+            <Header title={t.history_text} />
             {user ? (
                 <View style={{ alignSelf: 'center', marginTop: 50 }}>
                     <UserInfo user={user} />
                 </View>
             ) : (
-                <Text style={{ textAlign: 'center', marginTop: 50 }}>Đang tải thông tin...</Text>
+                <Text style={{ textAlign: 'center', marginTop: 50 }}>{t.loading_text}...</Text>
             )}
             <ScrollView style={styles.scroll} scrollEnabled={true}>
                 {history.length > 0 ? (
@@ -110,7 +112,7 @@ export default function HistoryScreen({ navigation }) {
 
                     ))
                 ) : (
-                    <Text style={{ textAlign: 'center', marginTop: 20 }}>Chưa có trận đấu nào</Text>
+                    <Text style={{ textAlign: 'center', marginTop: 20 }}>{t.not_have_match_text}</Text>
                 )}
             </ScrollView>
         </View>
