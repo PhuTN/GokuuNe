@@ -55,7 +55,7 @@ Lập trình trên thiết bị di động
 
 ---
 
-## Cách chạy project Backend (FE)
+## Cách chạy project Frontend (FE)
 
 ### Yêu cầu:
 
@@ -64,7 +64,8 @@ Lập trình trên thiết bị di động
 - **Git**  
 - **Android Studio** (để setup máy ảo Android Emulator)  
 - **Java Development Kit (JDK)** ≥ 11  
-- **React Native CLI**  
+- **React Native CLI**
+- **Đổi API_URL ở file src\api\config.js**
 
 ### Các bước thực hiện:
 
