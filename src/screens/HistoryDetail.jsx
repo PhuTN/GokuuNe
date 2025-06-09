@@ -32,6 +32,7 @@ export default function HistoryDetail({ route }) {
     const currentPositionInIndexArray = useRef(-1);
     const [blackSkip, setBlackSkip] = useState(false);
     const [whiteSkip, setWhiteSkip] = useState(false);
+    const [winner, setWinner] = useState("");
     const isFocuse = useIsFocused;
     useEffect(() => {
         loadBoardFromGameState(historyDetails.detail[0].boardData);
@@ -100,7 +101,7 @@ export default function HistoryDetail({ route }) {
                 setMatchData(matchDataMoves);
                 const playerBlackData = await getUserById(data.playerBlack._id);
                 const playerWhiteData = await getUserById(data.playerWhite._id);
-                
+                setWinner(data.winner);
                 setPlayerBlack(playerBlackData);
                 console.log(playerBlackData);
                 console.log(playerWhiteData);
@@ -116,14 +117,14 @@ export default function HistoryDetail({ route }) {
 
 
     return <View style={styles.background}>
-        <Header title="History"></Header>
+        <Header title={t.history_text}></Header>
         <ScrollView>
         <View style={styles.player_container}>
             <Image source={{ uri: playerBlack==null?"":playerBlack.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerBlack.avatarUrl}} style={styles.avatar} />
             <View style={styles.info}>
-                <Text style={styles.name}>{playerBlack==null?"":playerBlack.displayName}</Text>
+                <Text style={styles.name}>{playerBlack==null?"":playerBlack.displayName} {"("+t.black_text} - {(winner=="black"?t.win:t.lose)+")"}</Text>
                 <Text style={styles.score}>
-                    {t.score}: {blackScore}
+                    {t.score}: {"0"}
                 </Text>
             </View>
         </View>
@@ -198,9 +199,9 @@ export default function HistoryDetail({ route }) {
         <View style={styles.player_container}>
             <Image source={{ uri: playerWhite==null?"":playerWhite.avatarUrl==""?"https://pnghq.com/wp-content/uploads/cartoon-avatar-png-free-image-png-21820-1536x1536.png":playerWhite.avatarUrl }} style={styles.avatar} />
             <View style={styles.info}>
-                <Text style={styles.name}>{playerWhite==null?"":playerWhite.displayName}</Text>
+                <Text style={styles.name}>{playerWhite==null?"":playerWhite.displayName} {"("+t.white_text} - {(winner=="white"?t.win:t.lose)+")"}</Text>
                 <Text style={styles.score}>
-                    {t.score}: {whiteScore}
+                    {t.score}: {"0"}
                 </Text>
             </View>
         </View> 

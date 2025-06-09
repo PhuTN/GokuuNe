@@ -76,6 +76,13 @@ export const translations = {
     white_skip_text:"White Skip",
     black_skip_text:"Black skip",
     challenge_title:"Challenge",
+    white_text:"White",
+    black_text:"Black",
+    history_text:"History",
+    loading_text:"Loading information",
+    not_have_match_text:"No matches yet",
+    
+    
     //dien
     noti_permission_deny:
       'You have previously denied Notifications. Please go to settings to enable',
@@ -356,6 +363,11 @@ export const translations = {
     black_skip_text:"Đen bỏ lượt",
     challenge_title:"Câu đố",
 
+     white_text:"Trắng",
+    black_text:"Đen",
+    history_text:"Lịch sử đấu",
+    loading_text:"Đang tải thông tin",
+    not_have_match_text:"Chưa có trận đấu nàonào",
     //dien
     noti_permission_deny:
       'Bạn đã từ chối Thông báo. Vui lòng vào cài đặt để bật',
