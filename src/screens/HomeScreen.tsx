@@ -77,6 +77,8 @@ const HomeScreen = ({ route, navigation }: Props) => {
     //   pushState: notification,
     // });
     navigation.navigate('Setting', { accountLogin });
+
+
   };
 
   const handleFriends = () => {
@@ -159,15 +161,9 @@ const HomeScreen = ({ route, navigation }: Props) => {
   };
 
   const handleRanking = () => {
-    navigation.navigate('Ranking', { accountLogin });
-    /*if (accountLogin) {
-      // notify({
-      //   message: t.noti_success,
-      //   description: t.noti_go_rank,
-      //   type: 'success',
-      //   systemNotification: true,
-      //   pushState: notification,
-      // });
+    //navigation.navigate('Ranking', { accountLogin });
+    if (accountLogin) {
+   
       navigation.navigate('Ranking', {accountLogin});
     } else {
       notify({
@@ -177,7 +173,7 @@ const HomeScreen = ({ route, navigation }: Props) => {
         systemNotification: true,
         pushState: notification,
       });
-    }*/
+    }
   };
 
   const handleHost = (friend: any, match: any) => {
@@ -205,24 +201,17 @@ const HomeScreen = ({ route, navigation }: Props) => {
 
   const handleChat = () => {
     if (accountLogin) {
-      notify({
-        message: t.noti_info,
-        description: t.noti_go_chat,
-        type: 'info',
-   
-      
-        inapp: true,
-      });
+    
       navigation.navigate('Chat', { accountLogin });
     } else {
-      // notify({
-      //   message: t.noti_warning,
-      //   description: t.noti_login_require,
-      //   type: 'warning',
-      //   systemNotification: true,
-      //   pushState: notification,
-      //   inapp: true,
-      // });
+      notify({
+        message: t.noti_warning,
+        description: t.noti_login_require,
+        type: 'warning',
+        systemNotification: true,
+        pushState: notification,
+        inapp: true,
+      });
     }
   };
 
