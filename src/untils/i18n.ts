@@ -75,6 +75,7 @@ export const translations = {
     next_level_text: 'Next level',
     white_skip_text:"White Skip",
     black_skip_text:"Black skip",
+    challenge_title:"Challenge",
     //dien
     noti_permission_deny:
       'You have previously denied Notifications. Please go to settings to enable',
@@ -353,6 +354,7 @@ export const translations = {
     next_level_text: 'Màn kế tiếp', 
     white_skip_text:"Trắng bỏ lượt",
     black_skip_text:"Đen bỏ lượt",
+    challenge_title:"Câu đố",
 
     //dien
     noti_permission_deny:

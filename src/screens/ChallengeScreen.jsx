@@ -64,7 +64,7 @@ export default function ChallengeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header title="Challenge"></Header>
+      <Header title={t.challenge_title}></Header>
       <Text style={styles.text}>{t.choose_level_text}</Text>
       <ScrollView contentContainerStyle={styles.levelContainer}>
         {renderRows()}
