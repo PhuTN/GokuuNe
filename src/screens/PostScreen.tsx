@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useLanguage } from '../asycnc_store/LanguageContext';
@@ -17,124 +17,14 @@ import UnlikeLightIcon from '../assets/icons/unlike_light_icon.svg';
 import UnlikeDarkIcon from '../assets/icons/unlike_dark_icon.svg';
 import PostReportModal from '../components/common/PostScreen/PostReportModal';
 import FullScreenImageModal from '../components/common/PostScreen/PostFullScreenImageModal';
+import { getAllPosts, getFriendPosts, getMyPosts, getPostById, toggleLikePost } from '../api/postApi';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Post'>;
 
 // Dữ liệu mẫu
-const mockPosts = [
-    {
-        id: '1',
-        user: { _id: 'userid1', displayName: 'Nguyen Van A', avatar: require('../images/avatar_01.jpg') },
-        caption: 'Chiều 27/5, Chính phủ trình Quốc hội dự án Luật Đường sắt (sửa đổi) với nhiều nội dung nhằm thúc đẩy phát triển kết cấu hạ tầng, công nghiệp đường sắt. Bộ trưởng Bộ Xây dựng Trần Hồng Minh cho biết tại dự thảo này, Nhà nước xác định ưu tiên tập trung nguồn lực để đầu tư phát triển, nâng cấp, bảo trì, bảo vệ kết cấu hạ tầng đường sắt quốc gia, đường sắt địa phương và công nghiệp đường sắt. Mục tiêu là từng bước đưa đường sắt trở thành phương thức vận tải chủ đạo trong hệ thống giao thông vận tải cả nước.',
-        image: require('../images/avatar_04.jpg'),
-        comments: [
-            {
-                _id: 'c1', displayName: 'User B', avatar: require('../images/avatar_02.jpg'), text: 'Tuyệt quá!',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-26T04:33:40.169+00:00',
-            },
-            {
-                _id: 'c2', displayName: 'User C', avatar: require('../images/avatar_03.jpg'), text: 'Chúc mừng!',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-27T04:33:40.169+00:00',
-            },
-        ],
-        likes: [
-            {
-                _id: 'c1', displayName: 'User B',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-25T04:33:40.169+00:00',
-            },
-            {
-                _id: 'c2', displayName: 'User C',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-25T04:33:40.169+00:00',
-            },
-        ],
-        createdAt: '2025-05-25T03:58:03.055+00:00',
-        updatedAt: '2025-05-25T04:33:40.169+00:00',
-    },
-    {
-        id: '2',
-        user: { _id: 'userid2', displayName: 'Tran Thi B', avatar: require('../images/avatar_04.jpg') },
-        caption: 'Cảm giác mùa thu thật dễ chịu.',
-        image: require('../images/avatar_02.jpg'),
-        comments: [
-            {
-                _id: 'c3', displayName: 'User A', avatar: require('../images/avatar_01.jpg'), text: 'Đẹp quá!',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-25T04:33:40.169+00:00',
-            }
-        ],
-        likes: [
-            {
-                _id: 'c3', displayName: 'User A',
-                createdAt: '2025-05-25T03:58:03.055+00:00',
-                updatedAt: '2025-05-25T04:33:40.169+00:00',
-            }
-        ],
-        createdAt: '2025-05-25T03:58:03.055+00:00',
-        updatedAt: '2025-05-25T04:33:40.169+00:00',
-    },
-    {
-        id: '3',
-        user: { _id: 'userid1', displayName: 'Nguyen Van A', avatar: require('../images/avatar_01.jpg') },
-        caption: 'Thử món mới ở quán ăn Nhật. Ngon hết sẩy!',
-        image: require('../images/avatar_05.jpg'),
-        comments: [
-            {
-                _id: 'c4', displayName: 'User D', avatar: require('../images/avatar_03.jpg'), text: 'Cho xin địa chỉ!',
-                createdAt: '2025-05-26T08:00:00.000+00:00',
-                updatedAt: '2025-05-26T08:10:00.000+00:00',
-            }
-        ],
-        likes: [
-            { _id: 'c5', displayName: 'User E', createdAt: '2025-05-26T08:20:00.000+00:00', updatedAt: '2025-05-26T08:20:00.000+00:00' },
-        ],
-        createdAt: '2025-05-26T07:50:00.000+00:00',
-        updatedAt: '2025-05-26T08:00:00.000+00:00',
-    },
-    {
-        id: '4',
-        user: { _id: 'userid3', displayName: 'Le Van C', avatar: require('../images/avatar_02.jpg') },
-        caption: 'Hôm nay trời đẹp quá, lên đồ đi chơi liền!',
-        image: require('../images/avatar_03.jpg'),
-        comments: [],
-        likes: [],
-        createdAt: '2025-05-26T09:00:00.000+00:00',
-        updatedAt: '2025-05-26T09:15:00.000+00:00',
-    },
-    {
-        id: '5',
-        user: { _id: 'userid2', displayName: 'Tran Thi B', avatar: require('../images/avatar_04.jpg') },
-        caption: 'Thử vẽ digital art lần đầu. Mọi người góp ý giúp mình với nhé!',
-        image: require('../images/avatar_06.jpg'),
-        comments: [
-            {
-                _id: 'c6', displayName: 'User F', avatar: require('../images/avatar_01.jpg'), text: 'Quá đẹp!',
-                createdAt: '2025-05-27T01:00:00.000+00:00',
-                updatedAt: '2025-05-27T01:30:00.000+00:00',
-            }
-        ],
-        likes: [
-            { _id: 'c7', displayName: 'User G', createdAt: '2025-05-27T01:20:00.000+00:00', updatedAt: '2025-05-27T01:20:00.000+00:00' },
-        ],
-        createdAt: '2025-05-27T00:50:00.000+00:00',
-        updatedAt: '2025-05-27T01:00:00.000+00:00',
-    },
-    {
-        id: '6',
-        user: { _id: 'userid1', displayName: 'Nguyen Van A', avatar: require('../images/avatar_01.jpg') },
-        caption: 'Một ngày làm việc hiệu quả! #productivity',
-        image: require('../images/avatar_07.jpg'),
-        comments: [],
-        likes: [
-            { _id: 'c8', displayName: 'User H', createdAt: '2025-05-27T03:00:00.000+00:00', updatedAt: '2025-05-27T03:00:00.000+00:00' },
-        ],
-        createdAt: '2025-05-27T02:30:00.000+00:00',
-        updatedAt: '2025-05-27T03:00:00.000+00:00',
-    },
-];
+
+
 
 const PostScreen = ({ route, navigation }: Props) => {
     const { language } = useLanguage();
@@ -145,7 +35,7 @@ const PostScreen = ({ route, navigation }: Props) => {
 
     const [accountLogin] = useState(route.params?.accountLogin ?? null);
     const [posts, setPosts] = useState(
-        [...mockPosts].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+       []
     );
     const [modalMoreFunctionVisible, setModalMoreFunctionVisible] = useState(false);
     const [selectedPost, setSelectedPost] = useState();
@@ -154,7 +44,22 @@ const PostScreen = ({ route, navigation }: Props) => {
     const [selectedImage, setSelectedImage] = useState();
 
     const [expandedCaptions, setExpandedCaptions] = useState<string[]>([]);
+// useEffect(() => {
+//     const fetchPosts = async () => {
+//         try {
+//             const myPosts = await getMyPosts();
+//             const friendPosts = await getFriendPosts();
+//             const allPosts = [...myPosts, ...friendPosts];
 
+//             allPosts.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+//             setPosts(allPosts);
+//         } catch (err) {
+//             console.error("🚨 Error fetching posts:", err);
+//         }
+//     };
+
+//     fetchPosts();
+// }, []);
     // Hàm tính thời gian hiển thị giống Facebook
     const getTimeAgo = (updatedAt: string) => {
         const now = new Date();
@@ -211,30 +116,15 @@ const PostScreen = ({ route, navigation }: Props) => {
         }
     };
 
-    const toggleLike = (postId: string) => {
-        setPosts((prevPosts) =>
-            prevPosts.map((post) => {
-                if (post.id === postId) {
-                    const isLiked = post.likes.some((like) => like._id === accountLogin._id);
-                    return {
-                        ...post,
-                        likes: isLiked
-                            ? post.likes.filter((like) => like._id !== accountLogin._id)
-                            : [
-                                ...post.likes,
-                                {
-                                    _id: accountLogin._id,
-                                    displayName: accountLogin.displayName,
-                                    createdAt: new Date().toISOString(),
-                                    updatedAt: new Date().toISOString(),
-                                },
-                            ],
-                    };
-                }
-                return post;
-            })
-        );
-    };
+const toggleLike = async (postId: string) => {
+  try {
+    await toggleLikePost(postId);
+    await fetchPosts(); // 👈 Reload lại toàn bộ bài viết
+  } catch (error) {
+    console.error("🚨 Lỗi khi like/unlike:", error);
+  }
+};
+
 
     const toggleCaption = (postId: string) => {
         setExpandedCaptions((prev) =>
@@ -243,6 +133,41 @@ const PostScreen = ({ route, navigation }: Props) => {
                 : [...prev, postId]
         );
     };
+    console.log(posts)
+const fetchPosts = async () => {
+  try {
+    let data = [];
+    if (selectedTab === 'me') data = await getMyPosts();
+    else if (selectedTab === 'friend') data = await getFriendPosts();
+    else data = await getAllPosts();
+
+    data.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    setPosts(data);
+  } catch (err) {
+    console.error("🚨 Error fetching posts:", err);
+  }
+};
+
+    const [selectedTab, setSelectedTab] = useState<'me' | 'friend' | 'global'>('me');
+useFocusEffect(
+  useCallback(() => {
+    const fetchPosts = async () => {
+      try {
+        let data = [];
+        if (selectedTab === 'me') data = await getMyPosts();
+        else if (selectedTab === 'friend') data = await getFriendPosts();
+        else data = await getAllPosts();
+
+        data.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+        setPosts(data);
+      } catch (err) {
+        console.error("🚨 Error fetching posts:", err);
+      }
+    };
+
+    fetchPosts();
+  }, [selectedTab]) // 💥 vẫn truyền selectedTab nếu bạn muốn reload mỗi lần đổi tab khi quay lại screen
+);
 
     return (
         <View style={styles.container}>
@@ -251,19 +176,69 @@ const PostScreen = ({ route, navigation }: Props) => {
                 <Button_Add Icon={CreatePostIcon} onPress={handleCreate} />
             </View>
             <View style={{ marginBottom: 15 }}></View>
+<View style={{
+  flexDirection: 'row',
+  justifyContent: 'space-around',
+  marginHorizontal: 10,
+  marginTop: 10,
+  paddingVertical: 8,
+  borderRadius: 12,
+  backgroundColor: '#E6E6FA', // 💜 tím nhạt dễ thương
+}}>
+  <TouchableOpacity onPress={() => setSelectedTab('me')} style={{ paddingHorizontal: 10 }}>
+    <Text style={{
+      fontWeight: selectedTab === 'me' ? 'bold' : '600',
+      color: selectedTab === 'me' ? '#4B0082' : '#666', // tím đậm khi active
+      borderBottomWidth: selectedTab === 'me' ? 2 : 0,
+      borderBottomColor: '#4B0082',
+      paddingBottom: 4,
+      fontSize: 15
+    }}>
+     🧍 {language === 'vi' ? 'Cá nhân' : 'My Posts'}
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => setSelectedTab('friend')} style={{ paddingHorizontal: 10 }}>
+    <Text style={{
+      fontWeight: selectedTab === 'friend' ? 'bold' : '600',
+      color: selectedTab === 'friend' ? '#4B0082' : '#666',
+      borderBottomWidth: selectedTab === 'friend' ? 2 : 0,
+      borderBottomColor: '#4B0082',
+      paddingBottom: 4,
+      fontSize: 15
+    }}>
+      👯 {language === 'vi' ? 'Bạn bè' : 'Friends'}
+    </Text>
+  </TouchableOpacity>
+  <TouchableOpacity onPress={() => setSelectedTab('global')} style={{ paddingHorizontal: 10 }}>
+    <Text style={{
+      fontWeight: selectedTab === 'global' ? 'bold' : '600',
+      color: selectedTab === 'global' ? '#4B0082' : '#666',
+      borderBottomWidth: selectedTab === 'global' ? 2 : 0,
+      borderBottomColor: '#4B0082',
+      paddingBottom: 4,
+      fontSize: 15
+    }}>
+      🌍 {language === 'vi' ? 'Thế giới' : 'Global'}
+    </Text>
+  </TouchableOpacity>
+</View>
+
             <FlatList
                 data={posts}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item, index) => item.id || `post-${index}`}
                 contentContainerStyle={styles.postList}
                 renderItem={({ item }) => {
-                    const isLiked = item.likes.some((like) => like._id === accountLogin._id);
+                    const isLiked = item.likes.some((like) => like === accountLogin._id);
                     const isCaptionExpanded = expandedCaptions.includes(item.id);
                     const MAX_LINES = 3;
                     const shouldShowMore = item.caption.split(' ').length > 100;
                     return (
                         <View style={styles.postContainer}>
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 10 }}>
-                                <Image source={item.user.avatar || require('../images/user.png')} style={styles.avatar} />
+                               <Image
+  source={{ uri: item.user.avatarUrl || 'https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y' }}
+  style={styles.avatar}
+/>
                                 <View style={{ flexDirection: 'column', flex: 1 }}>
                                     <View style={styles.userInfo}>
                                         <Text style={styles.userName}>{item.user.displayName}</Text>
@@ -288,14 +263,14 @@ const PostScreen = ({ route, navigation }: Props) => {
                                     </Text>
                                 </TouchableOpacity>
                             )}
-                            {item.image && (
-                                <TouchableOpacity onPress={() => handleImagePress(item.image)}>
-                                    <Image source={item.image} style={styles.postImage} />
-                                </TouchableOpacity>
+                            {item.imageUrl&& (
+                                <TouchableOpacity onPress={() => handleImagePress(item.imageUrl)}>
+  <Image source={{ uri: item.imageUrl }} style={styles.postImage} />
+</TouchableOpacity>
                             )}
                             <View style={styles.interactionBar}>
                                 <TouchableOpacity
-                                    onPress={() => toggleLike(item.id)}
+                                    onPress={() => toggleLike(item._id)}
                                 >
                                     {isLiked ? (
                                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>

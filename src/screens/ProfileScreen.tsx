@@ -112,6 +112,12 @@ const ProfileScreen = ({route, navigation}: Props) => {
   const [isBirthModalVisible, setBirthModalVisible] = useState(false);
 
   const handleSave = async () => {
+    notify({
+        message: t.noti_success,
+        description: t.noti_save_changes,
+        type: 'success',
+        
+      });
     try {
       console.log('[DEBUG] accountLogin._id =', accountLogin._id);
       console.log('[DEBUG] update data =', {
@@ -137,13 +143,7 @@ const ProfileScreen = ({route, navigation}: Props) => {
       setAccountLogin(updatedUser);
 
       // ✅ Thông báo sau khi mọi thứ đã xong
-      notify({
-        message: t.noti_success,
-        description: t.noti_save_changes,
-        type: 'success',
-        systemNotification: true,
-        pushState: notification,
-      });
+      
     } catch (error) {
       console.log(error);
       notify({
@@ -154,43 +154,50 @@ const ProfileScreen = ({route, navigation}: Props) => {
       });
     }
   };
-
+const [localAvatarUri, setLocalAvatarUri] = useState<string | null>(null);
   const handleAvatar = async () => {
-    const options: ImageLibraryOptions = {mediaType: 'photo', quality: 1};
-    launchImageLibrary(options, async response => {
-      if (response.didCancel) return;
-      if (response.errorMessage) {
-        Alert.alert('Image picker error: ', response.errorMessage);
-      } else if (response.assets && response.assets.length > 0) {
-        try {
-          setIsUploadingAvatar(true); // 👉 Bắt đầu hiện vòng xoay
+  const options: ImageLibraryOptions = { mediaType: 'photo', quality: 1 };
+  launchImageLibrary(options, async response => {
+    if (response.didCancel) return;
+    if (response.errorMessage) {
+      Alert.alert('Image picker error: ', response.errorMessage);
+    } else if (response.assets && response.assets.length > 0) {
+      try {
+        setIsUploadingAvatar(true);
 
-          const asset: Asset = response.assets[0];
-          if (!asset.uri) return;
+        const asset: Asset = response.assets[0];
+        if (!asset.uri) return;
 
-          const formData = new FormData();
-          formData.append('image', {
-            uri: asset.uri,
-            type: asset.type ?? 'image/jpeg',
-            name: asset.fileName ?? `upload_${Date.now()}.jpg`,
-          });
+        // 👉 Preview ảnh local ngay lập tức
+        setLocalAvatarUri(asset.uri);
 
-          const res = await axios.post(
-            `${config.API_URL}/api/upload`,
-            formData,
-            {headers: {'Content-Type': 'multipart/form-data'}},
-          );
+        const formData = new FormData();
+        formData.append('image', {
+          uri: asset.uri,
+          type: asset.type ?? 'image/jpeg',
+          name: asset.fileName ?? `upload_${Date.now()}.jpg`,
+        });
 
-          setAvatarUrl(res.data.url);
-        } catch (err) {
-          console.error(err);
-          Alert.alert('Upload Error', 'Không thể upload ảnh lên server.');
-        } finally {
-          setIsUploadingAvatar(false); // 👉 Dừng vòng xoay
-        }
+        const res = await axios.post(
+          `${config.API_URL}/api/upload`,
+          formData,
+          {
+            headers: { 'Content-Type': 'multipart/form-data' },
+          }
+        );
+
+        // 👉 Sau khi upload xong thì lưu URL từ server
+        setAvatarUrl(res.data.url);
+      } catch (err) {
+        console.error(err);
+        Alert.alert('Upload Error', 'Không thể upload ảnh lên server.');
+      } finally {
+        setIsUploadingAvatar(false);
       }
-    });
-  };
+    }
+  });
+};
+
 
   console.log(accountLogin);
   return (
@@ -209,9 +216,14 @@ const ProfileScreen = ({route, navigation}: Props) => {
           ) : (
             <View>
               <Image
-                source={
-                  avatarUrl ? {uri: avatarUrl} : require('../images/user.png')
-                }
+               source={
+  localAvatarUri
+    ? { uri: localAvatarUri } // 👉 Ưu tiên hiển thị ảnh local vừa chọn
+    : avatarUrl
+    ? { uri: avatarUrl } // nếu không có ảnh local thì dùng ảnh server
+    : require('../images/user.png') // fallback
+}
+
                 style={styles.avatar}
               />
               <TouchableOpacity
