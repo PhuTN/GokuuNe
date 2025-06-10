@@ -244,7 +244,7 @@ const whiteStyle = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 8,
 
-        width: 100
+        width: 150
     },
     nav_button_text: {
         fontSize: 20,
@@ -327,7 +327,7 @@ const whiteStyle = StyleSheet.create({
         flexDirection: 'column',
     },
     name: {
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: '6600',
         color: '#333',
     },
@@ -360,7 +360,7 @@ const blackStyle = StyleSheet.create({
         paddingHorizontal: 20,
         borderRadius: 8,
 
-        width: 100
+        width: 150
     },
     nav_button_text: {
         fontSize: 20,
@@ -444,7 +444,7 @@ const blackStyle = StyleSheet.create({
 
     },
     name: {
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: '6600',
         color: '#FFF',
     },
