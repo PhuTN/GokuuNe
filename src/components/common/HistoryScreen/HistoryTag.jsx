@@ -34,7 +34,7 @@ export default function HistoryTag({ navigation, history , matchId }) {
                         <Text style={styles.score}>{history.playerBlack.score} {history.playerBlack.win ? '🏆' : '❌'}</Text>
                     </View>
                 </View>
-                <Text style={styles.win}>{history.playerBlack.win ? t.win : t.lose}</Text>
+                <Text style={history.playerBlack.win?styles.win:styles.lose}>{history.playerBlack.win ? t.win : t.lose}</Text>
             </View>
 
 
@@ -46,7 +46,7 @@ export default function HistoryTag({ navigation, history , matchId }) {
                         <Text style={styles.score}>{history.playerWhite.score} {history.playerWhite.win ? '🏆' : '❌'}</Text>
                     </View>
                 </View>
-                <Text style={styles.lose}>{history.playerWhite.win ? t.win : t.lose}</Text>
+                <Text style={history.playerWhite.win?styles.win:styles.lose}>{history.playerWhite.win ? t.win : t.lose}</Text>
             </View>
             <Text style={styles.mode}>{translateModeText(history.mode)}</Text>
         </TouchableOpacity>

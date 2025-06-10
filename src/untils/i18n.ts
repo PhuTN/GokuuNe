@@ -367,7 +367,7 @@ export const translations = {
     black_text:"Đen",
     history_text:"Lịch sử đấu",
     loading_text:"Đang tải thông tin",
-    not_have_match_text:"Chưa có trận đấu nàonào",
+    not_have_match_text:"Chưa có trận đấu nào",
     //dien
     noti_permission_deny:
       'Bạn đã từ chối Thông báo. Vui lòng vào cài đặt để bật',
