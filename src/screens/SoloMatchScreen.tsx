@@ -157,7 +157,7 @@ function RenderResultPopup(
     <View style={[styles.container, { flex: 1, position: 'relative' }]}>
       {!zoomMode && (
         <>
-          <Header title="Solo Game" />
+          <Header title="1 VS 1" />
    {(isEnd || surrender !== 0) && (
   <View style={styles.resultOverlay}>
     {RenderResultPopup(

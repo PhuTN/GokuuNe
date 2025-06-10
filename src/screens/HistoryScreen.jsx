@@ -100,8 +100,8 @@ export default function HistoryScreen({ navigation }) {
                 <Text style={{ textAlign: 'center', marginTop: 50 }}>{t.loading_text}...</Text>
             )}
             <ScrollView style={styles.scroll} scrollEnabled={true}>
-                {history.length > 0 ? (
-                    history.map((item, index) => (
+                 {history.length > 0 ? (
+    [...history].reverse().map((item, index) => ( // 👈 Đảo ngược mảng
                        
     <HistoryTag 
       key={`History${index}`} 

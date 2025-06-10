@@ -74,6 +74,6 @@ export default function FindMatch(userId, opponentId = null) {
       console.warn("⏱ Timeout: Không tìm được đối thủ sau 15s.");
       socket.off("rank:matched", onMatched);
       reject("⏱ Timeout khi tìm trận.");
-    }, 15000);
+    },30000000);
   });
 }

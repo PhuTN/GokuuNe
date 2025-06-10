@@ -48,7 +48,7 @@ export default function HistoryTag({ navigation, history , matchId }) {
                 </View>
                 <Text style={history.playerWhite.win?styles.win:styles.lose}>{history.playerWhite.win ? t.win : t.lose}</Text>
             </View>
-            <Text style={styles.mode}>{translateModeText(history.mode)}</Text>
+            {/* <Text style={styles.mode}>{translateModeText(history.mode)}</Text> */}
         </TouchableOpacity>
     );
 }
