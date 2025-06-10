@@ -22,7 +22,8 @@ const whiteStyle =StyleSheet.create({
     image: {
         width:60,
         height:60,
-        borderRadius:10
+        borderRadius:10, 
+        alignSelf:'center'
     }
     ,
     text:{
@@ -43,7 +44,8 @@ const blackStyle =StyleSheet.create({
     image: {
         width:60,
         height:60,
-        borderRadius:10
+        borderRadius:10,
+        alignSelf:'center'
     }
     ,
     text:{
