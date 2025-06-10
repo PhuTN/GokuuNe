@@ -14,7 +14,19 @@ import { ScrollView } from "react-native-gesture-handler";
 import { useIsFocused } from "@react-navigation/native";
 const blackPiece = require('../assets/images/pieceBlack.png');
 const whitePiece = require('../assets/images/pieceWhite.png');
-
+function extractPlayerScore(playerScoreString) {
+    const regex=/[,|]/
+    const splitString = playerScoreString.split(regex); 
+    for(let i=0;i<splitString.length;i++) {
+        console.log(splitString[i]);
+    }
+    const whiteScore = splitString[0].split(':')[1];
+    const blackScore = splitString[1].split(':')[1];
+    return {
+        blackScore:blackScore,
+        whiteScore:whiteScore
+    }
+}
 export default function HistoryDetail({ route }) {
     const [pArr, setPArr] = useState(Array(19 * 19).fill(null));
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -32,7 +44,8 @@ export default function HistoryDetail({ route }) {
     const currentPositionInIndexArray = useRef(-1);
     const [blackSkip, setBlackSkip] = useState(false);
     const [whiteSkip, setWhiteSkip] = useState(false);
-    const [winner, setWinner] = useState("");
+    const [winner, setWinner] = useState(""); 
+    
     const isFocuse = useIsFocused;
     useEffect(() => {
         loadBoardFromGameState(historyDetails.detail[0].boardData);
@@ -57,8 +70,7 @@ export default function HistoryDetail({ route }) {
                 }
             }
         };
-        setBlackScore(historyDetail.blackScore);
-        setWhiteScore(historyDetail.whiteScore);
+       
         setPArr(tempPArr);
     }
     function renderImageRow() {
@@ -106,6 +118,16 @@ export default function HistoryDetail({ route }) {
                 console.log(playerBlackData);
                 console.log(playerWhiteData);
                 setPlayerWhite(playerWhiteData);
+                if(data.resultDescription.includes("surrendered")) {
+                    setBlackScore("");
+                    setWhiteScore("");
+                }
+                else {
+               const score=extractPlayerScore(data.resultDescription);
+                console.log(score.blackScore, score.whiteScore);
+                setBlackScore(score.blackScore);
+                setWhiteScore(score.whiteScore);
+                }
             } catch (error) {
                 console.error('❌ Lỗi lấy chi tiết trận đấu:', error);
             }
@@ -124,7 +146,7 @@ export default function HistoryDetail({ route }) {
             <View style={styles.info}>
                 <Text style={styles.name}>{playerBlack==null?"":playerBlack.displayName} {"("+t.black_text} - {(winner=="black"?t.win:t.lose)+")"}</Text>
                 <Text style={styles.score}>
-                    {t.score}: {"0"}
+                    {t.score}: {blackScore}
                 </Text>
             </View>
         </View>
@@ -201,7 +223,7 @@ export default function HistoryDetail({ route }) {
             <View style={styles.info}>
                 <Text style={styles.name}>{playerWhite==null?"":playerWhite.displayName} {"("+t.white_text} - {(winner=="white"?t.win:t.lose)+")"}</Text>
                 <Text style={styles.score}>
-                    {t.score}: {"0"}
+                    {t.score}: {whiteScore}
                 </Text>
             </View>
         </View> 
