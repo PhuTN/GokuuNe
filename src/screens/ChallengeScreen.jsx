@@ -124,6 +124,52 @@ const whiteStyle = StyleSheet.create({
 });
 const blackStyle = StyleSheet.create({
   container: {
-    backgroundColor: '#535353'
+    backgroundColor: '#535353',
+    height:'100%',
+    paddingBottom:150
   },
+  text: {
+    color: "#FFC107",
+    fontSize: 40,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    paddingTop: 20
+  },
+  levelContainer: {
+    marginTop: 40,
+    paddingHorizontal: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  levelButton: {
+    backgroundColor: 'rgba(188, 44, 255, 0.5)',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: '45%',
+    alignItems: 'center',
+  },
+  levelText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  levelSelectedButton: {
+    backgroundColor: 'rgba(188, 44, 255, 0.5)',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    borderRadius: 10,
+    width: '45%',
+    alignItems: 'center',
+    borderWidth: 5,
+    borderColor: '#FFC107'
+  },
+  image: {
+    width: 40,
+    height: 40,
+    alignSelf: 'center'
+  }
 })
